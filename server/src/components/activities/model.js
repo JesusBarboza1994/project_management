@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+  const mongoose = require('mongoose');
 
 const activitySchema = new mongoose.Schema({
   description: { type: String, required: true },
@@ -7,14 +7,14 @@ const activitySchema = new mongoose.Schema({
   relative_progress: { type: Number, default: 0 },
   absolute_progress: { type: Number, default: 0 },
   index: { type: Number, required: true },
+  has_subactivities: { type: Boolean, default: false, required: true },
   parent: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Activity', // Hace referencia al modelo 'Activity'
+    ref: 'ActivityOrProject', // Hace referencia a un modelo genérico 'ActivityOrProject'
+    required: true
   },
-  project: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Project', // Hace referencia al modelo 'Project'
-  },
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now },
 });
 
 const Activity = mongoose.model('Activity', activitySchema);
