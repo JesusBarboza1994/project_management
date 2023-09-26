@@ -16,7 +16,6 @@ async function list_projects(req, res){
 }
 
 async function show_project(req, res){
-  console.log("REEQ",req.params)
   try {
     const proyecto = await Project.findById(req.params.id);
     res.status(200).json(proyecto);

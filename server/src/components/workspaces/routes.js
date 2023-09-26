@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-
+const UserAuth = require("../../middleware/auth")
 const controller = require("./controller");
-router.post("/", controller.create_workspace)
-router.get("/", controller.list_workspaces)
-router.get("/:id", controller.show_workspace)
-router.delete("/:id", controller.delete_workspace)
-router.patch("/:id", controller.update_workspace)
+
+router.post("/", UserAuth, controller.create_workspace)
+router.get("/", UserAuth, controller.list_workspaces)
+router.get("/:id", UserAuth, controller.show_workspace)
+router.delete("/:id", UserAuth, controller.delete_workspace)
+router.patch("/:id", UserAuth, controller.update_workspace)
 
 module.exports = router
