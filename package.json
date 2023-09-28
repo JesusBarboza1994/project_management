@@ -1,0 +1,7 @@
+{
+  "name": "mi-proyecto",
+  "version": "1.0.0",
+  "scripts": {
+    "install-server-deps": "npm install --prefix server"
+  }
+}
