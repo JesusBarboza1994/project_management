@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-const config = require('./config');
+const config = require('./src/config');
 
 const app = require("./src/app")
 const port = config.PORT
