@@ -4,4 +4,6 @@ const config = {
   DATABASE_URL
 }
 
-export default config
+module.exports = {
+  DATABASE_URL
+};
