@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require("./model");
 
 async function create_user_admin(req, res){
+  console.log("ENTREE")
   try {
     const {username, email, password} = req.body;
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });

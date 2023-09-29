@@ -3,7 +3,7 @@ const config = require('./config');
 (async () => {
 
     try {
-
+        console.log(config.DATABASE_URL)
         const db = await mongoose.connect(config.DATABASE_URL, { 
             useNewUrlParser: true 
         });
