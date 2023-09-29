@@ -2,8 +2,10 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
+const config = require('./config');
+
 const app = require("./src/app")
-const port = process.env.PORT;
+const port = config.PORT
 
 app.listen(port, () => { 
     console.log("Running on port", port);

@@ -15,7 +15,7 @@ app.use("/", router)
 
 app.use("/", router);
 app.get('/', function(req, res){
-    res.send("Hola Mundo");
+    res.send("");
 });
 
 module.exports = app;
