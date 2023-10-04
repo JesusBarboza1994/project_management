@@ -48,7 +48,7 @@ async function login(req, res) {
       user.tokenCreatedAt = new Date();
       user.tokenExpiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 horas en milisegundos
       await user.save();
-    res.status(200).json({ user });
+    res.status(200).json( user );
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al iniciar sesión' });
