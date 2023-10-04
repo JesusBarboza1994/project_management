@@ -1,6 +1,11 @@
+import { Route, Routes } from "react-router-dom";
+import LoginPage from "./pages/LoginPage/LoginPage";
+
 function App() {
   return (
-   <div>hola Mundo</div>
+   <Routes>
+    <Route path="/" element={<LoginPage/>}/>
+   </Routes>
   );
 }
 
