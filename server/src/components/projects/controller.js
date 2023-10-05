@@ -5,7 +5,7 @@ const Project = require("./model.js");
 async function list_projects(req, res){
   try {
     // Consulta todos los proyectos
-    const proyectos = await Project.find();
+    const proyectos = await Project.find({ workspace: req.params.id_workspace });
 
     // Responde con la lista de proyectos en formato JSON
     res.status(200).json(proyectos);
