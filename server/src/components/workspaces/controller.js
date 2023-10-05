@@ -3,7 +3,7 @@ const WorkSpace = require("./model");
 async function create_workspace(req, res){
   try {
     const {name} = req.body;
-    const new_workspace = new WorkSpace({name});
+    const new_workspace = new WorkSpace({name, user: req.user});
     await new_workspace.save();
     res.status(201).json(new_workspace)
   } catch (error) {

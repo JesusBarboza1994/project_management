@@ -23,7 +23,7 @@ async function validateToken(req){
         const tokenAccess = signature.split(' ')[1];
         const payload = await jwt.verify(tokenAccess, process.env.SECRET_ACCESS_KEY_TOKEN);
         console.log("PAYLOAD", payload)
-        req.user = payload;
+        req.user = payload.userId;
         req.tokenAccess = tokenAccess;
         return true;
       }else{
