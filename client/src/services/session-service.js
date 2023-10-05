@@ -2,12 +2,11 @@ import { tokenKey } from "../config";
 import apiFetch from "./api-fetch";
 
 export async function login(credentials) {
-  const { token, ...user } = await apiFetch("/users/login", {
+  const { token, username } = await apiFetch("/users/login", {
     body: credentials,
   });
   sessionStorage.setItem(tokenKey, token);
-  console.log(user)
-  return
+  return username
 }
 
 export function logout() {

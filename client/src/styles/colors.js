@@ -6,14 +6,6 @@ export const colors = {
    shallow: "rgba(244, 143, 177, 0.15)",
   },
 
-  gray:{
-   dark: "#373737",
-   medium: "#616161",
-   light: "#8E8E8E",
-   shallow: "rgba(97, 97, 97, 0.15)",
-
-  },
-
   background : "#F5F5F6",
   backgroundLight :"#E1E2E1",
   white : "#FFFFFF",
@@ -37,7 +29,10 @@ export const colors = {
     highlight : "#F5F3F4",
   },
   
-
-  white_light: "#FFFFFF",
+  randomColors: ["#FFD1DC", "#FFB6C1", "#FFA07A", "#FFD700", "#98FB98", "#DDA0DD", "#F0E68C", "#87CEEB", "#FFC0CB", "#FFE4B5"],
+  getRandomColor: function() {
+    const indiceAleatorio = Math.floor(Math.random() * this.randomColors.length);
+    return this.randomColors[indiceAleatorio];
+  }
 
 };

@@ -18,6 +18,10 @@ export const Wrapper = styled.div`
     text-align:center;
   }
 `
+export const ErrorText = styled.p` 
+  font-size:14px;
+  color:${colors.red.medium};
+`
 
 export const InputContainer = styled.div`
   display: flex;
