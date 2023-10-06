@@ -6,6 +6,7 @@ const projectSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   favorite: {type: Boolean, default: false},
+  user:{type: mongoose.Schema.Types.ObjectId, ref: 'User',required: true},
   workspace: {type: mongoose.Schema.Types.ObjectId, ref: 'Workspace',required: true}
 });
 

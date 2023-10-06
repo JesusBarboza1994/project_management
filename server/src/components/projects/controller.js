@@ -5,30 +5,35 @@ const Project = require("./model.js");
 async function list_projects(req, res){
   try {
     // Consulta todos los proyectos
-    const proyectos = await Project.find({ workspace: req.params.id_workspace });
-
-    // Responde con la lista de proyectos en formato JSON
-    res.status(200).json(proyectos);
+    const projects = await Project.find({ workspace: req.params.id_workspace });
+    if(projects.length === 0){
+      return res.status(404).json({ error: 'No hay proyectos en este workspace' });
+    }
+    // Responde con la lista de projects en formato JSON
+    res.status(200).json(projects);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener la lista de proyectos' });
   }
 }
 
+// TODO: Validar que el dueño del project tenga acceso a este
 async function show_project(req, res){
   try {
-    const proyecto = await Project.findById(req.params.id);
-    res.status(200).json(proyecto);
+    const project = await Project.findById(req.params.id);
+    res.status(200).json(project);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener el proyecto' });
   }
 }
 
+// TODO: Validar que el usuario que crea el proyecto dentro del workspace, sea dueño del workspace
 async function create_project(req, res){
   try {
-    const {title, workspace} = req.body;
-    const new_project = new Project({title, workspace});
+    const {title} = req.body;
+    const workspace = req.params.id_workspace;
+    const new_project = new Project({title, workspace, user: req.user});
     await new_project.save();
     res.status(201).json(new_project)
   } catch (error) {
@@ -60,10 +65,29 @@ async function update_project(req, res){
   }
 }
 
+async function set_favorite(req, res){
+  try {
+    const id = req.params.id;
+    
+    const updated_project = await Project.findById(id);
+    if (updated_project) {
+      updated_project.favorite = !updated_project.favorite; 
+      await updated_project.save(); 
+      res.status(200).json(updated_project);
+    } else {
+      res.status(404).json({ error: "Proyecto no encontrado" });
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Error al actualizar el proyecto' }); // Agregamos una respuesta de error  
+  }
+}
+
 module.exports = {
   list_projects,
   create_project,
   show_project,
   delete_project,
-  update_project
+  update_project,
+  set_favorite
 }
