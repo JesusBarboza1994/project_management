@@ -1,5 +1,6 @@
 'use strict'
 
+const Workspace = require("../workspaces/model.js");
 const Project = require("./model.js");
 
 async function list_projects(req, res){
@@ -32,13 +33,18 @@ async function show_project(req, res){
 async function create_project(req, res){
   try {
     const {title} = req.body;
-    const workspace = req.params.id_workspace;
-    const new_project = new Project({title, workspace, user: req.user});
+    const workspace_id = req.params.id_workspace;
+    // get workspace with id
+    const workspace = await Workspace.findById(req.params.id_workspace);
+    console.log("workspace user", workspace.user.toHexString())
+    console.log("req user", req.user)
+    if(!workspace || !(workspace.user.toHexString() == req.user)) res.status(400).json({ error: 'Este workspace no pertenece a este usuario' });
+    const new_project = new Project({title, workspace: workspace_id, user: req.user});
     await new_project.save();
     res.status(201).json(new_project)
   } catch (error) {
     console.log(error)
-    res.status(500).json({ error: 'Error al crear el proyecto' }); // Agregamos una respuesta de error
+    res.status(500).json({ error: 'Error al crear el proyecto' }); 
   }
 }
 

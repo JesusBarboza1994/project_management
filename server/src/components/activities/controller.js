@@ -17,6 +17,12 @@ async function create_activity(req, res){
     // TODO: Validations
     const new_activity = new Activity({description, relative_weight, absolute_weight, relative_progress, absolute_progress, index, parent, project});
     await new_activity.save();
+    const parent_activity = await Activity.findById(parent)
+    if(parent_activity && !parent_activity.has_subactivities){
+      parent_activity.has_subactivities = true
+      parent_activity.save()
+    } 
+
     res.status(201).json(new_activity)
   } catch (error) {
     console.log("ERROR",error)
