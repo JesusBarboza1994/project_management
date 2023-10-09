@@ -6,9 +6,12 @@ export async function listActivities(id_parent) {
 
 export async function createActivity(body){
   return await apiFetch(`/activities`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: body,
+  });
+}
+
+export async function deleteActivity(id){
+  return await apiFetch(`/activities/${id}`, {
+    method: "DELETE",
   });
 }

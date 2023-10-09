@@ -7,7 +7,7 @@ import EmptyActivity from "../../components/EmptyActivity/EmptyActivity";
 import ActivityCard from "../../components/ActivityCard/ActivityCard";
 
 export default function Project(){
-  const { currentProject } = useAuth()
+  const { currentProject, updateListActivites } = useAuth()
   const [ activities, setActivities ] = useState(null)
   const [ parentId, setParentId ] = useState(null)
   const {id} = useParams()
@@ -20,7 +20,7 @@ export default function Project(){
     }).catch(err => {
       console.log(err)
     })
-  }, [])
+  }, [updateListActivites])
   
   return(
     <Wrapper>
@@ -32,7 +32,7 @@ export default function Project(){
             )
           }
           )}
-        <EmptyActivity parent={parentId} parentType="project"/>
+        <EmptyActivity parent={parentId}/>
       </Container>
     </Wrapper>
   )

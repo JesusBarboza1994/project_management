@@ -28,10 +28,12 @@ export const Wrapper = styled.div`
     height: 28px;
   }
   input[type="number"]{
-    width: 60px;
+    width: 50px;
     border-radius: 5px;
     border:none;
     height: 28px;
+    font-size:14px;
+    padding: 0 5px;
   }
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;

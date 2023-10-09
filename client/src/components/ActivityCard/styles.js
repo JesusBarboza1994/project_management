@@ -3,7 +3,7 @@ import { colors } from "../../styles";
 
 export const Wrapper = styled.div`
   display:flex;
-  justify-content:flex-start;
+  justify-content: space-between;
   align-items:center;
   height:40px;
   width: 100%;
@@ -17,4 +17,16 @@ export const Wrapper = styled.div`
   p{
     color: ${colors.black.dark}
   }
+`
+export const TitleContainer = styled.div`
+  display:flex;
+  align-items:center;
+`
+export const SubActivitiesContainer = styled.div`
+  display:flex;
+  align-items:center;
+  flex-direction:column;
+  margin-left: 12px;
+  gap: 8px;
+  width:100%;
 `
