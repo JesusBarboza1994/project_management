@@ -7,7 +7,7 @@ const activitySchema = new mongoose.Schema({
   relative_progress: { type: Number, default: 0 },
   absolute_progress: { type: Number, default: 0 },
   index: { type: Number, required: true },
-  has_subactivities: { type: Boolean, default: false, required: true },
+  has_subactivities: { type: Boolean, default: false},
   parent: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ActivityOrProject', // Hace referencia a un modelo genérico 'ActivityOrProject'

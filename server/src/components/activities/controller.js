@@ -4,7 +4,7 @@ async function list_activities(req, res){
   try {
     const id_parent = req.params.id_parent
     const activities = await Activity.find({ parent: id_parent });
-    res.status(200).json(activities);
+    res.status(200).json({parent: id_parent, activities});
   } catch (error) {
     console.log("ERROR",error)
     res.status(500).json({ error: 'Error al obtener la lista de proyectos' });
@@ -26,7 +26,7 @@ async function create_activity(req, res){
     res.status(201).json(new_activity)
   } catch (error) {
     console.log("ERROR",error)
-    res.status(500).json({ error: 'Error al crear el proyecto' }); // Agregamos una respuesta de error
+    res.status(500).json({ error: 'Error al crear la actividad' }); // Agregamos una respuesta de error
   }
 }
 
