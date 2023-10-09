@@ -10,3 +10,10 @@ export const Wrapper = styled.div`
   background:${colors.white};
   border-radius: 20px;
 `
+
+export const Container = styled.div`
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+`

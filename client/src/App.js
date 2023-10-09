@@ -9,6 +9,7 @@ function App() {
     <Route path="/" element={<LoginPage/>}/>
     <Route path="/workspaces" element={<Workspace/>}/>
     <Route path="/projects" element={<Project/>}/>
+    <Route path="/projects/:id" element={<Project/>}/>
    </Routes>
   );
 }

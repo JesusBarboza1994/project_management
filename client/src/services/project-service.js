@@ -8,6 +8,6 @@ export async function createProject(body){
   const { title, workspaceId } = body
   return await apiFetch(`/projects/${workspaceId}`, {
     method: "POST",
-    body: JSON.stringify({title})
+    body: {title}
   })
 }

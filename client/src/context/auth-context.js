@@ -3,11 +3,8 @@ import { createContext, useContext, useState } from "react";
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
-  const [user, setUser] = useState({
-    username: "",
-    email: ""
-  })
-  const [currentWorkspace, setCurrentWorkspace] = useState(null)
+  const [user, setUser] = useState(null || JSON.parse(sessionStorage.getItem("user")))
+  const [currentProject, setCurrentProject] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [workspaces, setWorkspaces] = useState(null)
   const [projects, setProjects] = useState(null)
@@ -16,10 +13,10 @@ function AuthProvider({ children }) {
       value={{
         user,
         workspaces,
-        currentWorkspace,
+        currentProject,
         projects,
         setProjects,
-        setCurrentWorkspace,
+        setCurrentProject,
         setWorkspaces,
         showModal,
         setShowModal,

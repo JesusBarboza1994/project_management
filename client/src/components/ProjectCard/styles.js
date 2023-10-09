@@ -1,8 +1,10 @@
 import styled from "@emotion/styled";
+import { colors } from "../../styles";
 
 export const Wrapper = styled.div`
   display:flex;
   justify-content:center;
+  border: 1px solid ${colors.black.light};
   align-items:center;
   height:80px;
   width: 120px;
@@ -21,3 +23,4 @@ export const Wrapper = styled.div`
     scale: 1.05;
   }
 `
+ 

@@ -18,6 +18,7 @@ export default function LoginPage(){
     login(credentials).then(res => {
       console.log(res)
       setError(null)
+      sessionStorage.setItem("user", JSON.stringify({username: res}))
       setUser({...user, username: res})
       nav("/workspaces")
     }).catch(err => {
