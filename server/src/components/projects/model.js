@@ -5,6 +5,7 @@ const projectSchema = new mongoose.Schema({
   total_progress: { type: Number, default: 0 },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
+  color: { type: String, default: "pink"},
   favorite: {type: Boolean, default: false},
   user:{type: mongoose.Schema.Types.ObjectId, ref: 'User',required: true},
   workspace: {type: mongoose.Schema.Types.ObjectId, ref: 'Workspace',required: true}

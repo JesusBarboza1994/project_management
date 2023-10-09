@@ -1,10 +1,9 @@
-const Workspace = require("./model");
 const Project = require("../projects/model");
-
+const Workspace = require("./model");
 async function create_workspace(req, res){
   try {
     const {name} = req.body;
-    const new_workspace = new WorkSpace({name, user: req.user});
+    const new_workspace = new Workspace({name, user: req.user});
     await new_workspace.save();
     res.status(201).json(new_workspace)
   } catch (error) {
@@ -52,7 +51,7 @@ async function delete_workspace(req, res){
   // TODO: Al eliminar un workspace se tienen que borrar los proyectos dentro con sus actividades
   try {
     const id = req.params.id
-    await WorkSpace.findByIdAndDelete(id);
+    await Workspace.findByIdAndDelete(id)
     res.status(200).json({ message: 'Espacio de trabajo eliminado' });
   } catch (error) {
     console.log("ERROR",error)
