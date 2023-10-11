@@ -50,7 +50,7 @@ export const MirrorScreen = styled.div`
    }
 `
 
-export const Modal = styled.div`
+export const Modal = styled.form`
   display:${props=>props.showModal ? "flex": "none"};
   flex-direction:column;
   gap: 24px;

@@ -29,10 +29,6 @@ export const colors = {
     highlight : "#F5F3F4",
   },
   
-  randomColors: ["#FFD1DC", "#FFB6C1", "#FFA07A", "#FFD700", "#98FB98", "#DDA0DD", "#F0E68C", "#87CEEB", "#FFC0CB", "#FFE4B5"],
-  getRandomColor: function() {
-    const indiceAleatorio = Math.floor(Math.random() * this.randomColors.length);
-    return this.randomColors[indiceAleatorio];
-  }
+  randomColors: { pink: "#FFB6C1", red:"#FFA07A", orange:"#FFD700", green:"#98FB98", purple:"#DDA0DD", yellow:"#F0E68C", blue:"#87CEEB", salmon:"#FFC0CB"}
 
 };

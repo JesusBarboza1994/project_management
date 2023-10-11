@@ -1,6 +1,6 @@
 import { BiSolidDownArrow, BiSolidRightArrow, BiTrashAlt } from "react-icons/bi";
 import { SubActivitiesContainer, TitleContainer, Wrapper } from "./styles";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { colors } from "../../styles";
 import { deleteActivity, listActivities } from "../../services/activity-service";
 import { useAuth } from "../../context/auth-context";
@@ -8,38 +8,49 @@ import EmptyActivity from "../EmptyActivity/EmptyActivity";
 
 export default function ActivityCard({activity}){
   const [subActivities, setSubActivities] = useState(null)
-  const {setUpdateListActivities, updateListActivites} = useAuth()
-  const [updateSubActivities, setUpdateSubActivities] = useState(false)
+  const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities} = useAuth()
+  const ejecutarEfectoRef = useRef(false);
   const handleSubActivities = () => {
-    listActivities(activity._id).then(res => {
-      console.log(res)
-      setSubActivities(res.activities)
-    }).catch(err => {
-      console.log(err)
-    })
+    ejecutarEfectoRef.current = true;
+    setUpdateSubActivities(!updateSubActivities)
   }
 
   const handleDeleteActivity = () => {
     deleteActivity(activity._id).then(res => {
       console.log(res)
       setUpdateListActivities(!updateListActivites)
+      setUpdateSubActivities(!updateSubActivities)
     }).catch(err => {
       console.log(err)
     })
   }
   useEffect(() => {
-    
+    if (ejecutarEfectoRef.current){
+      listActivities(activity._id).then(res => {
+        console.log(res)
+        setSubActivities(res.activities)
+      }).catch(err => {
+        console.log(err)
+      })
+    }
   },[updateSubActivities])
+
+  const color = Object.values(colors.randomColors)[activity.index]
   return(
     <>
-      <Wrapper>
-        <TitleContainer>
+      <Wrapper color={color}>
           {subActivities 
-            ? <BiSolidDownArrow onClick={()=> setSubActivities(null)}/>
-            : <BiSolidRightArrow onClick={handleSubActivities}/>
+            ? 
+            <TitleContainer onClick={()=> setSubActivities(null)}>
+              <BiSolidDownArrow/>
+              <p>{activity.description}</p>
+            </TitleContainer>
+            : 
+            <TitleContainer onClick={handleSubActivities}>
+              <BiSolidRightArrow/>
+              <p>{activity.description}</p>
+            </TitleContainer>
           }
-          <p>{activity.description}</p>
-        </TitleContainer>
         <BiTrashAlt onClick={handleDeleteActivity} style={{color:colors.red.dark, scale: "1.1"}}/>
       </Wrapper>
       {

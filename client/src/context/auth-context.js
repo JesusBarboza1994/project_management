@@ -8,6 +8,9 @@ function AuthProvider({ children }) {
   const [showModal, setShowModal] = useState(false)
   const [workspaces, setWorkspaces] = useState(null)
   const [projects, setProjects] = useState(null)
+  const [favoriteProjects, setFavoriteProjects] = useState([])
+  const [updateWorkspace, setUpdateWorkspace] = useState(false)
+  const [updateSubActivities, setUpdateSubActivities] = useState(false)
   const [updateListActivites, setUpdateListActivities] = useState(false)
   return (
     <AuthContext.Provider
@@ -17,6 +20,12 @@ function AuthProvider({ children }) {
         currentProject,
         projects,
         updateListActivites,
+        updateSubActivities,
+        updateWorkspace,
+        favoriteProjects,
+        setFavoriteProjects,
+        setUpdateWorkspace,
+        setUpdateSubActivities,
         setUpdateListActivities,
         setProjects,
         setCurrentProject,

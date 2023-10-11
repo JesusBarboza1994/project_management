@@ -7,7 +7,7 @@ import { useAuth } from "../../context/auth-context";
 
 export default function EmptyActivity({parent}){
   const inputRef = useRef(null);
-  const {setUpdateListActivities, updateListActivites} = useAuth()
+  const {setUpdateListActivities, updateListActivites, setUpdateSubActivities, updateSubActivities} = useAuth()
   const [newActivity, setNewActivity] = useState({
     description: "",
     relativeWeight: ""
@@ -21,11 +21,12 @@ export default function EmptyActivity({parent}){
     createActivity(body).then(res => {
       console.log(res)
       setUpdateListActivities(!updateListActivites)
+      setUpdateSubActivities(!updateSubActivities)
       setNewActivity({
         description: "",
         relativeWeight: ""
       })
-      
+
     }).catch(err => {
       console.log(err)
     })

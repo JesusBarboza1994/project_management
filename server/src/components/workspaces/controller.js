@@ -1,3 +1,4 @@
+const { deleteProjectsAndActivities } = require("../../utils.js/delete_associated");
 const Project = require("../projects/model");
 const Workspace = require("./model");
 async function create_workspace(req, res){
@@ -14,10 +15,9 @@ async function create_workspace(req, res){
 
 async function list_workspaces(req, res){
   try {
-    const workspaces = await Workspace.find();
-    
+    const workspaces = await Workspace.find({user: req.user});
     const workspaceList = await Promise.all(workspaces.map(async (workspace) => {
-      const projects = await Project.find({ workspace: workspace._id });
+      projects = await Project.find({ workspace: workspace._id });
 
       return {
         name: workspace.name,
@@ -26,12 +26,22 @@ async function list_workspaces(req, res){
           id: project.id,
           title: project.title,
           total_progress: project.total_progress,
+          color: project.color,
+          favorite: project.favorite
           // Agrega otros campos del proyecto según sea necesario
-        })),
+        }))
       };
     }));
-
-    res.status(200).json(workspaceList);
+    const favorite_projects = []
+    workspaceList.forEach(workspace => {
+      workspace.projects.forEach(project => {
+        if(project.favorite){
+          favorite_projects.push(project)
+        }
+      })
+    });
+    console.log("FAVORITE PROJECTS", favorite_projects)
+    res.status(200).json({workspaces:workspaceList, favoriteProjects:favorite_projects});
   } catch (error) {
     console.log("ERROR",error);
     res.status(500).json({ error: 'Error al obtener la lista de proyectos' });
@@ -51,6 +61,7 @@ async function delete_workspace(req, res){
   // TODO: Al eliminar un workspace se tienen que borrar los proyectos dentro con sus actividades
   try {
     const id = req.params.id
+    await deleteProjectsAndActivities(id)
     await Workspace.findByIdAndDelete(id)
     res.status(200).json({ message: 'Espacio de trabajo eliminado' });
   } catch (error) {

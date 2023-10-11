@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
   gap: 8px;
   border-radius:12px;
   border: 1px solid ${colors.black.light};
-  background: ${colors.pink.light};
+  background: ${ props => props.color };
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   p{

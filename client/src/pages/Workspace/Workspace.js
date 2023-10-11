@@ -10,19 +10,20 @@ import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
 import { createProject } from "../../services/project-service";
 export default function Workspace(){
-  const { user, workspaces, setWorkspaces } = useAuth()
+  const { user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
   const [workspaceName, setWorkspaceName] = useState("")
   const [project, setProject] = useState({
     name: "",
     id: ""
   })
-  const [updateWorkspace, setUpdateWorkspace] = useState(false)
   const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
   const [showProjectModal, setShowProjectModal] = useState(false)
-  const handleSubmit = async (modal) => {
+  const handleSubmit = async (e, modal) => {
+    e.preventDefault()
     if(modal === "workspace"){
       createWorkspace(workspaceName).then(res => {
         setUpdateWorkspace(!updateWorkspace)
+        setWorkspaceName("")
       }).catch(err => {
         console.log(err)
       })
@@ -35,6 +36,10 @@ export default function Workspace(){
       }
       createProject(body).then(res => {
         setUpdateWorkspace(!updateWorkspace)
+        setProject({
+          name:"",
+          id: ""
+        })
       }).catch(err => {
         console.log(err)
       })
@@ -52,8 +57,9 @@ export default function Workspace(){
   }
   useEffect(() => {
     listWorkspaces().then(res => {
-      console.log(res)
-      setWorkspaces(res)
+      setWorkspaces(res.workspaces)
+      console.log("WORKSPACES", res)
+      setFavoriteProjects(res.favoriteProjects)
     }).catch(err => {
       console.log(err)
     })
@@ -67,6 +73,22 @@ export default function Workspace(){
           <MdAddCircleOutline style={{scale:"2"}} onClick={()=>setShowWorkSpaceModal(true)}/>
         </TitleContainer>
         <Container>
+          {favoriteProjects.length !==0 &&
+            <WorkspaceContainer>
+              <WorkspaceTitleContainer>
+                <h3>Favorites</h3>
+              </WorkspaceTitleContainer>
+              <ProjectContainer>
+                {
+                  favoriteProjects.map(project=>{
+                    return(
+                      <ProjectCard key={"favorites"+project.id} project={project} />
+                    )
+                  })
+                } 
+              </ProjectContainer>
+            </WorkspaceContainer>
+          }
           {workspaces && workspaces.map((workspace, index_workspace) => {
             return (
               <WorkspaceContainer>
@@ -81,11 +103,10 @@ export default function Workspace(){
                       ...project,
                       id: workspace.id
                     })
-                    console.log(project)
                   }}/>
-                  {workspace.projects.length!==0 && workspace.projects.map((project, index_project) => {
+                  {workspace.projects.length!==0 && workspace.projects.map((project) => {
                     return(
-                        <ProjectCard key={project.id} id={project.id} projectTitle={project.title} backgroundColor={colors.getRandomColor()}/>
+                      <ProjectCard key={project.id} project={project}/>
                     )
                   })}
                 </ProjectContainer>
@@ -93,16 +114,16 @@ export default function Workspace(){
             )
           })}
         </Container>
-        <Modal showModal={showWorkSpaceModal}>
+        <Modal showModal={showWorkSpaceModal} onSubmit={(e)=>handleSubmit(e,"workspace")}>
           <h2>Create a new workspace</h2>
           <Input type={"text"} label={"Name"} placeholder={"Workspace X"} onChange={(e) => setWorkspaceName(e.target.value)}/>
-          <Button text={"Create"} onClick={()=>handleSubmit("workspace")} />
+          <Button text={"Create"}/>
           <Close onClick={()=>setShowWorkSpaceModal(false)}>X</Close>
         </Modal>
-        <Modal showModal={showProjectModal}>
+        <Modal showModal={showProjectModal} onSubmit={(e)=>handleSubmit(e,"project")}>
           <h2>Create a new project</h2>
           <Input type={"text"} label={"Name"} placeholder={"Project X"} onChange={(e) => setProject({...project, name: e.target.value})} />
-          <Button text={"Create"} onClick={()=>handleSubmit("project")}/>
+          <Button text={"Create"} />
           <Close onClick={()=>setShowProjectModal(false)}>X</Close>
         </Modal>
       </Wrapper>

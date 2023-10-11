@@ -1,5 +1,6 @@
 'use strict'
 
+const { deleteDescendantActivities } = require("../../utils.js/delete_associated.js");
 const Workspace = require("../workspaces/model.js");
 const Project = require("./model.js");
 
@@ -51,6 +52,7 @@ async function create_project(req, res){
 async function delete_project(req, res){
   try {
     const id = req.params.id
+    deleteDescendantActivities(id)
     await Project.findByIdAndDelete(id);
     res.status(200).json({ message: 'Proyecto eliminado' });
   } catch (error) {
@@ -74,12 +76,18 @@ async function update_project(req, res){
 async function set_favorite(req, res){
   try {
     const id = req.params.id;
-    
     const updated_project = await Project.findById(id);
     if (updated_project) {
       updated_project.favorite = !updated_project.favorite; 
       await updated_project.save(); 
-      res.status(200).json(updated_project);
+      res.status(200).json({
+          id: updated_project.id,
+          title: updated_project.title,
+          total_progress: updated_project.total_progress,
+          color: updated_project.color,
+          favorite: updated_project.favorite
+          // Agrega otros campos del proyecto según sea necesario
+        });
     } else {
       res.status(404).json({ error: "Proyecto no encontrado" });
     }
@@ -89,11 +97,30 @@ async function set_favorite(req, res){
   }
 }
 
+async function update_color_project(req, res){
+  try {
+    const id = req.params.id;
+    const {color} = req.body;
+    const updated_project = await Project.findById(id);
+    if (updated_project) {
+      updated_project.color = color; 
+      await updated_project.save(); 
+      res.status(200).json(updated_project);
+    } else {
+      res.status(404).json({ error: "Proyecto no encontrado" });
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Error al actualizar el color del proyecto' }); // Agregamos una respuesta de error  
+  }
+}
+
 module.exports = {
   list_projects,
   create_project,
   show_project,
   delete_project,
   update_project,
-  set_favorite
+  set_favorite,
+  update_color_project
 }

@@ -1,3 +1,4 @@
+const { deleteDescendantActivities } = require("../../utils.js/delete_associated");
 const Activity = require("./model");
 
 async function get_project_or_activity(id){
@@ -62,12 +63,15 @@ async function delete_activity(req, res){
   try {
     // TODO: Debe eliminar tambien todos los hijos que tenga
     const id = req.params.id
+    // Llama a la función para eliminar actividades descendientes
+    await deleteDescendantActivities(id);
+    // Elimina la actividad padre
     await Activity.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Actividad eliminada' });
+    res.status(200).json({ message: 'Actividad y todas las subactividades eliminadas' });
   } catch (error) {
-    console.log("ERROR",error)
-    res.status(500).json({ error: 'Error al eliminar la actividad' }); // Agregamos una respuesta de error  
-  } 
+    console.log("ERROR", error);
+    res.status(500).json({ error: 'Error al eliminar la actividad y subactividades' });
+  }
 }
 
 async function update_activity(req, res){
