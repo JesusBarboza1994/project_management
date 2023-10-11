@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   display:flex;
   justify-content: space-between;
   align-items:center;
-  height:40px;
+  // height:40px;
   width: 100%;
   padding: 4px 16px;
   gap: 8px;
@@ -21,6 +21,9 @@ export const Wrapper = styled.div`
 export const TitleContainer = styled.div`
   display:flex;
   align-items:center;
+  p{
+    text-align: center
+  }
 `
 export const SubActivitiesContainer = styled.div`
   display:flex;
@@ -29,4 +32,36 @@ export const SubActivitiesContainer = styled.div`
   margin-left: 12px;
   gap: 8px;
   width:100%;
+`
+export const DataContainer = styled.div`
+  display:flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items:center;
+  // justify-content: center;
+  input[type="number"]{
+    width: 50px;
+    border-radius: 5px;
+    border:none;
+    height: 28px;
+    font-size:16px;
+    padding: 0 5px;
+    background:${props=>props.color};
+  }
+  &:placeholder input[type="number"]{
+    background:${colors.white};
+  }
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+`
+export const RelativeAbsoluteContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  @media(max-width: 1400px){
+    flex-direction:column;
+    gap:2px;
+  }
 `

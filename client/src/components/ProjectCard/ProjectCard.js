@@ -11,6 +11,7 @@ export default function ProjectCard({project}){
   
   const handleShowProject = () => {
     setCurrentProject(project.title)
+    sessionStorage.setItem("currentProject", project.title)
     nav(`/projects/${project.id}`)
   } 
 

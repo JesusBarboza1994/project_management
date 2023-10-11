@@ -17,3 +17,8 @@ export const Container = styled.div`
   gap: 12px;
   margin-top: 16px;
 `
+export const TitleContainer = styled.div`
+  display:flex;
+  gap: 8px;
+  align-items:center;
+`

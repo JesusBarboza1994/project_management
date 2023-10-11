@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { colors } from "../../styles";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.input`
   width: 200px;
   border-radius:20px;
   border:1px solid ${colors.white};
