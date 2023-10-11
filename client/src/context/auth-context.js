@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null || JSON.parse(sessionStorage.getItem("user")))
-  const [currentProject, setCurrentProject] = useState(null)
+  const [currentProject, setCurrentProject] = useState(null || sessionStorage.getItem("currentProject"))
   const [showModal, setShowModal] = useState(false)
   const [workspaces, setWorkspaces] = useState(null)
   const [projects, setProjects] = useState(null)

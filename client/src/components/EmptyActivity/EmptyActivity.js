@@ -12,7 +12,16 @@ export default function EmptyActivity({parent}){
     description: "",
     relativeWeight: ""
   })
-  const handleNewActivity = () => {
+  const submitButtonRef = useRef();
+
+  // Manejador de clic para el elemento "h1"
+  const handleClickH1 = () => {
+    // Simula el clic en el botón de tipo "submit"
+    submitButtonRef.current.click();
+  };
+  const handleNewActivity = (e) => {
+    e.preventDefault();
+    if(newActivity.description === "" || newActivity.relativeWeight === "") return
     const body = {
       description: newActivity.description,
       relative_weight: +newActivity.relativeWeight/100,
@@ -37,10 +46,10 @@ export default function EmptyActivity({parent}){
   };
 
   return(
-    <Wrapper>
+    <Wrapper onSubmit={(e)=>handleNewActivity(e)}>
       <div>
         {(newActivity?.description !== "" && newActivity?.relativeWeight !== "") 
-          ? <MdAddCircleOutline style={{color: colors.red.medium, scale: "1.3"}} onClick={handleNewActivity}/>
+          ? <MdAddCircleOutline style={{color: colors.red.medium, scale: "1.3"}} onClick={handleClickH1}/>
           : <MdAddCircleOutline style={{color: colors.gray.medium}}/> 
         }
         <input placeholder="Actividad vacía" type="text" value={newActivity.description} onChange={(e) => setNewActivity({...newActivity,description: e.target.value})}/>
@@ -51,6 +60,7 @@ export default function EmptyActivity({parent}){
           setNewActivity({...newActivity,relativeWeight: e.target.value})}}/>
         <p>%</p>
       </div>
+      <input type="submit" value={""} hidden ref={submitButtonRef}/>
     </Wrapper>
   )
 }

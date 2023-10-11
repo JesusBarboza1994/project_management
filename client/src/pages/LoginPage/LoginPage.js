@@ -14,7 +14,8 @@ export default function LoginPage(){
   })
   const [error, setError] = useState(null)
 
-  const handleSubmit = () => {
+const handleSubmit = (e) => {
+    e.preventDefault()
     login(credentials).then(res => {
       console.log(res)
       setError(null)
@@ -29,14 +30,17 @@ export default function LoginPage(){
   
 
   return(
-    <Wrapper>
-      <h1>Project Management</h1>
-      <InputContainer>
-        <Input onChange={(e) => setCredentials({...credentials, email: e.target.value})} label={"Email"} type={"email"} placeholder={"john_doe@mail.com"} value={credentials.email}/>
-        <Input onChange={(e) => setCredentials({...credentials, password: e.target.value})} label={"Password"} type={"password"} placeholder={"******"} value={credentials.password}/>
-      </InputContainer>
-      {error && <ErrorText>Usuario y contraseña inválidos</ErrorText>}
-      <Button text={"Login"} onClick={handleSubmit}/>
-    </Wrapper>
+    <div>
+
+      <Wrapper onSubmit={(e)=>handleSubmit(e)}>
+        <h1>Project Management</h1>
+
+          <Input onChange={(e) => setCredentials({...credentials, email: e.target.value})} label={"Email"} type={"email"} placeholder={"john_doe@mail.com"} value={credentials.email}/>
+          <Input onChange={(e) => setCredentials({...credentials, password: e.target.value})} label={"Password"} type={"password"} placeholder={"******"} value={credentials.password}/>
+        {error && <ErrorText>Usuario y contraseña inválidos</ErrorText>}
+        <Button text={"Login"} />
+        <input type="submit" value={""} hidden/>
+      </Wrapper>
+    </div>
   )
 }

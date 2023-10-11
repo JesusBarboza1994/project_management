@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { colors } from "../../styles";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.form`
   margin:auto;
   margin-top:100px;
   width:360px;

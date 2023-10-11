@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { colors } from "../../styles";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.form`
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -34,6 +34,7 @@ export const Wrapper = styled.div`
     height: 28px;
     font-size:14px;
     padding: 0 5px;
+
   }
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
