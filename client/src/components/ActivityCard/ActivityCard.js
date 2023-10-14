@@ -7,6 +7,7 @@ import { useAuth } from "../../context/auth-context";
 import EmptyActivity from "../EmptyActivity/EmptyActivity";
 
 export default function ActivityCard({activity}){
+  console.log("ACTICITY", activity)
   const [subActivities, setSubActivities] = useState(null)
   const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities} = useAuth()
   const ejecutarEfectoRef = useRef(false);
@@ -39,6 +40,12 @@ export default function ActivityCard({activity}){
         console.log(err)
       })
     }
+    setActivityData({
+      absoluteWeight: activity.absolute_weight,
+      relativeWeight: activity.relative_weight,
+      relativeProgress: activity.relative_progress,
+      absoluteProgress: activity.absolute_progress
+    })
   },[updateSubActivities])
 
   const color = Object.values(colors.randomColors)[activity.index]
@@ -61,15 +68,15 @@ export default function ActivityCard({activity}){
           <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
             <p>Peso Relativo: </p>
             <div style={{display:"flex"}}>
-              <input type={"number"} value={(activityData.relativeWeight*100).toFixed(2)} onChange={(e) => {
-                setActivityData({...activityData,relativeWeight: (+e.target.value)/100})
+              <input type={"number"} value={(activityData.relativeWeight).toFixed(2)} onChange={(e) => {
+                setActivityData({...activityData,relativeWeight: (+e.target.value)})
               }}/>
               <p>%</p>
             </div>
           </DataContainer>
           <DataContainer>
             <p>Peso Absoluto: </p>
-            <p>{(activityData.absoluteWeight*100).toFixed(2)}%</p>
+            <p>{(activity.absolute_weight*100).toFixed(2)}%</p>
           </DataContainer>
         </RelativeAbsoluteContainer>
         <RelativeAbsoluteContainer>

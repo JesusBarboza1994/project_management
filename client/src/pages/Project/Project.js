@@ -30,7 +30,7 @@ export default function Project(){
         <h2>{currentProject}</h2>      
       </TitleContainer>
       <Container>
-        {activities && activities.map(activity => {
+        {activities && activities.map((activity) => {
           return(
             <ActivityCard key={activity.id} activity={activity}/>
             )

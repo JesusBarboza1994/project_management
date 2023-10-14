@@ -26,9 +26,12 @@ async function create_activity(req, res){
   try {
     const {description, relative_weight, parent } = req.body;
     const parent_activity = await get_project_or_activity(parent)
+    const activities = await Activity.find({ parent: parent });
+    console.log("ACTIVITIES", activities);
+    const sum_weight = activities.reduce((acc, activity) => acc + activity.relative_weight, 0)+ relative_weight;
     if(!parent_activity){
       index = 1
-      absolute_weight = relative_weight
+      absolute_weight = relative_weight/sum_weight
     }else{
       index = parent_activity.index + 1
       absolute_weight = (+relative_weight) * parent_activity.absolute_weight
@@ -36,6 +39,13 @@ async function create_activity(req, res){
     // TODO: Validations
     const new_activity = new Activity({description, relative_weight, absolute_weight, index, parent});
     await new_activity.save();
+    let absolute_weight_for_each;
+    if(activities.length !==0){
+      activities.forEach(async(activity) => {
+        absolute_weight_for_each = activity.relative_weight/(sum_weight)
+        await Activity.findByIdAndUpdate(activity._id, {absolute_weight: absolute_weight}, { new: true } )
+      })
+    }
     if(parent_activity && !parent_activity.has_subactivities){
       parent_activity.has_subactivities = true
       parent_activity.save()

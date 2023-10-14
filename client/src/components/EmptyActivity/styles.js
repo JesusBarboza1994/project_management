@@ -16,16 +16,12 @@ export const Wrapper = styled.form`
   p{
     color: ${colors.gray.medium}
   }
-  div{
-    display:flex;
-    gap: 4px;
-    align-items:center;
-  }
   input[type="text"]{
     width: 200px;
     border-radius: 5px;
     border:none;
     height: 28px;
+    background:${colors.gray.highlight};
   }
   input[type="number"]{
     width: 50px;
@@ -34,11 +30,17 @@ export const Wrapper = styled.form`
     height: 28px;
     font-size:14px;
     padding: 0 5px;
-
+    background:${colors.gray.highlight};
   }
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     appearance: none;
     margin: 0;
   }
+`
+export const Container = styled.div`
+  display:flex;
+  gap: 4px;
+  align-items:center;
+
 `
