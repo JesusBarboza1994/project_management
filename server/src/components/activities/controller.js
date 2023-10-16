@@ -14,6 +14,7 @@ async function list_activities(req, res){
   try {
     const id_parent = req.params.id_parent
     const activities = await Activity.find({ parent: id_parent });
+    console.log(list_activities)
     res.status(200).json({parent: id_parent, activities});
   } catch (error) {
     console.log("ERROR",error)
@@ -28,7 +29,7 @@ async function create_activity(req, res){
     const parent_activity = await get_project_or_activity(parent)
     const activities = await Activity.find({ parent: parent });
     console.log("ACTIVITIES", activities);
-    const sum_weight = activities.reduce((acc, activity) => acc + activity.relative_weight, 0)+ relative_weight;
+    const sum_weight = activities.reduce((acc, activity) => acc + activity.relative_weight, 0) + relative_weight;
     if(!parent_activity){
       index = 1
       absolute_weight = relative_weight/sum_weight
@@ -36,14 +37,15 @@ async function create_activity(req, res){
       index = parent_activity.index + 1
       absolute_weight = (+relative_weight) * parent_activity.absolute_weight
     }
+    relative_weight_percentage = relative_weight/sum_weight
     // TODO: Validations
-    const new_activity = new Activity({description, relative_weight, absolute_weight, index, parent});
+    const new_activity = new Activity({description, relative_weight, absolute_weight, index, parent, relative_weight_percentage});
     await new_activity.save();
     let absolute_weight_for_each;
     if(activities.length !==0){
       activities.forEach(async(activity) => {
         absolute_weight_for_each = activity.relative_weight/(sum_weight)
-        await Activity.findByIdAndUpdate(activity._id, {absolute_weight: absolute_weight}, { new: true } )
+        await Activity.findByIdAndUpdate(activity._id, {absolute_weight: absolute_weight_for_each}, { new: true } )
       })
     }
     if(parent_activity && !parent_activity.has_subactivities){
@@ -73,6 +75,19 @@ async function delete_activity(req, res){
   try {
     // TODO: Debe eliminar tambien todos los hijos que tenga
     const id = req.params.id
+    const current_activity = await Activity.findById(id);
+    const activities = await Activity.find({ parent: current_activity.parent });
+    let absolute_weight_for_each
+    let relative_weight_percentage
+    console.log("ACT", activities)
+    if(activities.length !==0){
+      const sum_weight = activities.reduce((acc, activity) => acc + activity.relative_weight, 0) - current_activity.relative_weight
+      activities.forEach(async(activity) => {
+        absolute_weight_for_each = activity.relative_weight/sum_weight
+        relative_weight_percentage = activity.relative_weight/sum_weight
+        await Activity.findByIdAndUpdate(activity._id, {absolute_weight: absolute_weight_for_each,relative_weight_percentage }, { new: true } )
+      })
+    }
     // Llama a la función para eliminar actividades descendientes
     await deleteDescendantActivities(id);
     // Elimina la actividad padre

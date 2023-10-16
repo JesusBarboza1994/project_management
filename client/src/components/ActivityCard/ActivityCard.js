@@ -7,7 +7,6 @@ import { useAuth } from "../../context/auth-context";
 import EmptyActivity from "../EmptyActivity/EmptyActivity";
 
 export default function ActivityCard({activity}){
-  console.log("ACTICITY", activity)
   const [subActivities, setSubActivities] = useState(null)
   const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities} = useAuth()
   const ejecutarEfectoRef = useRef(false);
@@ -15,7 +14,8 @@ export default function ActivityCard({activity}){
     absoluteWeight: activity.absolute_weight,
     relativeWeight: activity.relative_weight,
     relativeProgress: activity.relative_progress,
-    absoluteProgress: activity.absolute_progress
+    absoluteProgress: activity.absolute_progress,
+    relativeWeightPercentage: activity.relative_weight_percentage,
   })
   const handleSubActivities = () => {
     ejecutarEfectoRef.current = true;
@@ -44,7 +44,8 @@ export default function ActivityCard({activity}){
       absoluteWeight: activity.absolute_weight,
       relativeWeight: activity.relative_weight,
       relativeProgress: activity.relative_progress,
-      absoluteProgress: activity.absolute_progress
+      absoluteProgress: activity.absolute_progress,
+      relativeWeightPercentage: activity.relative_weight_percentage
     })
   },[updateSubActivities])
 
@@ -69,9 +70,9 @@ export default function ActivityCard({activity}){
             <p>Peso Relativo: </p>
             <div style={{display:"flex"}}>
               <input type={"number"} value={(activityData.relativeWeight).toFixed(2)} onChange={(e) => {
-                setActivityData({...activityData,relativeWeight: (+e.target.value)})
+                setActivityData({...activityData,relativeWeight: +e.target.value})
               }}/>
-              <p>%</p>
+              <p>| {(activityData.relativeWeightPercentage*100).toFixed(2)}%</p>
             </div>
           </DataContainer>
           <DataContainer>
