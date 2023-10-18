@@ -1,4 +1,5 @@
 const { deleteDescendantActivities } = require("../../utils.js/delete_associated");
+const Project = require("../projects/model");
 const Activity = require("./model");
 
 
@@ -33,10 +34,24 @@ async function create_activity(req, res){
     // Crear la actividad
     const new_activity = new Activity({description, relative_weight, absolute_weight, index, parent, relative_weight_percentage});
     await new_activity.save();
-    // Actualizar los datos de las actividades hermanas
-    if(activities_same_parent.length !==0) await update_activities_with_same_parent(activities_same_parent, parent_activity, sum_weight)
+    // // Actualizar los datos de las actividades hermanas
+    // if(activities_same_parent.length !==0) await update_activities_with_same_parent(activities_same_parent, parent_activity, sum_weight)
+    // Actualizar pesos relativos de las actividades hermanas
+    const updated_activities_same_parent = await Activity.find({ parent: parent_activity._id });
+    updated_activities_same_parent.forEach(async(activity) => {
+      await Activity.findByIdAndUpdate(activity._id, {
+        relative_weight_percentage: activity.relative_weight / sum_weight
+      })
+    })
+
+    const parent_absolute_weight = parent_activity ? parent_activity.absolute_weight : 1;
+    // Llamamos a la función recursiva para actualizar las actividades descendientes
+    await updateActivityRecursively(new_activity, parent_absolute_weight);
     
-    // Actualizar a la actividad padre
+    // Actualizar actividades de la cadena superior (padre en adelante)
+    await updateParentActivities(new_activity.parent);
+    
+    // Actualizar SOLO a la actividad padre
     if(parent_activity && !parent_activity.has_subactivities){
       await Activity.findByIdAndUpdate(parent_activity._id, {has_subactivities: true,
         relative_progress: 0,
@@ -78,18 +93,17 @@ async function delete_activity(req, res){
     // Actividades hermanas, nunca será null porque siempre tendra contenido a la actividad principal
     const activities_same_parent = await Activity.find({ parent: current_activity.parent });
     const sum_weight = activities_same_parent.reduce((acc, activity) => acc + activity.relative_weight, 0) 
-    await update_activities_with_same_parent(activities_same_parent, parent_activity, sum_weight)
-    // Actualiza actividad padre
-    if(parent_activity){
-      if(activities_same_parent.length===0){
-        await Activity.findByIdAndUpdate(parent_activity._id, {has_subactivities: false, relative_progress: 0, absolute_progress: 0}, { new: true } )
-      }else{
-        // Se debe actualizar la actividad padre con los datos actualizados de las actividades hermanas
-        const updated_activities_same_parent = await Activity.find({ parent: parent_activity._id });
-        const absolute_progress = updated_activities_same_parent.reduce((acc, activity) => acc + activity.absolute_progress, 0)
-        await Activity.findByIdAndUpdate(parent_activity._id, { absolute_progress}, { new: true } )
-      }
-    }
+    activities_same_parent.forEach(async(activity) => {
+      await Activity.findByIdAndUpdate(activity._id, {
+        relative_weight_percentage: activity.relative_weight / sum_weight
+      })
+    })
+    const parent_absolute_weight = parent_activity ? parent_activity.absolute_weight : 1;
+    // Llamamos a la función recursiva para actualizar las actividades descendientes
+    await updateActivityRecursively(current_activity, parent_absolute_weight);
+    // Actualizar actividades de la cadena superior (padre en adelante)
+    await updateParentActivities(current_activity.parent);
+  
     res.status(200).json({ message: 'Actividad y todas las subactividades eliminadas' });
   } catch (error) {
     console.log("ERROR", error);
@@ -139,6 +153,10 @@ async function updateParentActivities(activityId) {
   const parentActivity = await Activity.findById(activity.parent);
   if (parentActivity) {
     await updateParentActivities(parentActivity._id);
+  }else{
+    const main_activities = await Activity.find({ parent: activity.parent });
+    await Project.findByIdAndUpdate(activity.parent, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) });
+    console.log("PROYECTO")
   }
 }
 
