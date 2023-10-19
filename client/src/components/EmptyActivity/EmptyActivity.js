@@ -31,6 +31,7 @@ export default function EmptyActivity({parent}){
       relative_weight: +newActivity.relativeWeight,
       parent,
     }
+    console.log("BODY", body)
     createActivity(body).then(res => {
       console.log(res)
       setUpdateListActivities(!updateListActivites)
