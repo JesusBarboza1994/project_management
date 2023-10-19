@@ -8,7 +8,7 @@ import EmptyActivity from "../EmptyActivity/EmptyActivity";
 
 export default function ActivityCard({activity}){
   const [subActivities, setSubActivities] = useState(null)
-  const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities} = useAuth()
+  const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities, setCurrentProject, currentProject} = useAuth()
   const ejecutarEfectoRef = useRef(false);
   const [activityData, setActivityData] = useState({
     absoluteWeight: activity.absolute_weight,
@@ -24,7 +24,9 @@ export default function ActivityCard({activity}){
 
   const handleDeleteActivity = () => {
     deleteActivity(activity._id).then(res => {
-      console.log(res)
+      const updatedProject = {...currentProject, total_progress: res.project.total_progress}
+      setCurrentProject(updatedProject)
+      sessionStorage.setItem("currentProject", JSON.stringify(updatedProject))
       setUpdateListActivities(!updateListActivites)
       setUpdateSubActivities(!updateSubActivities)
     }).catch(err => {
@@ -39,7 +41,9 @@ export default function ActivityCard({activity}){
       relativeWeight: activityData.relativeWeight,
       relativeProgress: activityData.relativeProgress
     }).then(res => {
-      console.log(res)
+      const updatedProject = {...currentProject, total_progress: res.project.total_progress}
+      setCurrentProject(updatedProject)
+      sessionStorage.setItem("currentProject", JSON.stringify(updatedProject))
       setUpdateListActivities(!updateListActivites)
       setUpdateSubActivities(!updateSubActivities)
     }).catch(err => {

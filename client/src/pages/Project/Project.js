@@ -26,8 +26,11 @@ export default function Project(){
   return(
     <Wrapper>
       <TitleContainer>
-        <BiArrowBack style={{scale:"1.5", cursor:"pointer"}} onClick={() => nav("/workspaces")}/>
-        <h2>{currentProject}</h2>      
+        <div>
+          <BiArrowBack style={{scale:"1.5", cursor:"pointer"}} onClick={() => nav("/workspaces")}/>
+          <h2>{currentProject.title}</h2>
+        </div>
+        <h2>{(currentProject.total_progress*100).toFixed(2)}%</h2>      
       </TitleContainer>
       <Container>
         {activities && activities.map((activity) => {

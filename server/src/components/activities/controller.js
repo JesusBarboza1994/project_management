@@ -37,7 +37,7 @@ async function create_activity(req, res){
     // // Actualizar los datos de las actividades hermanas
     // if(activities_same_parent.length !==0) await update_activities_with_same_parent(activities_same_parent, parent_activity, sum_weight)
     // Actualizar pesos relativos de las actividades hermanas
-    const updated_activities_same_parent = await Activity.find({ parent: parent_activity._id });
+    const updated_activities_same_parent = await Activity.find({ parent });
     updated_activities_same_parent.forEach(async(activity) => {
       await Activity.findByIdAndUpdate(activity._id, {
         relative_weight_percentage: activity.relative_weight / sum_weight
@@ -49,7 +49,7 @@ async function create_activity(req, res){
     await updateActivityRecursively(new_activity, parent_absolute_weight);
     
     // Actualizar actividades de la cadena superior (padre en adelante)
-    await updateParentActivities(new_activity.parent);
+    const total_progress = await updateParentActivities(new_activity.parent);
     
     // Actualizar SOLO a la actividad padre
     if(parent_activity && !parent_activity.has_subactivities){
@@ -60,7 +60,12 @@ async function create_activity(req, res){
       
     } 
 
-    res.status(201).json(new_activity)
+    res.status(201).json({
+      message: "Create activity succesfully",
+      project:{
+        total_progress
+      }
+    })
   } catch (error) {
     console.log("ERROR",error)
     res.status(500).json({ error: 'Error al crear la actividad' });
@@ -102,9 +107,16 @@ async function delete_activity(req, res){
     // Llamamos a la función recursiva para actualizar las actividades descendientes
     await updateActivityRecursively(current_activity, parent_absolute_weight);
     // Actualizar actividades de la cadena superior (padre en adelante)
-    await updateParentActivities(current_activity.parent);
+    const total_progress = await updateParentActivities(current_activity.parent);
   
-    res.status(200).json({ message: 'Actividad y todas las subactividades eliminadas' });
+    res.status(200).json(
+      {
+        message: "Delete activity succesfully",
+        project:{
+          total_progress
+        }
+      }
+    )
   } catch (error) {
     console.log("ERROR", error);
     res.status(500).json({ error: 'Error al eliminar la actividad y subactividades' });
@@ -133,15 +145,24 @@ async function update_activity(req, res){
     await Activity.findByIdAndUpdate(id, {relative_progress, absolute_progress: relative_progress*updated_current_activity.absolute_weight}, { new: true });
   }
   // Actualizar actividades de la cadena superior (padre en adelante)
-  await updateParentActivities(current_activity.parent);
+  const total_progress = await updateParentActivities(current_activity.parent);
   // Devolvemos la actividad actualizada
-  res.status(200).json(current_activity);
+  res.status(200).json(
+    {
+      message: "Delete activity succesfully",
+      project:{
+        total_progress
+      }
+    }
+  );
 }
 
 async function updateParentActivities(activityId) {
   const activity = await Activity.findById(activityId);
   if (!activity) {
-    return; // Terminar si no se encuentra la actividad
+    const main_activities = await Activity.find({ parent: activityId });
+    const {total_progress}=  await Project.findByIdAndUpdate(activityId, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
+    return total_progress; // Terminar si no se encuentra la actividad
   }
 
   // Actualizar la actividad actual
@@ -155,8 +176,8 @@ async function updateParentActivities(activityId) {
     await updateParentActivities(parentActivity._id);
   }else{
     const main_activities = await Activity.find({ parent: activity.parent });
-    await Project.findByIdAndUpdate(activity.parent, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) });
-    console.log("PROYECTO")
+    const {total_progress}=  await Project.findByIdAndUpdate(activity.parent, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
+    return total_progress;
   }
 }
 

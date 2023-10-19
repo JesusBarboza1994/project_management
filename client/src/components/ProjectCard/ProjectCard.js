@@ -10,13 +10,18 @@ export default function ProjectCard({project}){
   const {setCurrentProject} = useAuth()
   
   const handleShowProject = () => {
-    setCurrentProject(project.title)
-    sessionStorage.setItem("currentProject", project.title)
+    setCurrentProject({title: project.title,
+      total_progress: project.total_progress
+    })
+    sessionStorage.setItem("currentProject", JSON.stringify({title: project.title,
+      total_progress: project.total_progress
+    }))
     nav(`/projects/${project.id}`)
   } 
 
   return(
     <Wrapper backgroundColor={colors.randomColors[project.color]} onClick={handleShowProject}>
+      <p>{(project.total_progress*100).toFixed(2)}%</p>
       <p>{project.title}</p>
       <OperationsProjectCard project={project}/>
     </Wrapper>

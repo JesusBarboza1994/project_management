@@ -10,7 +10,7 @@ import Information from "../Information/Information";
 
 export default function EmptyActivity({parent}){
   const inputRef = useRef(null);
-  const {setUpdateListActivities, updateListActivites, setUpdateSubActivities, updateSubActivities} = useAuth()
+  const {setUpdateListActivities, updateListActivites, setUpdateSubActivities, updateSubActivities, setCurrentProject, currentProject} = useAuth()
   const [newActivity, setNewActivity] = useState({
     description: "",
     relativeWeight: ""
@@ -31,11 +31,12 @@ export default function EmptyActivity({parent}){
       relative_weight: +newActivity.relativeWeight,
       parent,
     }
-    console.log("BODY", body)
     createActivity(body).then(res => {
-      console.log(res)
       setUpdateListActivities(!updateListActivites)
       setUpdateSubActivities(!updateSubActivities)
+      const updatedProject = {...currentProject, total_progress: res.project.total_progress}
+      setCurrentProject(updatedProject)
+      sessionStorage.setItem("currentProject", JSON.stringify(updatedProject))
       setNewActivity({
         description: "",
         relativeWeight: ""
