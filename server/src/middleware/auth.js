@@ -5,7 +5,7 @@ module.exports = async (req, res, next) => {
     const is_token_valid = await validateToken(req)
     
     if(is_token_valid){
-      console.log("TOKEN VALIDO")
+      // console.log("TOKEN VALIDO")
       next()
     }else{
       console.log("TOKEN INVALIDO")
@@ -22,7 +22,7 @@ async function validateToken(req){
       if(signature){
         const tokenAccess = signature.split(' ')[1];
         const payload = await jwt.verify(tokenAccess, process.env.SECRET_ACCESS_KEY_TOKEN);
-        console.log("PAYLOAD", payload)
+        // console.log("PAYLOAD", payload)
         req.user = payload.userId;
         req.tokenAccess = tokenAccess;
         return true;

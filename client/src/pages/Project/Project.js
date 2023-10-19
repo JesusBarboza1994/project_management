@@ -36,7 +36,8 @@ export default function Project(){
             )
           }
           )}
-        <EmptyActivity parent={parentId}/>
+          {console.log("PARENTID", parentId)}
+        <EmptyActivity parent={id}/>
       </Container>
     </Wrapper>
   )

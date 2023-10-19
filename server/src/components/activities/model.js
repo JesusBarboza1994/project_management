@@ -3,6 +3,7 @@
 const activitySchema = new mongoose.Schema({
   description: { type: String, required: true },
   relative_weight: { type: Number, required: true },
+  relative_weight_percentage: { type: Number, required: true },
   absolute_weight: { type: Number, required: true },
   relative_progress: { type: Number, default: 0 },
   absolute_progress: { type: Number, default: 0 },

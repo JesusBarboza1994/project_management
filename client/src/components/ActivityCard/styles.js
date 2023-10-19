@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { colors } from "../../styles";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.form`
   display:flex;
   justify-content: space-between;
   align-items:center;
@@ -39,7 +39,7 @@ export const DataContainer = styled.div`
   flex-wrap: wrap;
   align-items:center;
   // justify-content: center;
-  input[type="number"]{
+  input{
     width: 50px;
     border-radius: 5px;
     border:none;
@@ -48,7 +48,7 @@ export const DataContainer = styled.div`
     padding: 0 5px;
     background:${props=>props.color};
   }
-  &:placeholder input[type="number"]{
+  &:placeholder input{
     background:${colors.white};
   }
   input::-webkit-inner-spin-button {
