@@ -8,7 +8,17 @@ const projectSchema = new mongoose.Schema({
   color: { type: String, default: "pink"},
   favorite: {type: Boolean, default: false},
   user:{type: mongoose.Schema.Types.ObjectId, ref: 'User',required: true},
-  workspace: {type: mongoose.Schema.Types.ObjectId, ref: 'Workspace',required: true}
+  workspace: {type: mongoose.Schema.Types.ObjectId, ref: 'Workspace',required: true},
+  collaborators: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      permission: {
+        type: String,
+        enum: ['view', 'edit', 'admin'], // Puedes agregar más roles si es necesario
+        default: 'view',
+      },
+    },
+  ]
 });
 
 const Project = mongoose.model('Project', projectSchema);

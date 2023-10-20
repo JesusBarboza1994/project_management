@@ -1,14 +1,13 @@
 import { BsStar, BsStarFill } from "react-icons/bs"
 import { ColorsContainer, EachColor, IconContainer, IconsContainer, StyleColorPalette } from "./styles"
-import { BiTrashAlt } from "react-icons/bi"
 import { colors } from "../../styles"
 import { useEffect, useRef, useState } from "react"
 import { useAuth } from "../../context/auth-context"
-import { deleteProject, updateColorProject, updateFavoriteProject } from "../../services/project-service"
-
+import {  updateColorProject, updateFavoriteProject } from "../../services/project-service"
+import {PiShareFatDuotone} from "react-icons/pi"
 export default function OperationsProjectCard({project}){
   const divRef = useRef(null)
-  const {updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
+  const {setShowModalShared, currentProject, setCurrentProject, updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
   const [showColors, setShowColors] = useState(false)
   const handleUpdateColor = (color) => {
     updateColorProject({color, id: project.id}).then(res => {
@@ -19,14 +18,10 @@ export default function OperationsProjectCard({project}){
       
     })
   }
-  const handleDeleteProject = (e) => {
+  const handleSharedProject = (e) => {
     e.stopPropagation()
-    deleteProject(project.id).then(res => {
-      console.log(res)
-      setWorkspaces(deleteProjectFromWorkspaceList(workspaces, project))
-    }).catch(err => {
-      console.log(err)
-    })
+    setShowModalShared(true)
+    setCurrentProject({...currentProject, id: project.id})
   }
   const handleFavorite = (e) => {
     e.stopPropagation()
@@ -73,8 +68,8 @@ export default function OperationsProjectCard({project}){
         <IconContainer ref={divRef} onClick={(e) => {setShowColors(!showColors); e.stopPropagation()}}>
           <StyleColorPalette style={{scale: "0.9"}} />
         </IconContainer>
-        <IconContainer ref={divRef} onClick={(e)=>handleDeleteProject(e)}>
-          <BiTrashAlt style={{scale: "0.9"}} />
+        <IconContainer ref={divRef} onClick={(e)=>{handleSharedProject(e)}}>
+          <PiShareFatDuotone style={{scale: "0.9"}} />
         </IconContainer>
       </IconsContainer>
 
@@ -101,11 +96,11 @@ function updateWorkspaceList(workspaceList, updatedProject){
   return updatedWorkspaces
 }
 
-function deleteProjectFromWorkspaceList(workspaceList, updatedProject){
-  const updatedWorkspaces = workspaceList.map((workspace) => {
-    const updatedProjects = workspace.projects.filter((project) => project.id !== updatedProject.id);
-    return { ...workspace, projects: updatedProjects };
-  });
+// function deleteProjectFromWorkspaceList(workspaceList, updatedProject){
+//   const updatedWorkspaces = workspaceList.map((workspace) => {
+//     const updatedProjects = workspace.projects.filter((project) => project.id !== updatedProject.id);
+//     return { ...workspace, projects: updatedProjects };
+//   });
 
-  return updatedWorkspaces
-}
+//   return updatedWorkspaces
+// }

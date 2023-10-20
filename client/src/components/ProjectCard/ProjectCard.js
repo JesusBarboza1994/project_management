@@ -11,10 +11,12 @@ export default function ProjectCard({project}){
   
   const handleShowProject = () => {
     setCurrentProject({title: project.title,
-      total_progress: project.total_progress
+      total_progress: project.total_progress,
+      id: project.id
     })
     sessionStorage.setItem("currentProject", JSON.stringify({title: project.title,
-      total_progress: project.total_progress
+      total_progress: project.total_progress,
+      id: project.id
     }))
     nav(`/projects/${project.id}`)
   } 

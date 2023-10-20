@@ -3,14 +3,13 @@ import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import { useAuth } from "../../context/auth-context";
 import { Close, Container, MirrorScreen, Modal, ProjectContainer, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
 import { createWorkspace, deleteWorkspace, listWorkspaces } from "../../services/workspace-service";
-import { colors } from "../../styles";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button"
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
-import { createProject } from "../../services/project-service";
+import { createProject, sharedProject } from "../../services/project-service";
 export default function Workspace(){
-  const { user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
+  const { currentProject, setCurrentProject, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
   const [workspaceName, setWorkspaceName] = useState("")
   const [project, setProject] = useState({
     name: "",
@@ -18,6 +17,10 @@ export default function Workspace(){
   })
   const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
   const [showProjectModal, setShowProjectModal] = useState(false)
+  const [sharedProjectUser, setSharedProjectUser] = useState({
+    email: "",
+    permission:"view"
+  })
   const handleSubmit = async (e, modal) => {
     e.preventDefault()
     if(modal === "workspace"){
@@ -55,6 +58,20 @@ export default function Workspace(){
       console.log(err)
     })
   }
+  const handleSharedSubmit = async (e) => {
+    e.preventDefault()
+    const body = {
+      email: sharedProjectUser.email,
+      permission: sharedProjectUser.permission,
+      id: currentProject.id
+    }
+    sharedProject(body).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    })
+    setShowModalShared(false)
+  }
   useEffect(() => {
     listWorkspaces().then(res => {
       setWorkspaces(res.workspaces)
@@ -89,7 +106,7 @@ export default function Workspace(){
               </ProjectContainer>
             </WorkspaceContainer>
           }
-          {workspaces && workspaces.map((workspace, index_workspace) => {
+          {workspaces && workspaces.map(workspace => {
             return (
               <WorkspaceContainer>
                 <WorkspaceTitleContainer>
@@ -123,6 +140,17 @@ export default function Workspace(){
         <Modal showModal={showProjectModal} onSubmit={(e)=>handleSubmit(e,"project")}>
           <h2>Create a new project</h2>
           <Input type={"text"} label={"Name"} placeholder={"Project X"} onChange={(e) => setProject({...project, name: e.target.value})} />
+          <Button text={"Create"} />
+          <Close onClick={()=>setShowProjectModal(false)}>X</Close>
+        </Modal>
+        <Modal showModal={showModalShared} onSubmit={(e)=>handleSharedSubmit(e)}>
+          <h2>Shared this project</h2>
+          <Input type={"text"} label={"Email"} placeholder={"username123@mail.com"} onChange={(e) => setSharedProjectUser({...sharedProjectUser, email: e.target.value})} />
+          <select onChange={(e) => setSharedProjectUser({...sharedProjectUser, permission: e.target.value})}>
+            <option value="view">View</option>
+            <option value="edit">Edit</option>
+            <option value="admin">Admin</option>
+          </select>
           <Button text={"Create"} />
           <Close onClick={()=>setShowProjectModal(false)}>X</Close>
         </Modal>

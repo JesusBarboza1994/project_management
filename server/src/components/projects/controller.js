@@ -3,6 +3,7 @@
 const { deleteDescendantActivities } = require("../../utils.js/delete_associated.js");
 const Workspace = require("../workspaces/model.js");
 const Project = require("./model.js");
+const User = require("../users/model.js")
 
 async function list_projects(req, res){
   try {
@@ -115,6 +116,66 @@ async function update_color_project(req, res){
   }
 }
 
+// async function shared_project(req, res){
+//   try {
+//     const id = req.params.id;
+//     const {email, permission} = req.body
+//     const project = Project.findById(id);
+//     if(!project){
+//       return res.status(404).json({ error: 'Proyecto no encontrado' });
+//     }
+//     const user_shared = await User.find({email});
+  
+//     if(!user_shared){
+//       return res.status(404).json({ error: 'Usuario no existe' });
+//     }
+//     // Inicializa collaborators como un array vacío si es nulo o undefined
+//     project.collaborators = project.collaborators || [];
+    
+//     // Agrega el nuevo colaborador al array de collaborators
+//     project.collaborators.push({
+//       user: user_shared[0]._id.toString(),
+//       permission
+//     });
+    
+//     // Guarda los cambios en el proyecto
+//     const updated_project = await project.save();
+//     console.log("updated_project", updated_project)
+//     res.send(updated_project)
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: 'Error al compartir el proyecto' });
+//   }
+// }
+async function shared_project(req, res) {
+  try {
+    const id = req.params.id;
+    const { email, permission } = req.body;
+    const user_shared = await User.find({email});
+    // Obtén el proyecto por su ID y agrega el nuevo colaborador a collaborators
+    const updated_project = await Project.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          collaborators: {
+            user: user_shared[0],
+            permission,
+          },
+        },
+      },
+      { new: true }
+    );
+
+    if (!updated_project) {
+      return res.status(404).json({ error: 'Proyecto no encontrado' });
+    }
+
+    res.send(updated_project);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Error al compartir el proyecto' });
+  }
+}
 module.exports = {
   list_projects,
   create_project,
@@ -122,5 +183,6 @@ module.exports = {
   delete_project,
   update_project,
   set_favorite,
-  update_color_project
+  update_color_project,
+  shared_project
 }

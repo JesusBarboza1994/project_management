@@ -10,4 +10,5 @@ router.delete("/:id", UserAuth, controller.delete_project)
 router.patch("/:id", UserAuth, controller.update_project)
 router.patch("/favorite/:id", UserAuth, controller.set_favorite)
 router.patch("/color/:id", UserAuth, controller.update_color_project)
+router.patch("/shared/:id", UserAuth, controller.shared_project)
 module.exports = router

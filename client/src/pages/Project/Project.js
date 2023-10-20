@@ -6,6 +6,8 @@ import { listActivities } from "../../services/activity-service";
 import EmptyActivity from "../../components/EmptyActivity/EmptyActivity";
 import ActivityCard from "../../components/ActivityCard/ActivityCard";
 import { BiArrowBack } from "react-icons/bi";
+import { StyleBiTrashAlt } from "../Workspace/styles";
+import { deleteProject } from "../../services/project-service";
 
 export default function Project(){
   const { currentProject, updateListActivites } = useAuth()
@@ -13,6 +15,14 @@ export default function Project(){
   const [ parentId, setParentId ] = useState(null)
   const {id} = useParams()
   const nav = useNavigate()
+  const handleDeleteProject = () => {
+    deleteProject(currentProject.id).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    })
+    nav("/workspaces")
+  }
   useEffect(() => {
     listActivities(id).then(res => {
       console.log(res)
@@ -27,10 +37,16 @@ export default function Project(){
     <Wrapper>
       <TitleContainer>
         <div>
-          <BiArrowBack style={{scale:"1.5", cursor:"pointer"}} onClick={() => nav("/workspaces")}/>
+          <BiArrowBack style={{scale:"1.5", cursor:"pointer"}} onClick={() =>{
+            sessionStorage.removeItem("currentProject")
+            nav("/workspaces")
+          }}/>
           <h2>{currentProject.title}</h2>
         </div>
-        <h2>{(currentProject.total_progress*100).toFixed(2)}%</h2>      
+        <div>
+          <h2>{(currentProject.total_progress*100).toFixed(2)}%</h2>      
+          <StyleBiTrashAlt onClick={handleDeleteProject}/>
+        </div>
       </TitleContainer>
       <Container>
         {activities && activities.map((activity) => {

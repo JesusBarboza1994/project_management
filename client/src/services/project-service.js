@@ -26,3 +26,10 @@ export async function deleteProject(id){
     method: "DELETE"
   })
 }
+export async function sharedProject(body){
+  const { email, permission, id } = body
+  return await apiFetch(`/projects/shared/${id}`, {
+    method: "PATCH",
+    body: {email, permission}
+  })
+}
