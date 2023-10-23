@@ -149,7 +149,7 @@ async function update_activity(req, res){
   // Devolvemos la actividad actualizada
   res.status(200).json(
     {
-      message: "Delete activity succesfully",
+      message: "Update activity succesfully",
       project:{
         total_progress
       }
@@ -158,6 +158,7 @@ async function update_activity(req, res){
 }
 
 async function updateParentActivities(activityId) {
+  let total_progress
   const activity = await Activity.findById(activityId);
   if (!activity) {
     const main_activities = await Activity.find({ parent: activityId });
@@ -173,7 +174,7 @@ async function updateParentActivities(activityId) {
   // Obtener la actividad padre y llamar recursivamente
   const parentActivity = await Activity.findById(activity.parent);
   if (parentActivity) {
-    await updateParentActivities(parentActivity._id);
+    return await updateParentActivities(parentActivity._id);
   }else{
     const main_activities = await Activity.find({ parent: activity.parent });
     const {total_progress}=  await Project.findByIdAndUpdate(activity.parent, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
