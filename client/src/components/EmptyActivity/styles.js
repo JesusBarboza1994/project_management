@@ -6,6 +6,7 @@ export const Wrapper = styled.form`
   justify-content:space-between;
   align-items:center;
   height:40px;
+  background:${colors.white};
   width: 100%;
   padding: 4px 16px;
   gap: 8px;

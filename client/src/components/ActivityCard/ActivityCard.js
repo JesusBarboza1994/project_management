@@ -75,8 +75,8 @@ export default function ActivityCard({activity}){
   
   const color = Object.values(colors.randomColors)[activity.index]
   return(
-    <>
-      <Wrapper color={color} onSubmit={(e)=>handleUpdateActivity(e)}>
+      <Wrapper color={color}>
+        <form onSubmit={(e)=>handleUpdateActivity(e)}>
           {subActivities 
             ? 
             <TitleContainer onClick={()=> setSubActivities(null)}>
@@ -89,57 +89,59 @@ export default function ActivityCard({activity}){
               <p>{activity.description}</p>
             </TitleContainer>
           }
-        <RelativeAbsoluteContainer>
-          <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
-            <p>Peso Relativo: </p>
-            <div style={{display:"flex"}}>
-              <input type={"text"} value={activityData.relativeWeight} onChange={(e) => {
-                setActivityData({...activityData,relativeWeight: e.target.value})
-              }}/>
-              <p>| {(activityData.relativeWeightPercentage*100).toFixed(2)}%</p>
-            </div>
-          </DataContainer>
-          <DataContainer>
-            <p>Peso Absoluto: </p>
-            <p>{(activity.absolute_weight*100).toFixed(2)}%</p>
-          </DataContainer>
-        </RelativeAbsoluteContainer>
-        <RelativeAbsoluteContainer>
-          <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
-            { 
-              !(activity.has_subactivities) &&
-              <>
-                <p>Progreso Relativo: </p>
-                <div style={{display:"flex"}}>
-                  <input type={"number"} value={(activityData.relativeProgress*100).toFixed(2)} onChange={(e) => {
-                    setActivityData({...activityData,relativeProgress: (+e.target.value)/100})
-                  }}/>
-                  <p>%</p>
-                </div>
-              </>
-            }
-          </DataContainer>
-          <DataContainer>
-            <p>Progreso Absoluto: </p>
-            <p>{(activityData.absoluteProgress*100).toFixed(2)}%</p>
-          </DataContainer>
-        </RelativeAbsoluteContainer>
-        <BiTrashAlt onClick={handleDeleteActivity} style={{color:colors.red.dark, scale: "1.1"}}/>
-        <input type="submit" hidden/>
-      </Wrapper>
-      {
-        subActivities &&
-        <SubActivitiesContainer>
+          <RelativeAbsoluteContainer>
+            <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
+              <p>Peso Relativo: </p>
+              <div style={{display:"flex"}}>
+                <input type={"text"} value={activityData.relativeWeight} onChange={(e) => {
+                  setActivityData({...activityData,relativeWeight: e.target.value})
+                }}/>
+                <p>| {(activityData.relativeWeightPercentage*100).toFixed(2)}%</p>
+              </div>
+            </DataContainer>
+            <DataContainer>
+              <p>Peso Absoluto: </p>
+              <p>{(activity.absolute_weight*100).toFixed(2)}%</p>
+            </DataContainer>
+          </RelativeAbsoluteContainer>
+          <RelativeAbsoluteContainer>
+            <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
+              { 
+                !(activity.has_subactivities) &&
+                <>
+                  <p>Progreso Relativo: </p>
+                  <div style={{display:"flex"}}>
+                    <input type={"number"} value={(activityData.relativeProgress*100).toFixed(2)} onChange={(e) => {
+                      setActivityData({...activityData,relativeProgress: (+e.target.value)/100})
+                    }}/>
+                    <p>%</p>
+                  </div>
+                </>
+              }
+            </DataContainer>
+            <DataContainer>
+              <p>Progreso Absoluto: </p>
+              <p>{(activityData.absoluteProgress*100).toFixed(2)}%</p>
+            </DataContainer>
+          </RelativeAbsoluteContainer>
+          <BiTrashAlt onClick={handleDeleteActivity} style={{color:colors.red.dark, scale: "1.1"}}/>
+          <input type="submit" hidden/>
+        </form>
+        <div>
           {
-            subActivities.map(subactivity =>{
-              return(
-                <ActivityCard key={subactivity._id} activity={subactivity}/>
-              )
-            })
+            subActivities &&
+            <SubActivitiesContainer>
+              {
+                subActivities.map(subactivity =>{
+                  return(
+                    <ActivityCard key={subactivity._id} activity={subactivity}/>
+                  )
+                })
+              }
+              <EmptyActivity parent={activity._id}/>
+            </SubActivitiesContainer>
           }
-          <EmptyActivity parent={activity._id}/>
-        </SubActivitiesContainer>
-      }
-    </>
+        </div>
+      </Wrapper>
   )
 }
