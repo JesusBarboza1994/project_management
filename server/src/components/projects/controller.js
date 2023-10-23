@@ -41,7 +41,10 @@ async function create_project(req, res){
     console.log("workspace user", workspace.user.toHexString())
     console.log("req user", req.user)
     if(!workspace || !(workspace.user.toHexString() == req.user)) res.status(400).json({ error: 'Este workspace no pertenece a este usuario' });
-    const new_project = new Project({title, workspace: workspace_id, user: req.user});
+    const new_project = new Project({title, workspace: workspace_id, user: req.user, collaborators: [{
+      user: req.user,
+      permission: 'admin'
+    }]});
     await new_project.save();
     res.status(201).json(new_project)
   } catch (error) {
@@ -79,7 +82,12 @@ async function set_favorite(req, res){
     const id = req.params.id;
     const updated_project = await Project.findById(id);
     if (updated_project) {
-      updated_project.favorite = !updated_project.favorite; 
+      const collaborator = updated_project.collaborators.find(collaborator => collaborator.user.toString() === req.user);
+      updated_project.collaborators = [...updated_project.collaborators.find(collaborator => collaborator.user.toString() !== req.user), {
+        user: req.user,
+        favorite: !collaborator.favorite,
+        permission: collaborator.permission
+      }] 
       await updated_project.save(); 
       res.status(200).json({
           id: updated_project.id,

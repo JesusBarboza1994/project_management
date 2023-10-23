@@ -12,6 +12,7 @@ const projectSchema = new mongoose.Schema({
   collaborators: [
     {
       user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      favorite: { type: Boolean, default: false },
       permission: {
         type: String,
         enum: ['view', 'edit', 'admin'], // Puedes agregar más roles si es necesario

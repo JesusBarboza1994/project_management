@@ -17,20 +17,19 @@ async function list_workspaces(req, res){
   try {
     const workspaces = await Workspace.find({user: req.user});
     const workspaceList = await Promise.all(workspaces.map(async (workspace) => {
-      projects = await Project.find({ workspace: workspace._id });
-
-      return {
-        name: workspace.name,
-        id: workspace.id,
-        projects: projects.map((project) => ({
-          id: project.id,
-          title: project.title,
-          total_progress: project.total_progress,
-          color: project.color,
-          favorite: project.favorite
-          // Agrega otros campos del proyecto según sea necesario
-        }))
-      };
+      const projects = await Project.find({ workspace: workspace._id });
+        return {
+          name: workspace.name,
+          id: workspace.id,
+          projects: projects.map((project) => ({
+            id: project.id,
+            title: project.title,
+            total_progress: project.total_progress,
+            color: project.color,
+            favorite: project.favorite
+            // Agrega otros campos del proyecto según sea necesario
+          }))
+        };
     }));
     const favorite_projects = []
     workspaceList.forEach(workspace => {
@@ -41,7 +40,10 @@ async function list_workspaces(req, res){
       })
     });
     console.log("FAVORITE PROJECTS", favorite_projects)
-    res.status(200).json({workspaces:workspaceList, favoriteProjects:favorite_projects});
+
+    const shared_projects = await Project.find({"collaborators.user": req.user})
+
+    res.status(200).json({workspaces:workspaceList, favoriteProjects:favorite_projects, sharedProjects:shared_projects});
   } catch (error) {
     console.log("ERROR",error);
     res.status(500).json({ error: 'Error al obtener la lista de proyectos' });

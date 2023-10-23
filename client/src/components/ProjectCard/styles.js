@@ -9,8 +9,8 @@ export const Wrapper = styled.div`
   position:relative;
   border: 1px solid ${colors.black.light};
   align-items:center;
-  height:87px;
-  width: 120px;
+  height:90px;
+  width: 180px;
   padding: 8px;
   padding-top:4px;
   z-index:1;

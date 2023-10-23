@@ -15,6 +15,7 @@ export default function Workspace(){
     name: "",
     id: ""
   })
+  const [sharedProjects, setSharedProjects] = useState([])
   const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
   const [showProjectModal, setShowProjectModal] = useState(false)
   const [sharedProjectUser, setSharedProjectUser] = useState({
@@ -77,6 +78,7 @@ export default function Workspace(){
       setWorkspaces(res.workspaces)
       console.log("WORKSPACES", res)
       setFavoriteProjects(res.favoriteProjects)
+      setSharedProjects(res.sharedProjects)
     }).catch(err => {
       console.log(err)
     })
@@ -90,6 +92,22 @@ export default function Workspace(){
           <MdAddCircleOutline style={{scale:"2"}} onClick={()=>setShowWorkSpaceModal(true)}/>
         </TitleContainer>
         <Container>
+          {sharedProjects.length !==0 &&
+            <WorkspaceContainer>
+              <WorkspaceTitleContainer>
+                <h3>Shared Projects</h3>
+              </WorkspaceTitleContainer>
+              <ProjectContainer>
+                {
+                  sharedProjects.map(project=>{
+                    return(
+                      <ProjectCard key={"favorites"+project.id} project={project} />
+                    )
+                  })
+                } 
+              </ProjectContainer>
+            </WorkspaceContainer>
+          }
           {favoriteProjects.length !==0 &&
             <WorkspaceContainer>
               <WorkspaceTitleContainer>
@@ -152,7 +170,7 @@ export default function Workspace(){
             <option value="admin">Admin</option>
           </select>
           <Button text={"Create"} />
-          <Close onClick={()=>setShowProjectModal(false)}>X</Close>
+          <Close onClick={()=>setShowModalShared(false)}>X</Close>
         </Modal>
       </Wrapper>
       <MirrorScreen showModal={showProjectModal || showWorkSpaceModal}> 
