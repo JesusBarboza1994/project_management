@@ -4,7 +4,7 @@ import { useAuth } from "../../context/auth-context";
 import { Close, Container, MirrorScreen, Modal, ProjectContainer, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
 import { createWorkspace, deleteWorkspace, listWorkspaces } from "../../services/workspace-service";
 import Input from "../../components/Input/Input";
-import Button from "../../components/Button/Button"
+import Button from "../../components/Button"
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
 import { createProject, sharedProject } from "../../services/project-service";
@@ -151,13 +151,13 @@ export default function Workspace(){
         <Modal showModal={showWorkSpaceModal} onSubmit={(e)=>handleSubmit(e,"workspace")}>
           <h2>Create a new workspace</h2>
           <Input type={"text"} label={"Name"} placeholder={"Workspace X"} onChange={(e) => setWorkspaceName(e.target.value)}/>
-          <Button text={"Create"}/>
+          <Button text={"Create"} type={"solid"}/>
           <Close onClick={()=>setShowWorkSpaceModal(false)}>X</Close>
         </Modal>
         <Modal showModal={showProjectModal} onSubmit={(e)=>handleSubmit(e,"project")}>
           <h2>Create a new project</h2>
           <Input type={"text"} label={"Name"} placeholder={"Project X"} onChange={(e) => setProject({...project, name: e.target.value})} />
-          <Button text={"Create"} />
+          <Button text={"Create"} type={"solid"}/>
           <Close onClick={()=>setShowProjectModal(false)}>X</Close>
         </Modal>
         <Modal showModal={showModalShared} onSubmit={(e)=>handleSharedSubmit(e)}>
@@ -168,7 +168,7 @@ export default function Workspace(){
             <option value="edit">Edit</option>
             <option value="admin">Admin</option>
           </select>
-          <Button text={"Create"} />
+          <Button text={"Create"} type={"solid"}/>
           <Close onClick={()=>setShowModalShared(false)}>X</Close>
         </Modal>
       </Wrapper>

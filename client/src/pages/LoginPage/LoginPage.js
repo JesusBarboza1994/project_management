@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "../../components/Button/Button";
+import Button from "../../components/Button";
 import Input from "../../components/Input/Input";
 import { ErrorText, InputContainer, Wrapper } from "./styles";
 import { login } from "../../services/session-service";
@@ -38,7 +38,7 @@ const handleSubmit = (e) => {
           <Input onChange={(e) => setCredentials({...credentials, email: e.target.value})} label={"Email"} type={"email"} placeholder={"john_doe@mail.com"} value={credentials.email}/>
           <Input onChange={(e) => setCredentials({...credentials, password: e.target.value})} label={"Password"} type={"password"} placeholder={"******"} value={credentials.password}/>
         {error && <ErrorText>Usuario y contraseña inválidos</ErrorText>}
-        <Button text={"Login"} />
+        <Button text={"Login"} type={"solid"}/>
         <input type="submit" value={""} hidden/>
       </Wrapper>
     </div>

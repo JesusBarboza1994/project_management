@@ -1,26 +1,22 @@
 import styled from "@emotion/styled";
 import { colors } from "../../styles";
 
-export const Wrapper = styled.input`
-  width: 200px;
-  border-radius:20px;
-  border:1px solid ${colors.white};
-  display:flex;
-  background: ${colors.red.light};
-  align-items:center;
-  justify-content:center;
-  padding: 16px 32px;
-  cursor:pointer;
-  p{
-    font-size:20px;
-    font-weight: 500;
-    color:${colors.black.dark};
-  }
+export const StyledButton = styled.button`
+	display:flex;
+	flex-direction:row;
+	justify-content: center;
+	align-items: center;
+	padding:8px 1.5rem;
+	gap: 8px;
+	color: ${colors.white};
+	border-radius: 16px;
+	cursor:pointer;
+	color: ${(props) => props.color};
+	background: ${(props) => props.background};
+	border: ${(props) => `1px solid `+props.border|| 'none'};
   &:hover{
-    background: ${colors.red.highlight};
-    p{
-      color:${colors.white};
-    }
-}
+    background: ${(props) => props.colorHover};
+		color: ${colors.white};
+    border: ${(props) => `1px solid `+props.borderHover|| 'none'};
+  }
 `
-  
