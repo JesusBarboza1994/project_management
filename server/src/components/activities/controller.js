@@ -7,8 +7,13 @@ async function list_activities(req, res){
   try {
     const id_parent = req.params.id_parent
     const activities = await Activity.find({ parent: id_parent });
-    console.log(list_activities)
-    res.status(200).json({parent: id_parent, activities});
+    const project = await Project.findById(id_parent)
+    if(!project) return res.status(200).json({parent: id_parent, activities});
+    const collaborator = project.collaborators.find(collaborator => collaborator.user.toString() === req.user) 
+    if(!collaborator) return res.status(400).json({message: "No tienes acceso a este proyecto"})
+    const permission = collaborator.permission
+    res.status(200).json({parent: id_parent, activities, permission});
+    
   } catch (error) {
     console.log("ERROR",error)
     res.status(500).json({ error: 'Error al obtener la lista de proyectos' });

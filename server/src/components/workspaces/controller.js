@@ -22,11 +22,11 @@ async function list_workspaces(req, res){
           name: workspace.name,
           id: workspace.id,
           projects: projects.map((project) => ({
-            id: project.id,
+            _id: project.id,
             title: project.title,
             total_progress: project.total_progress,
             color: project.color,
-            favorite: project.favorite
+            favorite: project.collaborators.find(collaborator => collaborator.user.toString() === req.user).favorite,
             // Agrega otros campos del proyecto según sea necesario
           }))
         };
@@ -41,9 +41,23 @@ async function list_workspaces(req, res){
     });
     console.log("FAVORITE PROJECTS", favorite_projects)
 
-    const shared_projects = await Project.find({"collaborators.user": req.user})
+    const shared_projects = await Project.find({
+      "collaborators.user": req.user
+    });
+    const real_shared_projects = shared_projects.filter(project => {
+      const value = project.collaborators.some(collaborator => {
+        if(collaborator.user.toString() === req.user && collaborator.permission !== "owner" && collaborator.favorite){
+          favorite_projects.push(project)
+        }
+        return (collaborator.user.toString() === req.user && collaborator.permission !== "owner")
+      })
+      return value
+    })
+    console.log("FAVORITE PROJECTS2", favorite_projects)
 
-    res.status(200).json({workspaces:workspaceList, favoriteProjects:favorite_projects, sharedProjects:shared_projects});
+
+
+    res.status(200).json({workspaces:workspaceList, favoriteProjects:favorite_projects, sharedProjects:real_shared_projects});
   } catch (error) {
     console.log("ERROR",error);
     res.status(500).json({ error: 'Error al obtener la lista de proyectos' });

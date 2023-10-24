@@ -15,7 +15,7 @@ const projectSchema = new mongoose.Schema({
       favorite: { type: Boolean, default: false },
       permission: {
         type: String,
-        enum: ['view', 'edit', 'admin'], // Puedes agregar más roles si es necesario
+        enum: ['view', 'edit', 'admin', "owner"], // Puedes agregar más roles si es necesario
         default: 'view',
       },
     },

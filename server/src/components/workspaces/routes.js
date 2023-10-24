@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const UserAuth = require("../../middleware/auth")
+const UserAuth = require("../../middleware/authentication")
 const controller = require("./controller");
 
 router.post("/", UserAuth, controller.create_workspace)
