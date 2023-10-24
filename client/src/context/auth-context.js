@@ -12,6 +12,7 @@ function AuthProvider({ children }) {
   const [updateWorkspace, setUpdateWorkspace] = useState(false)
   const [updateSubActivities, setUpdateSubActivities] = useState(false)
   const [showModalShared, setShowModalShared ] = useState(false)
+  const [sharedProjects, setSharedProjects] = useState([])
   const [updateListActivites, setUpdateListActivities] = useState(false)
   return (
     <AuthContext.Provider
@@ -19,6 +20,8 @@ function AuthProvider({ children }) {
         user,
         workspaces,
         showModalShared,
+        sharedProjects,
+        setSharedProjects,
         setShowModalShared,
         currentProject,
         projects,

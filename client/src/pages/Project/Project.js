@@ -13,6 +13,7 @@ export default function Project(){
   const { currentProject, updateListActivites } = useAuth()
   const [ activities, setActivities ] = useState(null)
   const [ parentId, setParentId ] = useState(null)
+  const [ editProjectPermission, setEditProjectPermission ] = useState("view")
   const {id} = useParams()
   const nav = useNavigate()
   const handleDeleteProject = () => {
@@ -28,6 +29,7 @@ export default function Project(){
       console.log(res)
       setActivities(res.activities)
       setParentId(res.parent)
+      setEditProjectPermission(res.permission)
     }).catch(err => {
       console.log(err)
     })
@@ -44,19 +46,25 @@ export default function Project(){
           <h2>{currentProject.title}</h2>
         </div>
         <div>
-          <h2>{(currentProject.total_progress*100).toFixed(2)}%</h2>      
-          <StyleBiTrashAlt onClick={handleDeleteProject}/>
+          <h2>{(currentProject.total_progress*100).toFixed(2)}%</h2>
+          {
+            editProjectPermission !== "view" &&
+            <StyleBiTrashAlt onClick={handleDeleteProject}/>
+          }      
         </div>
       </TitleContainer>
       <Container>
         {activities && activities.map((activity) => {
           return(
-            <ActivityCard key={activity.id} activity={activity}/>
+            <ActivityCard key={activity.id} activity={activity} editProjectPermission={editProjectPermission}/>
             )
           }
           )}
           {console.log("PARENTID", parentId)}
-        <EmptyActivity parent={id}/>
+        {
+          editProjectPermission !== "view" &&
+          <EmptyActivity parent={id}/>
+        }
       </Container>
     </Wrapper>
   )

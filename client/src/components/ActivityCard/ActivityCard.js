@@ -6,7 +6,7 @@ import { deleteActivity, listActivities, updateActivity } from "../../services/a
 import { useAuth } from "../../context/auth-context";
 import EmptyActivity from "../EmptyActivity/EmptyActivity";
 
-export default function ActivityCard({activity}){
+export default function ActivityCard({activity, editProjectPermission}){
   const [subActivities, setSubActivities] = useState(null)
   const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities, setCurrentProject, currentProject} = useAuth()
   const ejecutarEfectoRef = useRef(false);
@@ -124,7 +124,10 @@ export default function ActivityCard({activity}){
               <p>{(activityData.absoluteProgress*100).toFixed(2)}%</p>
             </DataContainer>
           </RelativeAbsoluteContainer>
-          <BiTrashAlt onClick={handleDeleteActivity} style={{color:colors.red.dark, scale: "1.1"}}/>
+          {
+            editProjectPermission !== "view" &&
+            <BiTrashAlt onClick={handleDeleteActivity} style={{color:colors.red.dark, scale: "1.1"}}/>
+          }
           <input type="submit" hidden/>
         </form>
         <div>
@@ -134,11 +137,14 @@ export default function ActivityCard({activity}){
               {
                 subActivities.map(subactivity =>{
                   return(
-                    <ActivityCard key={subactivity._id} activity={subactivity}/>
+                    <ActivityCard key={subactivity._id} activity={subactivity} editProjectPermission={editProjectPermission}/>
                   )
                 })
               }
-              <EmptyActivity parent={activity._id}/>
+              {
+                editProjectPermission !== "view" &&
+                <EmptyActivity parent={activity._id}/>
+              }
             </SubActivitiesContainer>
           }
         </div>

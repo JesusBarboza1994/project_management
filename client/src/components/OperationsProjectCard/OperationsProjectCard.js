@@ -7,10 +7,10 @@ import {  updateColorProject, updateFavoriteProject } from "../../services/proje
 import {PiShareFatDuotone} from "react-icons/pi"
 export default function OperationsProjectCard({project}){
   const divRef = useRef(null)
-  const {setShowModalShared, currentProject, setCurrentProject, updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
+  const {setShowModalShared, currentProject, setCurrentProject, sharedProjects, setSharedProjects,updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
   const [showColors, setShowColors] = useState(false)
   const handleUpdateColor = (color) => {
-    updateColorProject({color, id: project.id}).then(res => {
+    updateColorProject({color, id: project._id}).then(res => {
       console.log(res)
       setUpdateWorkspace(!updateWorkspace)
       setShowColors(false)
@@ -21,18 +21,23 @@ export default function OperationsProjectCard({project}){
   const handleSharedProject = (e) => {
     e.stopPropagation()
     setShowModalShared(true)
-    setCurrentProject({...currentProject, id: project.id})
+    setCurrentProject({...currentProject, id: project._id})
   }
   const handleFavorite = (e) => {
     e.stopPropagation()
-    updateFavoriteProject(project.id).then(res => {
+    updateFavoriteProject(project._id).then(res => {
       console.log(res)
       if(res.favorite){
         setFavoriteProjects([...favoriteProjects, res])
       }else{
-        setFavoriteProjects(favoriteProjects.filter(favoriteProject => favoriteProject.id !== res.id))
+        setFavoriteProjects(favoriteProjects.filter(favoriteProject => favoriteProject._id !== res._id))
       }
-      setWorkspaces(updateWorkspaceList(workspaces, res))
+      const updateSharedProject = sharedProjects.find(sharedProject => sharedProject._id === res._id)
+      if(updateSharedProject){
+        setSharedProjects([...sharedProjects.filter(sharedProject => sharedProject._id !== res._id), {...updateSharedProject, favorite: !updateSharedProject.favorite}])
+      }else{
+        setWorkspaces(updateWorkspaceList(workspaces, res))
+      }
     })
   }
   useEffect(() => {

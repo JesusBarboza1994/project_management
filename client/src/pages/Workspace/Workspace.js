@@ -9,13 +9,12 @@ import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
 import { createProject, sharedProject } from "../../services/project-service";
 export default function Workspace(){
-  const { currentProject, setCurrentProject, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
+  const { currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
   const [workspaceName, setWorkspaceName] = useState("")
   const [project, setProject] = useState({
     name: "",
     id: ""
   })
-  const [sharedProjects, setSharedProjects] = useState([])
   const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
   const [showProjectModal, setShowProjectModal] = useState(false)
   const [sharedProjectUser, setSharedProjectUser] = useState({
@@ -101,7 +100,7 @@ export default function Workspace(){
                 {
                   sharedProjects.map(project=>{
                     return(
-                      <ProjectCard key={"favorites"+project.id} project={project} />
+                      <ProjectCard key={"shared"+project._id} project={project} />
                     )
                   })
                 } 
@@ -117,7 +116,7 @@ export default function Workspace(){
                 {
                   favoriteProjects.map(project=>{
                     return(
-                      <ProjectCard key={"favorites"+project.id} project={project} />
+                      <ProjectCard key={"favorites"+project._id} project={project} />
                     )
                   })
                 } 

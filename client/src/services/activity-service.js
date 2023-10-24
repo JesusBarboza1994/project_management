@@ -5,20 +5,23 @@ export async function listActivities(id_parent) {
 }
 
 export async function createActivity(body){
-  return await apiFetch(`/activities`, {
+  const project = JSON.parse(sessionStorage.getItem("currentProject")).id
+  return await apiFetch(`/activities?project=${project}`, {
     body: body,
   });
 }
 
 export async function deleteActivity(id){
-  return await apiFetch(`/activities/${id}`, {
+  const project = JSON.parse(sessionStorage.getItem("currentProject")).id
+  return await apiFetch(`/activities/${id}?project=${project}`, {
     method: "DELETE",
   });
 }
 
 export async function updateActivity(id, body){
+  const project = JSON.parse(sessionStorage.getItem("currentProject")).id
   const { relativeWeight: relative_weight, relativeProgress: relative_progress } = body
-  return await apiFetch(`/activities/${id}`, {
+  return await apiFetch(`/activities/${id}?project=${project}`, {
     body: {relative_weight, relative_progress},
     method: "PATCH",
   });
