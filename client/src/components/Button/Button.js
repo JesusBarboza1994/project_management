@@ -9,16 +9,16 @@ export function Button({text, onClick, type, Icon}){
 	let borderHover;
 	if(type==="outline"){
 		background = colors.white;
-		border = colors.red.light;
+		border = colors.primary.light;
 		color = colors.black.dark
-		colorHover = colors.red.light;
-		borderHover = colors.red.highlight;
+		colorHover = colors.primary.light;
+		borderHover = colors.primary.highlight;
 	}else if(type==="solid"){
-		background = colors.red.medium;
-		border = colors.red.medium;
+		background = colors.primary.medium;
+		border = colors.primary.medium;
 		color = colors.white;
-		colorHover = colors.red.light;
-		borderHover = colors.red.highlight;
+		colorHover = colors.primary.light;
+		borderHover = colors.primary.highlight;
 	}else if(type==="secondary"){
 		background = colors.white;
 		border = colors.white

@@ -1,3 +1,5 @@
+import { FaThumbsDown } from "react-icons/fa";
+
 export const colors = {
   pink:{
    dark: "#BF5F82",
@@ -28,7 +30,20 @@ export const colors = {
     light : "#D3D3D3",
     highlight : "#F5F3F4",
   },
-  
+  primary:{
+    dark: this.red.dark,
+    medium: this.red.medium,
+    light: this.red.light,
+    highlight: this.red.highlight
+  },
+  font: {
+    text: this.gray.dark,
+    title: this.black.dark,
+  },
+  icon: {
+    primary: this.red.medium,
+    secondary: this.gray.light,
+  },
   randomColors: { pink: "#FFB6C1", red:"#FFA07A", orange:"#FFD700", green:"#98FB98", purple:"#DDA0DD", yellow:"#F0E68C", blue:"#87CEEB", salmon:"#FFC0CB"}
 
 };

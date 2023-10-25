@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
   height:90px;
   width: 180px;
   border-radius:12px;
-  border: 2px dashed ${colors.red.light};
+  border: 2px dashed ${colors.primary.light};
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   &:hover{

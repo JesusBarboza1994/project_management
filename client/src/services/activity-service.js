@@ -20,9 +20,9 @@ export async function deleteActivity(id){
 
 export async function updateActivity(id, body){
   const project = JSON.parse(sessionStorage.getItem("currentProject")).id
-  const { relativeWeight: relative_weight, relativeProgress: relative_progress } = body
+  const { relativeWeight: relative_weight, relativeProgress: relative_progress, initDate: init_date, endDate: end_date } = body
   return await apiFetch(`/activities/${id}?project=${project}`, {
-    body: {relative_weight, relative_progress},
+    body: {relative_weight, relative_progress, init_date, end_date},
     method: "PATCH",
   });
 }

@@ -20,7 +20,7 @@ export const Wrapper = styled.form`
 `
 export const ErrorText = styled.p` 
   font-size:14px;
-  color:${colors.red.medium};
+  color:${colors.primary.medium};
 `
 
 export const InputContainer = styled.div`

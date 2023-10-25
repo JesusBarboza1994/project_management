@@ -106,7 +106,7 @@ export const TitleContainer = styled.div`
   margin-bottom: 24px;
 `
 export const StyleBiTrashAlt = styled(BiTrashAlt)`
-  color:${colors.red.medium};
+  color:${colors.primary.medium};
   scale:1.5;
   cursor:pointer;
 `

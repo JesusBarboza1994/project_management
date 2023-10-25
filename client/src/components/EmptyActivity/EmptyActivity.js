@@ -63,8 +63,8 @@ export default function EmptyActivity({parent}){
     <Wrapper onSubmit={(e)=>handleNewActivity(e)}>
       <Container>
         {(newActivity?.description !== "" && newActivity?.relativeWeight !== "") 
-          ? <MdAddCircleOutline style={{color: colors.red.medium, scale: "1.3"}} onClick={handleClickH1}/>
-          : <MdAddCircleOutline style={{color: colors.gray.medium}}/> 
+          ? <MdAddCircleOutline style={{color: colors.icon.primary, scale: "1.3"}} onClick={handleClickH1}/>
+          : <MdAddCircleOutline style={{color: colors.icon.secondary}}/> 
         }
         <input placeholder="Actividad vacía" type="text" value={newActivity.description} onChange={(e) => setNewActivity({...newActivity,description: e.target.value})}/>
       </Container>

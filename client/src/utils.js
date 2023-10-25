@@ -11,6 +11,11 @@ import { FaRegEdit } from "react-icons/fa";
 import { CgTrash } from "react-icons/cg";
 import { colors } from "./styles"
 
+
+export function formatDateToString(date){
+    return date.split("T")[0]
+} 
+  
 export const Icons = {
     arrowDown: <RiArrowDownSLine style={{ width: "16px", height: "21px" }} />,
     notificationDark: <RiNotificationFill />,

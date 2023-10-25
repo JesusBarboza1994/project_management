@@ -11,11 +11,11 @@ export const Wrapper = styled.form`
   padding: 4px 16px;
   gap: 8px;
   border-radius:12px;
-  border: 2px dashed ${colors.red.light};
+  border: 2px dashed ${colors.primary.light};
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   p{
-    color: ${colors.gray.medium}
+    color: ${colors.font.text}
   }
   input[type="text"]{
     width: 200px;

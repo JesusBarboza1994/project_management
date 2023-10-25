@@ -8,6 +8,7 @@ import ActivityCard from "../../components/ActivityCard/ActivityCard";
 import { BiArrowBack } from "react-icons/bi";
 import { StyleBiTrashAlt } from "../Workspace/styles";
 import { deleteProject } from "../../services/project-service";
+import { formatDateToString } from "../../utils";
 
 export default function Project(){
   const { currentProject, updateListActivites } = useAuth()
@@ -44,6 +45,11 @@ export default function Project(){
             nav("/workspaces")
           }}/>
           <h2>{currentProject.title}</h2>
+        </div>
+        <div>
+          <p>{formatDateToString(currentProject.init_date)}</p>
+          <p> : </p>
+          <p>{formatDateToString(currentProject.end_date)}</p>
         </div>
         <div>
           <h2>{(currentProject.total_progress*100).toFixed(2)}%</h2>

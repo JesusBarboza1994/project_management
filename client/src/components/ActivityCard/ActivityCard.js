@@ -5,6 +5,7 @@ import { colors } from "../../styles";
 import { deleteActivity, listActivities, updateActivity } from "../../services/activity-service";
 import { useAuth } from "../../context/auth-context";
 import EmptyActivity from "../EmptyActivity/EmptyActivity";
+import { formatDateToString } from "../../utils";
 
 export default function ActivityCard({activity, editProjectPermission}){
   const [subActivities, setSubActivities] = useState(null)
@@ -16,6 +17,8 @@ export default function ActivityCard({activity, editProjectPermission}){
     relativeProgress: activity.relative_progress,
     absoluteProgress: activity.absolute_progress,
     relativeWeightPercentage: activity.relative_weight_percentage,
+    initDate: activity.init_date,
+    endDate: activity.end_date
   })
   const handleSubActivities = () => {
     ejecutarEfectoRef.current = true;
@@ -35,11 +38,12 @@ export default function ActivityCard({activity, editProjectPermission}){
   }
 
   const handleUpdateActivity = (e) => {
-    console.log("UPDAte")
     e.preventDefault();
     updateActivity(activity._id, {
       relativeWeight: activityData.relativeWeight,
-      relativeProgress: activityData.relativeProgress
+      relativeProgress: (+activityData.relativeProgress)/100,
+      initDate: activityData.initDate,
+      endDate: activityData.endDate
     }).then(res => {
       const updatedProject = {...currentProject, total_progress: res.project.total_progress}
       setCurrentProject(updatedProject)
@@ -69,7 +73,9 @@ export default function ActivityCard({activity, editProjectPermission}){
       relativeWeight: activity.relative_weight,
       relativeProgress: activity.relative_progress,
       absoluteProgress: activity.absolute_progress,
-      relativeWeightPercentage: activity.relative_weight_percentage
+      relativeWeightPercentage: activity.relative_weight_percentage,
+      initDate: activity.init_date,
+      endDate: activity.end_date
     })
   }, [activity])
   
@@ -91,7 +97,7 @@ export default function ActivityCard({activity, editProjectPermission}){
           }
           <RelativeAbsoluteContainer>
             <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
-              <p>Peso Relativo: </p>
+              <p>Peso: </p>
               <div style={{display:"flex"}}>
                 <input type={"text"} value={activityData.relativeWeight} onChange={(e) => {
                   setActivityData({...activityData,relativeWeight: e.target.value})
@@ -99,34 +105,50 @@ export default function ActivityCard({activity, editProjectPermission}){
                 <p>| {(activityData.relativeWeightPercentage*100).toFixed(2)}%</p>
               </div>
             </DataContainer>
-            <DataContainer>
+            {/* <DataContainer>
               <p>Peso Absoluto: </p>
               <p>{(activity.absolute_weight*100).toFixed(2)}%</p>
-            </DataContainer>
+            </DataContainer> */}
           </RelativeAbsoluteContainer>
           <RelativeAbsoluteContainer>
             <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
               { 
                 !(activity.has_subactivities) &&
                 <>
-                  <p>Progreso Relativo: </p>
+                  <p>Progreso: </p>
                   <div style={{display:"flex"}}>
-                    <input type={"number"} value={(activityData.relativeProgress*100).toFixed(2)} onChange={(e) => {
-                      setActivityData({...activityData,relativeProgress: (+e.target.value)/100})
+                    <input type={"text"} value={(activityData.relativeProgress)} onChange={(e) => {
+                      setActivityData({...activityData,relativeProgress: e.target.value})
                     }}/>
                     <p>%</p>
                   </div>
                 </>
               }
             </DataContainer>
-            <DataContainer>
+            {/* <DataContainer>
               <p>Progreso Absoluto: </p>
               <p>{(activityData.absoluteProgress*100).toFixed(2)}%</p>
+            </DataContainer> */}
+          </RelativeAbsoluteContainer>
+          <RelativeAbsoluteContainer>
+            <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
+              <p>Inicio-Fin: </p>
+              <div style={{display:"flex"}}>
+                <input type={"date"} value={formatDateToString(activityData.initDate)} onChange={(e) => {
+                  console.log(e.target.value)
+                  console.log("asf2",typeof(e.target.value))
+                  setActivityData({...activityData,initDate: e.target.value})
+                }}/>
+                <input type={"date"} value={formatDateToString(activityData.endDate)} onChange={(e) => {
+                  setActivityData({...activityData,endDate: e.target.value})
+                }}/>
+              </div>
             </DataContainer>
+           
           </RelativeAbsoluteContainer>
           {
             editProjectPermission !== "view" &&
-            <BiTrashAlt onClick={handleDeleteActivity} style={{color:colors.red.dark, scale: "1.1"}}/>
+            <BiTrashAlt onClick={handleDeleteActivity} style={{color:colors.primary.dark, scale: "1.1"}}/>
           }
           <input type="submit" hidden/>
         </form>

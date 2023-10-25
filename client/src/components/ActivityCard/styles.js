@@ -17,7 +17,7 @@ export const Wrapper = styled.div`
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   p{
-    color: ${colors.black.dark}
+    color: ${colors.font.title}
   }
   form{
     width:100%;
@@ -61,6 +61,15 @@ export const DataContainer = styled.div`
     border:none;
     height: 28px;
     font-size:16px;
+    padding: 0 5px;
+    background:${props=>props.color};
+  }
+  input[type="date"]{
+    width: 100px;
+    border-radius: 5px;
+    border:none;
+    height: 28px;
+    font-size:12px;
     padding: 0 5px;
     background:${props=>props.color};
   }

@@ -6,7 +6,7 @@ export default function EmptyCard({onClick}){
   return(
     <>
     <Wrapper onClick={onClick}>
-      <IoAddOutline style={{width: '30', height: '30', color: colors.red.medium} }/>
+      <IoAddOutline style={{width: '30', height: '30', color: colors.icon.primary} }/>
     </Wrapper>
     </>
   )
