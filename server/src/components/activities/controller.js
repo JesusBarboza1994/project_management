@@ -27,17 +27,30 @@ async function create_activity(req, res){
     const parent_activity = await Activity.findById(parent);
     const activities_same_parent = await Activity.find({ parent: parent });
     const sum_weight = activities_same_parent.reduce((acc, activity) => acc + activity.relative_weight, 0) + relative_weight;
+    let init_date
     if(!parent_activity){
       index = 1
       absolute_weight = relative_weight/sum_weight
+      const project = await Project.findById(parent);
+      if(project.init_date){
+        init_date = project.init_date
+      }else{
+        init_date = new Date()
+      }
     }else{
-
+      if(parent_activity.init_date){
+        init_date = parent_activity.init_date
+      }else{
+        init_date = new Date()
+      }
       index = parent_activity.index + 1
       absolute_weight = (+relative_weight/sum_weight) * parent_activity.absolute_weight
     }
     relative_weight_percentage = relative_weight/sum_weight
+    const end_date = init_date
+    
     // Crear la actividad
-    const new_activity = new Activity({description, relative_weight, absolute_weight, index, parent, relative_weight_percentage});
+    const new_activity = new Activity({description, relative_weight, absolute_weight, index, parent, relative_weight_percentage, init_date, end_date});
     await new_activity.save();
     // // Actualizar los datos de las actividades hermanas
     // if(activities_same_parent.length !==0) await update_activities_with_same_parent(activities_same_parent, parent_activity, sum_weight)
@@ -128,11 +141,14 @@ async function delete_activity(req, res){
   }
 }
 
-
 async function update_activity(req, res){
   const id = req.params.id;
-  const { relative_weight, relative_progress } = req.body;
+  const { relative_weight, relative_progress, init_date, end_date } = req.body;
+
   const current_activity = await Activity.findByIdAndUpdate(id, { relative_weight }, { new: true });
+  if(!current_activity.has_subactivities) {
+    await Activity.findByIdAndUpdate(id, {init_date: formatStringToDate(init_date), end_date: formatStringToDate(end_date)}, { new: true });
+  }
   const parent_activity = await Activity.findById(current_activity.parent);
   const activities_same_parent = await Activity.find({ parent: current_activity.parent });
   const sum_weight = activities_same_parent.reduce((acc, act) => acc + act.relative_weight, 0);
@@ -150,31 +166,35 @@ async function update_activity(req, res){
     await Activity.findByIdAndUpdate(id, {relative_progress, absolute_progress: relative_progress*updated_current_activity.absolute_weight}, { new: true });
   }
   // Actualizar actividades de la cadena superior (padre en adelante)
-  const total_progress = await updateParentActivities(current_activity.parent);
+  const parent_result = await updateParentActivities(current_activity.parent);
   // Devolvemos la actividad actualizada
+  console.log("PARENT", parent_result)
   res.status(200).json(
     {
       message: "Update activity succesfully",
       project:{
-        total_progress
+        ...parent_result
       }
     }
   );
 }
 
 async function updateParentActivities(activityId) {
-  let total_progress
   const activity = await Activity.findById(activityId);
   if (!activity) {
     const main_activities = await Activity.find({ parent: activityId });
-    const {total_progress}=  await Project.findByIdAndUpdate(activityId, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
-    return total_progress; // Terminar si no se encuentra la actividad
+    const init_date = main_activities.map(activity => activity.init_date).sort((a, b) => a - b)[0];
+    const end_date = main_activities.map(activity => activity.end_date).sort((a, b) => a - b)[main_activities.length-1];
+    const {total_progress}=  await Project.findByIdAndUpdate(activityId, { init_date, end_date,total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
+    return {total_progress, init_date, end_date}; // Terminar si no se encuentra la actividad
   }
 
   // Actualizar la actividad actual
   const activities_same_parent = await Activity.find({ parent: activity._id });
+  const init_date = activities_same_parent.map(activity => activity.init_date).sort((a, b) => a - b)[0];
+  const end_date = activities_same_parent.map(activity => activity.end_date).sort((a, b) => a - b)[activities_same_parent.length-1];
   const absolute_progress = activities_same_parent.reduce((acc, act) => acc + act.absolute_progress, 0);
-  await Activity.findByIdAndUpdate(activity._id, { absolute_progress });
+  await Activity.findByIdAndUpdate(activity._id, { absolute_progress, init_date, end_date });
 
   // Obtener la actividad padre y llamar recursivamente
   const parentActivity = await Activity.findById(activity.parent);
@@ -182,8 +202,8 @@ async function updateParentActivities(activityId) {
     return await updateParentActivities(parentActivity._id);
   }else{
     const main_activities = await Activity.find({ parent: activity.parent });
-    const {total_progress}=  await Project.findByIdAndUpdate(activity.parent, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
-    return total_progress;
+    const {total_progress, init_date, end_date}=  await Project.findByIdAndUpdate(activity.parent, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
+    return {total_progress, init_date, end_date};
   }
 }
 
@@ -251,7 +271,12 @@ async function update_activities_with_same_parent(activities, parent_activity, s
     await Activity.findByIdAndUpdate(activity._id, {absolute_weight, relative_weight_percentage, absolute_progress}, { new: true } )
   })
 }
-
+function formatStringToDate(string){
+  if(string.includes("T")) return new Date(string)
+  const [año, mes, dia] = string.split('-').map(Number); // Divide la cadena y convierte a números
+  // Nota: Restamos 1 al mes ya que los meses en JavaScript se indexan desde 0 (enero) a 11 (diciembre)
+  return new Date(año, mes - 1, dia);
+  }
 module.exports = {
   list_activities,
   create_activity,

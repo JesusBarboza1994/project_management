@@ -7,6 +7,8 @@ const activitySchema = new mongoose.Schema({
   absolute_weight: { type: Number, required: true },
   relative_progress: { type: Number, default: 0 },
   absolute_progress: { type: Number, default: 0 },
+  init_date: { type: Date, default: Date.now },
+  end_date: { type: Date, default: Date.now },
   index: { type: Number, required: true },
   has_subactivities: { type: Boolean, default: false},
   parent: {

@@ -26,6 +26,8 @@ async function list_workspaces(req, res){
             title: project.title,
             total_progress: project.total_progress,
             color: project.color,
+            init_date: project.init_date,
+            end_date: project.end_date,
             favorite: project.collaborators.find(collaborator => collaborator.user.toString() === req.user).favorite,
             // Agrega otros campos del proyecto según sea necesario
           }))
