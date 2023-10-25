@@ -33,3 +33,9 @@ export async function sharedProject(body){
     body: {email, permission}
   })
 }
+export async function restoreProject(id){
+  const project = JSON.parse(sessionStorage.getItem("currentProject")).id
+  return await apiFetch(`/projects/trash/${id}?project=${project}`, {
+    method: "PATCH",
+  });
+}

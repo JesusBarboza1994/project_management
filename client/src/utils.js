@@ -13,6 +13,7 @@ import { colors } from "./styles"
 
 
 export function formatDateToString(date){
+    if(!date) return ""
     return date.split("T")[0]
 } 
   

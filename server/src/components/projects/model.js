@@ -5,6 +5,7 @@ const projectSchema = new mongoose.Schema({
   total_progress: { type: Number, default: 0 },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
+  is_deleted: { type: Boolean, default: false },
   init_date: { type: Date },
   end_date: { type: Date },
   color: { type: String, default: "pink"},

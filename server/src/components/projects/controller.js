@@ -56,6 +56,11 @@ async function create_project(req, res){
 async function delete_project(req, res){
   try {
     const id = req.params.id
+    const project = await Project.findById(id);
+    if(!project.is_deleted){
+      await Project.findByIdAndUpdate(id, { is_deleted: true });
+      return res.status(200).json({ message: 'Proyecto en papelera' });
+    } 
     deleteDescendantActivities(id)
     await Project.findByIdAndDelete(id);
     res.status(200).json({ message: 'Proyecto eliminado' });
@@ -63,6 +68,17 @@ async function delete_project(req, res){
     console.log(error)
     res.status(500).json({ error: 'Error al crear el proyecto' }); // Agregamos una respuesta de error  
   } 
+}
+
+async function restore_from_trash_project(req, res){
+  try {
+    const id = req.params.id
+    await Project.findByIdAndUpdate(id, { is_deleted: false });
+    res.status(200).json({ message: 'Proyecto enviado/regresado a la papelera' });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Error al enviar a la papelera el proyecto' }); // Agregamos una respuesta de error
+  }  
 }
 
 async function update_project(req, res){
@@ -193,5 +209,6 @@ module.exports = {
   update_project,
   set_favorite,
   update_color_project,
-  shared_project
+  shared_project,
+  restore_from_trash_project
 }

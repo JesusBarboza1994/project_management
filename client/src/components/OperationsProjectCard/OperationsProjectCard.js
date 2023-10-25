@@ -3,9 +3,10 @@ import { ColorsContainer, EachColor, IconContainer, IconsContainer, StyleColorPa
 import { colors } from "../../styles"
 import { useEffect, useRef, useState } from "react"
 import { useAuth } from "../../context/auth-context"
-import {  updateColorProject, updateFavoriteProject } from "../../services/project-service"
+import {  restoreProject, updateColorProject, updateFavoriteProject } from "../../services/project-service"
 import {PiShareFatDuotone} from "react-icons/pi"
-export default function OperationsProjectCard({project}){
+import {MdOutlineRestoreFromTrash} from "react-icons/md"
+export default function OperationsProjectCard({project, isDeleted}){
   const divRef = useRef(null)
   const {setShowModalShared, currentProject, setCurrentProject, sharedProjects, setSharedProjects,updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
   const [showColors, setShowColors] = useState(false)
@@ -22,6 +23,14 @@ export default function OperationsProjectCard({project}){
     e.stopPropagation()
     setShowModalShared(true)
     setCurrentProject({...currentProject, id: project._id})
+  }
+  const handleRestoreProject = (e) => {
+    e.stopPropagation()
+    setCurrentProject({...currentProject, id: project._id})
+    restoreProject(project._id).then(res => {
+      console.log(res)
+      setUpdateWorkspace(!updateWorkspace)
+    })
   }
   const handleFavorite = (e) => {
     e.stopPropagation()
@@ -73,9 +82,17 @@ export default function OperationsProjectCard({project}){
         <IconContainer ref={divRef} onClick={(e) => {setShowColors(!showColors); e.stopPropagation()}}>
           <StyleColorPalette style={{scale: "0.9"}} />
         </IconContainer>
-        <IconContainer ref={divRef} onClick={(e)=>{handleSharedProject(e)}}>
-          <PiShareFatDuotone style={{scale: "0.9"}} />
-        </IconContainer>
+        {
+          isDeleted ? 
+          <IconContainer ref={divRef} onClick={(e)=>{handleRestoreProject(e)}}>
+            <MdOutlineRestoreFromTrash style={{scale: "1.2"}} />
+          </IconContainer>
+          :
+          <IconContainer ref={divRef} onClick={(e)=>{handleSharedProject(e)}}>
+            <PiShareFatDuotone style={{scale: "0.9", fontWeight:200}} />
+          </IconContainer>
+        }
+
       </IconsContainer>
 
       <ColorsContainer showColors={showColors}>
@@ -92,7 +109,7 @@ export default function OperationsProjectCard({project}){
 function updateWorkspaceList(workspaceList, updatedProject){
   const updatedWorkspaces = workspaceList.map((workspace) => {
     const updatedProjects = workspace.projects.map((project) => {
-      if (project.id === updatedProject.id) return { ...project, favorite: updatedProject.favorite };
+      if (project._id === updatedProject._id) return { ...project, favorite: updatedProject.favorite };
       return project;
     });
     return { ...workspace, projects: updatedProjects };

@@ -81,7 +81,7 @@ async function create_activity(req, res){
     res.status(201).json({
       message: "Create activity succesfully",
       project:{
-        total_progress
+        ...total_progress
       }
     })
   } catch (error) {

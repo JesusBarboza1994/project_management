@@ -12,7 +12,7 @@ export const ColorsContainer=styled.div`
   column-gap: 2px;
   grid-template-rows:repeat(2,1fr);
   grid-template-columns:repeat(4,1fr);
-  background:${colors.white};
+  background:${colors.background.blank};
   position: absolute;
   top:-40px;
 `

@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import { useAuth } from "../../context/auth-context";
-import { Close, Container, MirrorScreen, Modal, ProjectContainer, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
+import { Container, ProjectContainer, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
 import { createWorkspace, deleteWorkspace, listWorkspaces } from "../../services/workspace-service";
-import Input from "../../components/Input/Input";
-import Button from "../../components/Button"
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
 import { createProject, sharedProject } from "../../services/project-service";
+import Modal from "../../components/Modal";
 export default function Workspace(){
-  const { currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
+  const { trashedProjects, setTrashedProjects, currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
   const [workspaceName, setWorkspaceName] = useState("")
   const [project, setProject] = useState({
     name: "",
@@ -17,6 +16,8 @@ export default function Workspace(){
   })
   const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
   const [showProjectModal, setShowProjectModal] = useState(false)
+  const [currentWorkspace, setCurrentWorkspace] = useState("")
+  const [showDeleteWorkspaceModal, setShowDeleteWorkspaceModal] = useState(false)  
   const [sharedProjectUser, setSharedProjectUser] = useState({
     email: "",
     permission:"view"
@@ -78,6 +79,7 @@ export default function Workspace(){
       console.log("WORKSPACES", res)
       setFavoriteProjects(res.favoriteProjects)
       setSharedProjects(res.sharedProjects)
+      setTrashedProjects(res.trashedProjects)
     }).catch(err => {
       console.log(err)
     })
@@ -128,7 +130,10 @@ export default function Workspace(){
               <WorkspaceContainer>
                 <WorkspaceTitleContainer>
                   <h3>{workspace.name}</h3>
-                  <StyleBiTrashAlt onClick={()=>handleDeleteWorkspace(workspace.id)}/>
+                  <StyleBiTrashAlt onClick={()=>{
+                    setCurrentWorkspace(workspace.id)
+                    setShowDeleteWorkspaceModal(true)
+                    }}/>
                 </WorkspaceTitleContainer>
                 <ProjectContainer>
                   <EmptyCard onClick={()=>{
@@ -147,33 +152,83 @@ export default function Workspace(){
               </WorkspaceContainer>
             )
           })}
+          {trashedProjects.length !==0 &&
+            <WorkspaceContainer>
+              <WorkspaceTitleContainer>
+                <h3>Trash</h3>
+              </WorkspaceTitleContainer>
+              <ProjectContainer>
+                {
+                  trashedProjects.map(project=>{
+                    return(
+                      <ProjectCard key={"favorites"+project._id} project={project} isDeleted={true}/>
+                    )
+                  })
+                } 
+              </ProjectContainer>
+            </WorkspaceContainer>
+          }
         </Container>
-        <Modal showModal={showWorkSpaceModal} onSubmit={(e)=>handleSubmit(e,"workspace")}>
-          <h2>Create a new workspace</h2>
-          <Input type={"text"} label={"Name"} placeholder={"Workspace X"} onChange={(e) => setWorkspaceName(e.target.value)}/>
-          <Button text={"Create"} type={"solid"}/>
-          <Close onClick={()=>setShowWorkSpaceModal(false)}>X</Close>
-        </Modal>
-        <Modal showModal={showProjectModal} onSubmit={(e)=>handleSubmit(e,"project")}>
-          <h2>Create a new project</h2>
-          <Input type={"text"} label={"Name"} placeholder={"Project X"} onChange={(e) => setProject({...project, name: e.target.value})} />
-          <Button text={"Create"} type={"solid"}/>
-          <Close onClick={()=>setShowProjectModal(false)}>X</Close>
-        </Modal>
-        <Modal showModal={showModalShared} onSubmit={(e)=>handleSharedSubmit(e)}>
-          <h2>Shared this project</h2>
-          <Input type={"text"} label={"Email"} placeholder={"username123@mail.com"} onChange={(e) => setSharedProjectUser({...sharedProjectUser, email: e.target.value})} />
-          <select onChange={(e) => setSharedProjectUser({...sharedProjectUser, permission: e.target.value})}>
-            <option value="view">View</option>
-            <option value="edit">Edit</option>
-            <option value="admin">Admin</option>
-          </select>
-          <Button text={"Create"} type={"solid"}/>
-          <Close onClick={()=>setShowModalShared(false)}>X</Close>
-        </Modal>
+        <Modal 
+          title={"Create a new workspace"}
+          type={"text"}
+          label={"Name"}
+          placeholder={"Workspace X"}
+          onChange={(e) => setWorkspaceName(e.target.value)}
+          showModal={showWorkSpaceModal} onSubmit={(e)=>handleSubmit(e,"workspace")}
+          setShowModal={setShowWorkSpaceModal}
+          typeButton={"solid"}
+          text={"Create"}
+          onClick={()=>setShowWorkSpaceModal(false)}
+         />
+        <Modal
+          title={"Create a new project"}
+          type={"text"}
+          label={"Name"}
+          placeholder={"Project X"}
+          onChange={(e) => setProject({...project, name: e.target.value})}
+          showModal={showProjectModal} 
+          setShowModal={setShowProjectModal}
+          onClick={()=>setShowProjectModal(false)}
+          onSubmit={(e)=>handleSubmit(e,"project")}
+          typeButton={"solid"}
+          text={"Create"}
+          />
+
+        <Modal
+          title={"Share this project"}
+          type={"text"}
+          showModal={showModalShared}
+          setShowModal={setShowModalShared}
+          label={"Email"}
+          placeholder={"username123@mail.com"}
+          onChange={(e) => setSharedProjectUser({...sharedProjectUser, email: e.target.value})}
+          onClick={()=>setShowModalShared(false)}
+          onSubmit={(e)=>handleSharedSubmit(e)}
+          typeButton={"solid"}
+          text={"Share"}
+          >
+            <select onChange={(e) => setSharedProjectUser({...sharedProjectUser, permission: e.target.value})}>
+              <option value="view">View</option>
+              <option value="edit">Edit</option>
+              <option value="admin">Admin</option>
+            </select>
+          </Modal>
+          <Modal 
+            showModal={showDeleteWorkspaceModal} 
+            setShowModal={setShowDeleteWorkspaceModal}
+            onSubmit={(e)=>{
+              e.preventDefault()
+              handleDeleteWorkspace(currentWorkspace)
+              setShowDeleteWorkspaceModal(false)
+              setCurrentWorkspace("")
+            }}
+            title="¿Estas seguro que deseas eliminar este espacio de trabajo?"
+            text="Eliminar"
+            typeButton="solid"
+            onClick={() => setShowDeleteWorkspaceModal(false)}
+          />
       </Wrapper>
-      <MirrorScreen showModal={showProjectModal || showWorkSpaceModal}> 
-      </MirrorScreen>
     </>
   )
 }

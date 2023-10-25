@@ -2,15 +2,22 @@ import styled from "@emotion/styled";
 import { colors } from "../../styles";
 
 export const Wrapper = styled.div`
-  width: 80%;
-  margin:auto;
-  margin-top: 60px;
+  width: 100%;
+  padding-top: 60px;
+  position:relative;
   min-height: 200px;
-  padding: 24px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  `
+  export const MainContainer = styled.div`
+  width:80%;
   background:${colors.background.light};
   border-radius: 20px;
-`
+  padding: 24px;
+  
 
+`
 export const Container = styled.div`
   display:flex;
   flex-direction: column;

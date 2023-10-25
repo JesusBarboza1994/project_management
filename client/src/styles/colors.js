@@ -45,6 +45,7 @@ export const colors = {
   font: {
     text:basicColors.gray.dark,
     title:basicColors.black.dark,
+    white: basicColors.white
   },
   icon: {
     primary:basicColors.red.medium,

@@ -16,7 +16,7 @@ export function Button({text, onClick, type, Icon}){
 	}else if(type==="solid"){
 		background = colors.primary.medium;
 		border = colors.primary.medium;
-		color = colors.white;
+		color = colors.font.white;
 		colorHover = colors.primary.light;
 		borderHover = colors.primary.highlight;
 	}else if(type==="secondary"){

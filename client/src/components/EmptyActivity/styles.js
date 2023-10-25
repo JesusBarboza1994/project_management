@@ -6,7 +6,7 @@ export const Wrapper = styled.form`
   justify-content:space-between;
   align-items:center;
   height:40px;
-  background:${colors.white};
+  background:${colors.background.blank};
   width: 100%;
   padding: 4px 16px;
   gap: 8px;
@@ -22,7 +22,7 @@ export const Wrapper = styled.form`
     border-radius: 5px;
     border:none;
     height: 28px;
-    background:${colors.background.light};
+    background:${colors.background.blank};
   }
   input[type="number"]{
     width: 50px;
@@ -31,7 +31,7 @@ export const Wrapper = styled.form`
     height: 28px;
     font-size:14px;
     padding: 0 5px;
-    background:${colors.background.light};
+    background:${colors.background.blank};
   }
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;

@@ -16,25 +16,42 @@ async function create_workspace(req, res){
 async function list_workspaces(req, res){
   try {
     const workspaces = await Workspace.find({user: req.user});
+    const trash_projects = []
     const workspaceList = await Promise.all(workspaces.map(async (workspace) => {
       const projects = await Project.find({ workspace: workspace._id });
         return {
           name: workspace.name,
           id: workspace.id,
-          projects: projects.map((project) => ({
-            _id: project.id,
-            title: project.title,
-            total_progress: project.total_progress,
-            color: project.color,
-            init_date: project.init_date,
-            end_date: project.end_date,
-            favorite: project.collaborators.find(collaborator => collaborator.user.toString() === req.user).favorite,
-            // Agrega otros campos del proyecto según sea necesario
-          }))
+          projects: projects.map((project) => {
+            if(project.is_deleted) {
+              trash_projects.push({
+              _id: project.id,
+              title: project.title,
+              total_progress: project.total_progress,
+              color: project.color,
+              init_date: project.init_date,
+              end_date: project.end_date,
+              favorite: project.collaborators.find(collaborator => collaborator.user.toString() === req.user).favorite,
+              })
+              return null
+            }else{
+              return {
+                _id: project.id,
+                title: project.title,
+                total_progress: project.total_progress,
+                color: project.color,
+                init_date: project.init_date,
+                end_date: project.end_date,
+                favorite: project.collaborators.find(collaborator => collaborator.user.toString() === req.user).favorite,
+                // Agrega otros campos del proyecto según sea necesario
+              }
+            }
+        }).filter(project => project !== null)
         };
     }));
     const favorite_projects = []
     workspaceList.forEach(workspace => {
+      console.log("WORKSPACE", workspace)
       workspace.projects.forEach(project => {
         if(project.favorite){
           favorite_projects.push(project)
@@ -59,7 +76,7 @@ async function list_workspaces(req, res){
 
 
 
-    res.status(200).json({workspaces:workspaceList, favoriteProjects:favorite_projects, sharedProjects:real_shared_projects});
+    res.status(200).json({workspaces:workspaceList, favoriteProjects:favorite_projects, sharedProjects:real_shared_projects, trashedProjects:trash_projects});
   } catch (error) {
     console.log("ERROR",error);
     res.status(500).json({ error: 'Error al obtener la lista de proyectos' });

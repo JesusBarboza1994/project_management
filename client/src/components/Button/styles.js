@@ -16,7 +16,7 @@ export const StyledButton = styled.button`
 	border: ${(props) => `1px solid `+props.border|| 'none'};
   &:hover{
     background: ${(props) => props.colorHover};
-		color: ${colors.white};
+		color: ${colors.font.white};
     border: ${(props) => `1px solid `+props.borderHover|| 'none'};
   }
 `
