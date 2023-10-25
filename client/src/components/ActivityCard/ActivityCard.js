@@ -13,6 +13,7 @@ export default function ActivityCard({activity, editProjectPermission}){
   const ejecutarEfectoRef = useRef(false);
   const [inputState, setInputState] = useState("")
   const [activityData, setActivityData] = useState({
+    // TODO: Eliminar todos los states (o keys dentro de state) que ya no se están usando.
     absoluteWeight: activity.absolute_weight,
     relativeWeight: activity.relative_weight,
     relativeProgress: activity.relative_progress,
