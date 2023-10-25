@@ -11,6 +11,7 @@ export default function ActivityCard({activity, editProjectPermission}){
   const [subActivities, setSubActivities] = useState(null)
   const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities, setCurrentProject, currentProject} = useAuth()
   const ejecutarEfectoRef = useRef(false);
+  const [inputState, setInputState] = useState("")
   const [activityData, setActivityData] = useState({
     absoluteWeight: activity.absolute_weight,
     relativeWeight: activity.relative_weight,
@@ -39,9 +40,10 @@ export default function ActivityCard({activity, editProjectPermission}){
 
   const handleUpdateActivity = (e) => {
     e.preventDefault();
+    if(!inputState) return
     updateActivity(activity._id, {
       relativeWeight: activityData.relativeWeight,
-      relativeProgress: (+activityData.relativeProgress)/100,
+      relativeProgress: inputState/100,
       initDate: activityData.initDate,
       endDate: activityData.endDate
     }).then(res => {
@@ -68,6 +70,7 @@ export default function ActivityCard({activity, editProjectPermission}){
   },[updateSubActivities])
 
   useEffect(() => {
+    setInputState(activity.relativeProgress)
     setActivityData({
       absoluteWeight: activity.absolute_weight,
       relativeWeight: activity.relative_weight,
@@ -117,9 +120,9 @@ export default function ActivityCard({activity, editProjectPermission}){
                 <>
                   <p>Progreso: </p>
                   <div style={{display:"flex"}}>
-                    <input type={"text"} value={(activityData.relativeProgress)} onChange={(e) => {
-                      setActivityData({...activityData,relativeProgress: e.target.value})
-                    }}/>
+                    <input type={"text"} value={inputState} onChange={(e) => {
+                      setInputState(e.target.value)}} 
+                      />
                     <p>%</p>
                   </div>
                 </>
