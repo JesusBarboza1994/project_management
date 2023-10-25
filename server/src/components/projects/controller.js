@@ -58,7 +58,13 @@ async function delete_project(req, res){
     const id = req.params.id
     const project = await Project.findById(id);
     if(!project.is_deleted){
-      await Project.findByIdAndUpdate(id, { is_deleted: true });
+      const collaborator = project.collaborators.find(collaborator => collaborator.user.toString() === req.user);
+      const collaborators = [...project.collaborators.filter(collaborator => collaborator.user.toString() !== req.user), {
+        user: req.user,
+        favorite: false,
+        permission: collaborator.permission
+      }] 
+      await Project.findByIdAndUpdate(id, { is_deleted: true, collaborators:collaborators });
       return res.status(200).json({ message: 'Proyecto en papelera' });
     } 
     deleteDescendantActivities(id)
