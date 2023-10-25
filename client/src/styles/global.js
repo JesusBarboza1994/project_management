@@ -17,7 +17,7 @@ export const reset = css`
 }
 
 &::-webkit-scrollbar-thumb {
-  background-color:${colors.gray.medium};
+  background-color:${colors.background.light};
   border-radius: 4px;
 }
 
@@ -98,10 +98,10 @@ select {
 export const global = css`
   body {
     margin:0;
-    background:${colors.black.medium};
+    background:${colors.background};
     font-size: 1rem;
     line-height: 1.5rem;
     font-family: ${fonts.primary};
-    color: ${colors.gray[900]};
+    color: ${colors.font.text};
   }
 `;

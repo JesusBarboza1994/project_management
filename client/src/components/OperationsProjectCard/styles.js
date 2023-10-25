@@ -5,7 +5,7 @@ import {IoColorPaletteOutline} from "react-icons/io5"
 export const ColorsContainer=styled.div`
   padding: 6px;
   display:${props=>props.showColors ? 'grid': 'none'};
-  border: 1px solid ${colors.black.light};
+  border: 1px solid ${colors.secondary.light};
   border-radius:12px;
   z-index:2;
   row-gap:2px;
@@ -31,10 +31,10 @@ export const IconContainer = styled.div`
   padding:4px;
   // top: 5px;
   // right: ${props=>props.right};
-  background:${colors.gray.highlight};
+  background:${colors.background.light};
   border-radius: 50%;
   &:hover{
-    background:${colors.gray.light};
+    background:${colors.background.light};
   }
 `
 export const StyleColorPalette = styled(IoColorPaletteOutline)`

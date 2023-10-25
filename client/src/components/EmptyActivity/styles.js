@@ -22,7 +22,7 @@ export const Wrapper = styled.form`
     border-radius: 5px;
     border:none;
     height: 28px;
-    background:${colors.gray.highlight};
+    background:${colors.background.light};
   }
   input[type="number"]{
     width: 50px;
@@ -31,7 +31,7 @@ export const Wrapper = styled.form`
     height: 28px;
     font-size:14px;
     padding: 0 5px;
-    background:${colors.gray.highlight};
+    background:${colors.background.light};
   }
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;

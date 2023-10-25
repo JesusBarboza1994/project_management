@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../components/Button";
 import Input from "../../components/Input/Input";
-import { ErrorText, InputContainer, Wrapper } from "./styles";
+import { ErrorText, Wrapper } from "./styles";
 import { login } from "../../services/session-service";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth-context";

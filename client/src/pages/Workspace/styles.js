@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
   margin-top: 60px;
   min-height: 200px;
   padding: 24px;
-  background:${colors.white};
+  background:${colors.background.blank};
   border-radius: 20px;
   display:flex;
   flex-direction:column;
@@ -41,7 +41,7 @@ export const MirrorScreen = styled.div`
    top:0;
    z-index:1;
    opacity:0.6;
-   background:${colors.black.light};
+   background:${colors.background.medium};
    display:${props=>props.showModal ? "flex": "none"};
    align-items:center;
    justify-content:center;
@@ -62,7 +62,7 @@ export const Modal = styled.form`
   border-radius: 16px;
   opacity:1;
   padding:16px;
-  background:${colors.gray.light};
+  background:${colors.background.light};
   width:500px;
   height:250px;
   align-items:center;
@@ -77,7 +77,7 @@ export const Close = styled.div`
   align-items:center;
   justify-content:center;
   font-weight:800;
-  background:${colors.gray.light};
+  background:${colors.background.light};
   cursor:pointer;
   // @media(max-width:650px){
     height:20px;
@@ -89,13 +89,15 @@ export const Close = styled.div`
 `
 
 export const WorkspaceContainer = styled.div`
-   display:flex;
-   gap: 12px;
-   flex-direction:column;
-   h3{
-    font-size: 18px;
-    font-weight:600;
-   }
+  display:flex;
+  gap: 12px;
+  flex-direction:column;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid ${colors.tertiary.dark};
+  h3{
+  font-size: 18px;
+  font-weight:600;
+  }
 `
 
 export const TitleContainer = styled.div`

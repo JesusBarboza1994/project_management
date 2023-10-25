@@ -1,15 +1,10 @@
-import { FaThumbsDown } from "react-icons/fa";
-
-export const colors = {
+const basicColors = {
   pink:{
    dark: "#BF5F82",
    medium: "#F48FB1",
    light: "#FFC1E3",
    shallow: "rgba(244, 143, 177, 0.15)",
   },
-
-  background : "#F5F5F6",
-  backgroundLight :"#E1E2E1",
   white : "#FFFFFF",
 
   black : {
@@ -30,20 +25,34 @@ export const colors = {
     light : "#D3D3D3",
     highlight : "#F5F3F4",
   },
+  
+  
+};
+export const colors = {
+  randomColors: { pink: "#FFB6C1", red:"#FFA07A", orange:"#FFD700", green:"#98FB98", purple:"#DDA0DD", yellow:"#F0E68C", blue:"#87CEEB", salmon:"#FFC0CB"},
   primary:{
-    dark: this.red.dark,
-    medium: this.red.medium,
-    light: this.red.light,
-    highlight: this.red.highlight
+    dark:basicColors.red.dark,
+    medium:basicColors.red.medium,
+    light:basicColors.red.light,
+    highlight:basicColors.red.highlight
+  },
+  secondary:{
+    light: basicColors.black.light
+  },
+  tertiary:{
+    dark: basicColors.gray.medium
   },
   font: {
-    text: this.gray.dark,
-    title: this.black.dark,
+    text:basicColors.gray.dark,
+    title:basicColors.black.dark,
   },
   icon: {
-    primary: this.red.medium,
-    secondary: this.gray.light,
+    primary:basicColors.red.medium,
+    secondary:basicColors.gray.light,
   },
-  randomColors: { pink: "#FFB6C1", red:"#FFA07A", orange:"#FFD700", green:"#98FB98", purple:"#DDA0DD", yellow:"#F0E68C", blue:"#87CEEB", salmon:"#FFC0CB"}
-
-};
+  background : {
+    blank: basicColors.white,
+    light: basicColors.gray.light,
+    medium: basicColors.black.medium
+  }
+}

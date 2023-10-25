@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   justify-content:flex-end;
   gap: 2px;
   position:relative;
-  border: 1px solid ${colors.black.light};
+  border: 1px solid ${colors.secondary.light};
   align-items:center;
   height:90px;
   width: 180px;

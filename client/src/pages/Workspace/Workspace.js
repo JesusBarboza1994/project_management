@@ -91,22 +91,6 @@ export default function Workspace(){
           <MdAddCircleOutline style={{scale:"2"}} onClick={()=>setShowWorkSpaceModal(true)}/>
         </TitleContainer>
         <Container>
-          {sharedProjects.length !==0 &&
-            <WorkspaceContainer>
-              <WorkspaceTitleContainer>
-                <h3>Shared Projects</h3>
-              </WorkspaceTitleContainer>
-              <ProjectContainer>
-                {
-                  sharedProjects.map(project=>{
-                    return(
-                      <ProjectCard key={"shared"+project._id} project={project} />
-                    )
-                  })
-                } 
-              </ProjectContainer>
-            </WorkspaceContainer>
-          }
           {favoriteProjects.length !==0 &&
             <WorkspaceContainer>
               <WorkspaceTitleContainer>
@@ -117,6 +101,22 @@ export default function Workspace(){
                   favoriteProjects.map(project=>{
                     return(
                       <ProjectCard key={"favorites"+project._id} project={project} />
+                    )
+                  })
+                } 
+              </ProjectContainer>
+            </WorkspaceContainer>
+          }
+           {sharedProjects.length !==0 &&
+            <WorkspaceContainer>
+              <WorkspaceTitleContainer>
+                <h3>Shared Projects</h3>
+              </WorkspaceTitleContainer>
+              <ProjectContainer>
+                {
+                  sharedProjects.map(project=>{
+                    return(
+                      <ProjectCard key={"shared"+project._id} project={project} />
                     )
                   })
                 } 

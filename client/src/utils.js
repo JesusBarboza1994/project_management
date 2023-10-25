@@ -36,7 +36,7 @@ export const Icons = {
     download: <RiDownloadLine />,
     closed: <RiCloseFill style={{ width: "20px", height: "20px" }} />,
     arrowUp: <RiArrowUpSLine />,
-    closeCircle: <RiCloseCircleLine style={{ color: `${colors.gray.light}`, scale: 2 }} />,
+    closeCircle: <RiCloseCircleLine style={{ color: `${colors.background.light}`, scale: 2 }} />,
     phone: <RiPhoneLine />,
     phoneCheck:<RiPhoneFill style={{ width: "20px", height: "18.48px", color:"#616161"}}/>,
     addFile: <RiFileAddLine />,

@@ -4,8 +4,8 @@ import { colors } from "../../styles";
 export const Wrapper = styled.div`
   width:100%;
   display:flex;
-  background: ${colors.gray.highlight};
-  color:${colors.black.dark};
+  background: ${colors.background.light};
+  color:${colors.font.title};
   padding: 1.5rem 2rem;
   align-items: center;
   justify-content: space-between;

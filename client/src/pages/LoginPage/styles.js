@@ -5,7 +5,7 @@ export const Wrapper = styled.form`
   margin:auto;
   margin-top:100px;
   width:360px;
-  background:${colors.gray.light};
+  background:${colors.background.light};
   padding: 32px;
   border-radius:24px;
   display:flex;
@@ -31,6 +31,6 @@ export const InputContainer = styled.div`
   p{
     font-size: 18px;
     font-weight: 600;
-    color:${colors.black.light};
+    color:${colors.font.text};
   }
 `

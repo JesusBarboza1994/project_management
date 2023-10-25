@@ -10,7 +10,7 @@ export function Button({text, onClick, type, Icon}){
 	if(type==="outline"){
 		background = colors.white;
 		border = colors.primary.light;
-		color = colors.black.dark
+		color = colors.font.title
 		colorHover = colors.primary.light;
 		borderHover = colors.primary.highlight;
 	}else if(type==="solid"){
@@ -22,8 +22,8 @@ export function Button({text, onClick, type, Icon}){
 	}else if(type==="secondary"){
 		background = colors.white;
 		border = colors.white
-		color = colors.gray.dark
-		borderHover = colors.gray.dark;
+		color = colors.tertiary.dark
+		borderHover = colors.tertiary.dark;
 	}
 	return(
 			<StyledButton
