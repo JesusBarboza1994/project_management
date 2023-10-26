@@ -7,12 +7,12 @@ import EmptyActivity from "../../components/EmptyActivity/EmptyActivity";
 import ActivityCard from "../../components/ActivityCard/ActivityCard";
 import { BiArrowBack } from "react-icons/bi";
 import { StyleBiTrashAlt } from "../Workspace/styles";
-import { deleteProject } from "../../services/project-service";
+import { deleteProject, updateTitleProject } from "../../services/project-service";
 import { formatDateToString } from "../../utils";
 import Modal from "../../components/Modal";
 
 export default function Project(){
-  const { currentProject, updateListActivites } = useAuth()
+  const { currentProject, updateListActivites, setCurrentProject } = useAuth()
   const [ activities, setActivities ] = useState(null)
   const [ editProjectPermission, setEditProjectPermission ] = useState("view")
   const [showModalDeleteProject, setShowModalDeleteProject] = useState(false)
@@ -28,6 +28,16 @@ export default function Project(){
     })
     sessionStorage.removeItem("isDeleted")
     nav("/workspaces")
+  }
+  const handleUpdateNameActivity = (e) => {
+    e.preventDefault()
+    sessionStorage.setItem("currentProject", JSON.stringify(currentProject))
+    document.getElementById("inputName").blur()
+    updateTitleProject(currentProject.id).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    })
   }
 
   useEffect(() => {
@@ -63,17 +73,21 @@ export default function Project(){
       <MainContainer>
         <TitleContainer>
           <div>
-            <BiArrowBack style={{scale:"1.5", cursor:"pointer"}} onClick={() =>{
-              sessionStorage.removeItem("currentProject")
-              sessionStorage.removeItem("isDeleted")
-              nav("/workspaces")
-            }}/>
-            <h2>{currentProject.title}</h2>
-          </div>
-          <div>
-            <p>{formatDateToString(currentProject.init_date)}</p>
-            <p> : </p>
-            <p>{formatDateToString(currentProject.end_date)}</p>
+            <div>
+              <BiArrowBack style={{scale:"1.5", cursor:"pointer"}} onClick={() =>{
+                sessionStorage.removeItem("currentProject")
+                sessionStorage.removeItem("isDeleted")
+                nav("/workspaces")
+              }}/>
+              <form id="projectName" onSubmit={(e)=>handleUpdateNameActivity(e)}>
+                <input id="inputName" value={currentProject.title} onChange={e => setCurrentProject({...currentProject, title:e.target.value})}/>
+              </form>
+            </div>
+            <div>
+              <p>{formatDateToString(currentProject.init_date)}</p>
+              <p> : </p>
+              <p>{formatDateToString(currentProject.end_date)}</p>
+            </div>
           </div>
           <div>
             <h2>{(currentProject.total_progress*100).toFixed(2)}%</h2>

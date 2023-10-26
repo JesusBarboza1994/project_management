@@ -19,3 +19,10 @@ export async function deleteWorkspace(id){
     method: "DELETE"
   })
 }
+
+export async function updateWorkspaceName(id, name){
+  return await apiFetch(`/workspaces/${id}`, {
+    body: {name},
+    method: "PATCH"
+  })
+}

@@ -44,14 +44,20 @@ export const WorkspaceContainer = styled.div`
   font-size: 18px;
   font-weight:600;
   }
+  h2{
+    text-transform: uppercase;
+  }
 `
 
 export const TitleContainer = styled.div`
   display:flex;
   width:100%;
   justify-content: space-evenly;
+  gap:12px;
   align-items:center;
   margin-bottom: 24px;
+  text-transform: uppercase;
+  text-align:center;
 `
 export const StyleBiTrashAlt = styled(BiTrashAlt)`
   color:${colors.primary.medium};
@@ -62,4 +68,12 @@ export const WorkspaceTitleContainer = styled.div`
   display:flex;
   padding-right: 36px;
   justify-content: space-between;
+  input{
+    border:none;
+    color: ${colors.font.title};
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 2px 6px;
+  }
+  text-transform: uppercase;
 `

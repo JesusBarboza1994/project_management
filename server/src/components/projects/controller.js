@@ -147,37 +147,19 @@ async function update_color_project(req, res){
   }
 }
 
-// async function shared_project(req, res){
-//   try {
-//     const id = req.params.id;
-//     const {email, permission} = req.body
-//     const project = Project.findById(id);
-//     if(!project){
-//       return res.status(404).json({ error: 'Proyecto no encontrado' });
-//     }
-//     const user_shared = await User.find({email});
-  
-//     if(!user_shared){
-//       return res.status(404).json({ error: 'Usuario no existe' });
-//     }
-//     // Inicializa collaborators como un array vacío si es nulo o undefined
-//     project.collaborators = project.collaborators || [];
-    
-//     // Agrega el nuevo colaborador al array de collaborators
-//     project.collaborators.push({
-//       user: user_shared[0]._id.toString(),
-//       permission
-//     });
-    
-//     // Guarda los cambios en el proyecto
-//     const updated_project = await project.save();
-//     console.log("updated_project", updated_project)
-//     res.send(updated_project)
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: 'Error al compartir el proyecto' });
-//   }
-// }
+async function update_title_project(req, res){
+  try {
+    const id = req.params.id;
+    const {title} = req.body;
+    console.log("TITLE", title)
+    const updated_project = await Project.findByIdAndUpdate(id, {title}, { new: true } );
+    res.status(200).json(updated_project);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Error al actualizar el título del proyecto' }); // Agregamos una respuesta de error  
+  }
+}
+
 async function shared_project(req, res) {
   try {
     const id = req.params.id;
@@ -216,5 +198,6 @@ module.exports = {
   set_favorite,
   update_color_project,
   shared_project,
-  restore_from_trash_project
+  restore_from_trash_project,
+  update_title_project
 }

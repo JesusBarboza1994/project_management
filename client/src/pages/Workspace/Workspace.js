@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import { useAuth } from "../../context/auth-context";
 import { Container, ProjectContainer, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
-import { createWorkspace, deleteWorkspace, listWorkspaces } from "../../services/workspace-service";
+import { createWorkspace, deleteWorkspace, listWorkspaces, updateWorkspaceName } from "../../services/workspace-service";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
 import { createProject, sharedProject } from "../../services/project-service";
@@ -51,6 +51,14 @@ export default function Workspace(){
     }
     
   }
+  const handleUpdateWorkspace = (e,name, id) =>{
+    e.preventDefault()
+    updateWorkspaceName(id, name).then(res => {
+    document.getElementById("workspaceInput").blur()
+    }).catch(err => {
+      console.log(err)
+    })
+  }
   const handleDeleteWorkspace = (id) => {
     deleteWorkspace(id).then(res => {
       console.log(res)
@@ -89,7 +97,7 @@ export default function Workspace(){
     <>
       <Wrapper>
         <TitleContainer>
-          <h2>{user.username}'s Workspaces</h2>
+          <h2>ESPACIOS DE TRABAJO DE {user.username}</h2>
           <MdAddCircleOutline style={{scale:"2"}} onClick={()=>setShowWorkSpaceModal(true)}/>
         </TitleContainer>
         <Container>
@@ -129,7 +137,10 @@ export default function Workspace(){
             return (
               <WorkspaceContainer>
                 <WorkspaceTitleContainer>
-                  <h3>{workspace.name}</h3>
+                  <form onSubmit={(e)=>handleUpdateWorkspace(e, workspace.name, workspace.id)}>
+                    <input id="workspaceInput" value={workspace.name} onChange={(e) => setWorkspaces([...workspaces.filter(wkspace=>wkspace.id !== workspace.id),{...workspace, name: e.target.value}])}/>
+                    <input type="submit" hidden/>
+                  </form>
                   <StyleBiTrashAlt onClick={()=>{
                     setCurrentWorkspace(workspace.id)
                     setShowDeleteWorkspaceModal(true)

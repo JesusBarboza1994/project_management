@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
   width: 100%;
   padding: 4px 16px;
   padding-bottom: 8px;
-  gap: 8px;
+  gap: 6px;
   border-radius:12px;
   border: 1px solid ${colors.secondary.light};
   background: ${ props => props.color };
@@ -19,23 +19,75 @@ export const Wrapper = styled.div`
   p{
     color: ${colors.font.title}
   }
-  form{
-    width:100%;
+  .progress-weight, activity-name{
     display: flex;
     align-items:center;
+    gap:12px;
     justify-content: space-between;
   }
   >div{
     width:100%;
   }
-`
-export const TitleContainer = styled.div`
-  display:flex;
-  align-items:center;
-  p{
-    text-align: center
+  #activityname{
+    border:none;
+    color: ${colors.font.title};
+    font-weight: 500;
+    padding: 2px 6px;
+    background:${ props => props.color };;
+  }
+  @media(max-width: 640px){
+    input[type="date"]{
+      font-size: 10px;
+    }
   }
 `
+export const SubContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: space-between;
+  .hidden-desktop{
+    display:none;
+  }
+  >div{
+    display:flex;
+    align-items: center;
+  }
+  .progress-weight{
+    width:100%;
+  }
+  @media(max-width: 1024px){
+    flex-direction:column;
+    justify-content:flex-start;
+    .hidden-desktop{
+      display:block;
+    }
+    .hidden-mobile{
+      display:none;
+    }
+    >div{
+      justify-content:space-between;
+      width:100%;
+    }
+  }
+  @media(max-width: 768px){
+    .progress-weight{
+      flex-direction:column;
+      >div{
+        width:100%;
+        justify-content:flex-start;
+        gap:1.5rem;
+      }
+    }
+  }
+`
+// export const TitleContainer = styled.div`
+//   display:flex;
+//   align-items:center;
+//   p{
+//     text-align: center
+//   }
+// `
 export const SubActivitiesContainer = styled.div`
   display:flex;
   align-items:center;
@@ -43,13 +95,13 @@ export const SubActivitiesContainer = styled.div`
   margin-left: 0px;
   gap: 8px;
   width:100%;
+  
 `
 export const DataContainer = styled.div`
   display:flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  justify-content:center;
   align-items:center;
-  // justify-content: center;
+  flex-wrap:wrap;
   div{
     display:flex;
     align-items:center;
@@ -84,7 +136,7 @@ export const DataContainer = styled.div`
 `
 export const RelativeAbsoluteContainer = styled.div`
   display: flex;
-  gap: 8px;
+  // justify-content: space-between;
   @media(max-width: 1400px){
     flex-direction:column;
     gap:2px;

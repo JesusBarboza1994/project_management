@@ -23,7 +23,8 @@ async function list_activities(req, res){
 async function create_activity(req, res){
   let absolute_weight, index;
   try {
-    const {description, relative_weight, parent } = req.body;
+    const {title, relative_weight, parent } = req.body;
+    console.log("TITLE", title)
     const parent_activity = await Activity.findById(parent);
     const activities_same_parent = await Activity.find({ parent: parent });
     const sum_weight = activities_same_parent.reduce((acc, activity) => acc + activity.relative_weight, 0) + relative_weight;
@@ -50,7 +51,7 @@ async function create_activity(req, res){
     const end_date = init_date
     
     // Crear la actividad
-    const new_activity = new Activity({description, relative_weight, absolute_weight, index, parent, relative_weight_percentage, init_date, end_date});
+    const new_activity = new Activity({title, relative_weight, absolute_weight, index, parent, relative_weight_percentage, init_date, end_date});
     await new_activity.save();
     // // Actualizar los datos de las actividades hermanas
     // if(activities_same_parent.length !==0) await update_activities_with_same_parent(activities_same_parent, parent_activity, sum_weight)
@@ -140,7 +141,17 @@ async function delete_activity(req, res){
     res.status(500).json({ error: 'Error al eliminar la actividad y subactividades' });
   }
 }
-
+async function update_name_activity(req, res){
+  try {
+    const id = req.params.id;
+    const { title } = req.body;
+    const activity = await Activity.findByIdAndUpdate(id, { title }, { new: true });
+    res.status(200).json(activity);
+  } catch (error) {
+    console.log("ERROR", error);
+    res.status(500).json({ error: 'Error al actualizar el nombre de la actividad' });
+  }
+}
 async function update_activity(req, res){
   const id = req.params.id;
   const { relative_weight, relative_progress, init_date, end_date } = req.body;
@@ -282,7 +293,8 @@ module.exports = {
   create_activity,
   show_activity,
   delete_activity,
-  update_activity
+  update_activity,
+  update_name_activity
 }
 // async function update_activity2(req, res){
 //   try {

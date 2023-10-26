@@ -45,7 +45,8 @@ export const colors = {
   font: {
     text:basicColors.gray.dark,
     title:basicColors.black.dark,
-    white: basicColors.white
+    white: basicColors.white,
+    danger: "red"
   },
   icon: {
     primary:basicColors.red.medium,
@@ -53,6 +54,7 @@ export const colors = {
   },
   background : {
     blank: basicColors.white,
+    highlight: basicColors.gray.highlight,
     light: basicColors.gray.light,
     medium: basicColors.black.medium
   }

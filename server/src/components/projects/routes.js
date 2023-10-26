@@ -10,6 +10,7 @@ router.delete("/:id", UserAuth, UserAuthorization.admin_permission,controller.de
 router.patch("/:id", UserAuth, controller.update_project)
 router.patch("/favorite/:id", UserAuth, controller.set_favorite)
 router.patch("/color/:id", UserAuth, controller.update_color_project)
-router.patch("/shared/:id", UserAuth, UserAuthorization.admin_permission,controller.shared_project)
+router.patch("/shared/:id", UserAuth, UserAuthorization.admin_permission, controller.shared_project)
+router.patch("/name/:id", UserAuth, UserAuthorization.admin_permission, controller.update_title_project)
 router.patch("/trash/:id", UserAuth, UserAuthorization.admin_permission,controller.restore_from_trash_project)
 module.exports = router

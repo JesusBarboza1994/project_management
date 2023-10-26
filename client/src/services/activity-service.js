@@ -26,3 +26,11 @@ export async function updateActivity(id, body){
     method: "PATCH",
   });
 }
+
+export async function updateNameActivity(id, title){
+  const project = JSON.parse(sessionStorage.getItem("currentProject")).id
+  return await apiFetch(`/activities/title/${id}?project=${project}`, {
+    body: {title},
+    method: "PATCH",
+  });
+}

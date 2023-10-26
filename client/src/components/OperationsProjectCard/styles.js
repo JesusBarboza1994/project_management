@@ -31,7 +31,7 @@ export const IconContainer = styled.div`
   padding:4px;
   // top: 5px;
   // right: ${props=>props.right};
-  background:${colors.background.light};
+  background:${colors.background.highlight};
   border-radius: 50%;
   &:hover{
     background:${colors.background.light};

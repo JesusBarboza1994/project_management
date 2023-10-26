@@ -1,7 +1,8 @@
   const mongoose = require('mongoose');
 
 const activitySchema = new mongoose.Schema({
-  description: { type: String, required: true },
+  title: { type: String, required: true },
+  description: { type: String, default: "" },
   relative_weight: { type: Number, required: true },
   relative_weight_percentage: { type: Number, required: true },
   absolute_weight: { type: Number, required: true },

@@ -10,7 +10,7 @@ export default function EmptyActivity({parent}){
   const inputRef = useRef(null);
   const {setUpdateListActivities, updateListActivites, setUpdateSubActivities, updateSubActivities, setCurrentProject, currentProject} = useAuth()
   const [newActivity, setNewActivity] = useState({
-    description: "",
+    title: "",
     relativeWeight: ""
   })
   const [showInfo, setShowInfo] = useState(false)
@@ -22,9 +22,9 @@ export default function EmptyActivity({parent}){
   };
   const handleNewActivity = (e) => {
     e.preventDefault();
-    if(newActivity.description === "" || newActivity.relativeWeight === "" || newActivity.relativeWeight === 0) return
+    if(newActivity.title === "" || newActivity.relativeWeight === "" || newActivity.relativeWeight === 0) return
     const body = {
-      description: newActivity.description,
+      title: newActivity.title,
       relative_weight: +newActivity.relativeWeight,
       parent,
     }
@@ -35,7 +35,7 @@ export default function EmptyActivity({parent}){
       setCurrentProject(updatedProject)
       sessionStorage.setItem("currentProject", JSON.stringify(updatedProject))
       setNewActivity({
-        description: "",
+        title: "",
         relativeWeight: ""
       })
 
@@ -59,15 +59,15 @@ export default function EmptyActivity({parent}){
   return(
     <Wrapper onSubmit={(e)=>handleNewActivity(e)}>
       <Container>
-        {(newActivity?.description !== "" && newActivity?.relativeWeight !== "") 
+        {(newActivity?.title !== "" && newActivity?.relativeWeight !== "") 
           ? <MdAddCircleOutline style={{color: colors.icon.primary, scale: "1.3"}} onClick={handleClickH1}/>
           : <MdAddCircleOutline style={{color: colors.icon.secondary}}/> 
         }
-        <input placeholder="Actividad vacía" type="text" value={newActivity.description} onChange={(e) => setNewActivity({...newActivity,description: e.target.value})}/>
+        <input placeholder="Actividad vacía" type="text" value={newActivity.title} onChange={(e) => setNewActivity({...newActivity,title: e.target.value})}/>
       </Container>
       <Container style={{position: "relative"}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <Information showInfo={showInfo} text={"Asigna el peso respecto a la actividad padre"}/>
-        <p onClick={handleParagraphClick}>Peso relativo asignado: </p>
+        <p onClick={handleParagraphClick}>Peso asignado: </p>
         <input ref={inputRef} type="number" value={newActivity.relativeWeight} onChange={(e) => {
           setNewActivity({...newActivity,relativeWeight: e.target.value})}}/>
       </Container>

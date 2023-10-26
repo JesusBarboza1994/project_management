@@ -4,8 +4,7 @@ import { colors } from "../../styles";
 export const Wrapper = styled.form`
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  height:40px;
+  // align-items:center;
   background:${colors.background.blank};
   width: 100%;
   padding: 4px 16px;
@@ -38,10 +37,16 @@ export const Wrapper = styled.form`
     appearance: none;
     margin: 0;
   }
+  @media(max-width: 640px){
+    flex-direction:column;
+    align-items:flex-start;
+  }
 `
 export const Container = styled.div`
   display:flex;
   gap: 4px;
   align-items:center;
-
+  input{
+    padding: 2px 6px;
+  }
 `

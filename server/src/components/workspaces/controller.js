@@ -51,14 +51,12 @@ async function list_workspaces(req, res){
     }));
     const favorite_projects = []
     workspaceList.forEach(workspace => {
-      console.log("WORKSPACE", workspace)
       workspace.projects.forEach(project => {
         if(project.favorite){
           favorite_projects.push(project)
         }
       })
     });
-    console.log("FAVORITE PROJECTS", favorite_projects)
 
     const shared_projects = await Project.find({
       "collaborators.user": req.user
@@ -84,7 +82,7 @@ async function list_workspaces(req, res){
 }
 async function show_workspace(req, res){
   try {
-    const workspace = await WorkSpace.findById(req.params.id);
+    const workspace = await Workspace.findById(req.params.id);
     res.status(200).json(workspace);
   } catch (error) {
     console.log("ERROR",error)
@@ -109,7 +107,7 @@ async function update_workspace(req, res){
   try {
     const id = req.params.id;
     const {name} = req.body;
-    const updated_workspace = await WorkSpace.findByIdAndUpdate(id, {name}, { new: true } );
+    const updated_workspace = await Workspace.findByIdAndUpdate(id, {name}, { new: true } );
     res.status(200).json(updated_workspace);
   } catch (error) {
     console.log("ERROR",error)

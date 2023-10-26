@@ -1,8 +1,8 @@
 import { BiSolidDownArrow, BiSolidRightArrow, BiTrashAlt } from "react-icons/bi";
-import { DataContainer, RelativeAbsoluteContainer, SubActivitiesContainer, TitleContainer, Wrapper } from "./styles";
+import { DataContainer, RelativeAbsoluteContainer, SubActivitiesContainer, SubContainer, TitleContainer, Wrapper } from "./styles";
 import { useEffect, useRef, useState } from "react";
 import { colors } from "../../styles";
-import { deleteActivity, listActivities, updateActivity } from "../../services/activity-service";
+import { deleteActivity, listActivities, updateActivity, updateNameActivity } from "../../services/activity-service";
 import { useAuth } from "../../context/auth-context";
 import EmptyActivity from "../EmptyActivity/EmptyActivity";
 import { formatDateToString } from "../../utils";
@@ -11,16 +11,7 @@ export default function ActivityCard({activity, editProjectPermission}){
   const [subActivities, setSubActivities] = useState(null)
   const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities, setCurrentProject, currentProject} = useAuth()
   const ejecutarEfectoRef = useRef(false);
-  const [activityData, setActivityData] = useState({
-    // TODO: Eliminar todos los states (o keys dentro de state) que ya no se están usando.
-    // absoluteWeight: activity.absolute_weight,
-    // relativeWeight: activity.relative_weight,
-    // relativeProgress: "",
-    // absoluteProgress: activity.absolute_progress,
-    // relativeWeightPercentage: activity.relative_weight_percentage,
-    // initDate: activity.init_date,
-    // endDate: activity.end_date
-  })
+  const [activityData, setActivityData] = useState({})
   const handleSubActivities = () => {
     ejecutarEfectoRef.current = true;
     setUpdateSubActivities(!updateSubActivities)
@@ -37,7 +28,15 @@ export default function ActivityCard({activity, editProjectPermission}){
       console.log(err)
     })
   }
-
+  const handleUpdateNameActivity = (e) => {
+    e.preventDefault();
+    updateNameActivity(activity._id,activityData.title).then(res => {
+      
+    }).catch(err => {
+      console.log(err)
+    })
+    document.getElementById("activityname").blur()
+  }
   const handleUpdateActivity = (e) => {
     e.preventDefault();
     updateActivity(activity._id, {
@@ -70,6 +69,7 @@ export default function ActivityCard({activity, editProjectPermission}){
 
   useEffect(() => {
     setActivityData({
+      title: activity.title,
       absoluteWeight: activity.absolute_weight,
       relativeWeight: activity.relative_weight,
       relativeProgress: activity.relative_progress*100,
@@ -83,62 +83,59 @@ export default function ActivityCard({activity, editProjectPermission}){
   const color = Object.values(colors.randomColors)[activity.index]
   return(
       <Wrapper color={color}>
-        <form onSubmit={(e)=>handleUpdateActivity(e)}>
-          {subActivities 
-            ? 
-            <TitleContainer onClick={()=> setSubActivities(null)}>
-              <BiSolidDownArrow/>
-              <p>{activity.description}</p>
-            </TitleContainer>
-            : 
-            <TitleContainer onClick={handleSubActivities}>
-              <BiSolidRightArrow/>
-              <p>{activity.description}</p>
-            </TitleContainer>
-          }
-          <RelativeAbsoluteContainer>
-            <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
-              <p>Peso: </p>
-              <div style={{display:"flex"}}>
-                <input type={"text"} value={activityData.relativeWeight} onChange={(e) => {
-                  setActivityData({...activityData,relativeWeight: e.target.value})
-                }}/>
-                <p>| {(activityData.relativeWeightPercentage*100).toFixed(2)}%</p>
-              </div>
-            </DataContainer>
-            {/* <DataContainer>
-              <p>Peso Absoluto: </p>
-              <p>{(activity.absolute_weight*100).toFixed(2)}%</p>
-            </DataContainer> */}
-          </RelativeAbsoluteContainer>
-          <RelativeAbsoluteContainer>
-            <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
-              { 
-                !(activity.has_subactivities) &&
-                <>
-                  <p>Progreso: </p>
-                  <div style={{display:"flex"}}>
-                    <input type={"text"} value={activityData.relativeProgress} onChange={(e) => {
-                      console.log(activityData.relativeProgress)
-                      setActivityData({...activityData,relativeProgress:e.target.value})}} 
-                      />
-                    <p>%</p>
-                  </div>
-                </>
-              }
-            </DataContainer>
-            {/* <DataContainer>
-              <p>Progreso Absoluto: </p>
-              <p>{(activityData.absoluteProgress*100).toFixed(2)}%</p>
-            </DataContainer> */}
-          </RelativeAbsoluteContainer>
-          <RelativeAbsoluteContainer>
+        <SubContainer>
+          <div>
+            <div style={{display: "flex", alignItems: "center"}}>
+              {subActivities 
+                ? 
+                // <TitleContainer >
+                  <BiSolidDownArrow onClick={()=> setSubActivities(null)}/>
+                  // <p>{activity.description}</p>
+                // </TitleContainer>
+                : 
+                // <TitleContainer >
+                  <BiSolidRightArrow onClick={handleSubActivities}/>
+                  // </TitleContainer>
+                }
+              <form className="acitivity-name" onSubmit={(e)=>handleUpdateNameActivity(e)}>
+                <input id="activityname" value={activityData.title} onChange={(e) => setActivityData({...activityData, title: e.target.value})}/>
+              </form>
+            </div>
+            {
+              editProjectPermission !== "view" &&
+              <BiTrashAlt className="hidden-desktop" onClick={handleDeleteActivity} style={{color:colors.primary.dark, scale: "1.1"}}/>
+            }
+          </div>
+          <form className="progress-weight" onSubmit={(e)=>handleUpdateActivity(e)}>
+            <div  style={{display: "flex"}}>
+              <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
+                <p>Peso: </p>
+                <div>
+                  <input type={"text"} value={activityData.relativeWeight} onChange={(e) => {
+                    setActivityData({...activityData,relativeWeight: e.target.value})
+                  }}/>
+                  <p>| {(activityData.relativeWeightPercentage*100).toFixed(2)}%</p>
+                </div>
+              </DataContainer>
+              <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
+                { 
+                  !(activity.has_subactivities) &&
+                  <>
+                    <p>Progreso: </p>
+                    <div>
+                      <input type={"text"} value={activityData.relativeProgress} onChange={(e) => {
+                        setActivityData({...activityData,relativeProgress:e.target.value})}} 
+                        />
+                      <p>%</p>
+                    </div>
+                  </>
+                }
+              </DataContainer>
+            </div>
             <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
               <p>Inicio-Fin: </p>
-              <div style={{display:"flex"}}>
+              <div>
                 <input type={"date"} value={formatDateToString(activityData.initDate)} onChange={(e) => {
-                  console.log(e.target.value)
-                  console.log("asf2",typeof(e.target.value))
                   setActivityData({...activityData,initDate: e.target.value})
                 }}/>
                 <input type={"date"} value={formatDateToString(activityData.endDate)} onChange={(e) => {
@@ -146,14 +143,13 @@ export default function ActivityCard({activity, editProjectPermission}){
                 }}/>
               </div>
             </DataContainer>
-           
-          </RelativeAbsoluteContainer>
-          {
-            editProjectPermission !== "view" &&
-            <BiTrashAlt onClick={handleDeleteActivity} style={{color:colors.primary.dark, scale: "1.1"}}/>
-          }
-          <input type="submit" hidden/>
-        </form>
+            <input type="submit" hidden/>
+          </form>
+            {
+              editProjectPermission !== "view" &&
+              <BiTrashAlt className="hidden-mobile" onClick={handleDeleteActivity} style={{color:colors.primary.dark, scale: "1.1"}}/>
+            }
+        </SubContainer>
         <div>
           {
             subActivities &&

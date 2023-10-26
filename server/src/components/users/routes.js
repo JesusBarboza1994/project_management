@@ -33,6 +33,7 @@ const controller = require("./controller");
  *         description: Error interno del servidor.
  */
 router.post("/login", controller.login)
+router.post("/signup", controller.create_user)
 router.post("/signup-admin", controller.create_user_admin)
 
 module.exports = router

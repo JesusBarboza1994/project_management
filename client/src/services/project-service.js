@@ -38,3 +38,11 @@ export async function restoreProject(id){
     method: "PATCH",
   });
 }
+
+export async function updateTitleProject(id){
+  const {title} = JSON.parse(sessionStorage.getItem("currentProject"))
+  return await apiFetch(`/projects/name/${id}`, {
+    body: {title},
+    method: "PATCH",
+  });
+}

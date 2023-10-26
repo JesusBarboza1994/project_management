@@ -22,8 +22,23 @@ async function create_user_admin(req, res){
     res.status(500).json({ error: 'Error al crear el usuario' }); // Agregamos una respuesta de error
   }
 }
-
-
+async function create_user(req, res) {
+  try {
+    const { username, email, password } = req.body;
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Usuario o correo electrónico ya existen' });
+    }
+    const saltRounds = 10; // Número de rondas de cifrado
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const new_user = new User({ username, email, password: hashedPassword, user_type: 'user' });
+    await new_user.save();
+    res.status(201).json(new_user);
+  } catch (error) {
+    console.log("ERROR",error)
+    res.status(500).json({ error: 'Error al crear el usuario' }); // Agregamos una respuesta de error
+  }
+}
 async function login(req, res) {
   try {
     const { email, password } = req.body;
@@ -61,6 +76,7 @@ async function logout(req, res){
 
 module.exports = {
   create_user_admin,
+  create_user,
   login,
   logout
 }

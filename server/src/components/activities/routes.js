@@ -9,5 +9,5 @@ router.post("/", UserAuth,UserAuthorization.edit_permission, controller.create_a
 router.get("/id/:id", UserAuth, controller.show_activity)
 router.delete("/:id", UserAuth, UserAuthorization.edit_permission, controller.delete_activity)
 router.patch("/:id", UserAuth, UserAuthorization.edit_permission, controller.update_activity)
-
+router.patch("/title/:id", UserAuth, UserAuthorization.edit_permission, controller.update_name_activity)
 module.exports = router
