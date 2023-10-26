@@ -131,7 +131,7 @@ async function delete_activity(req, res){
       {
         message: "Delete activity succesfully",
         project:{
-          total_progress
+          ...total_progress
         }
       }
     )

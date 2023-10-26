@@ -14,17 +14,13 @@ import Modal from "../../components/Modal";
 export default function Project(){
   const { currentProject, updateListActivites } = useAuth()
   const [ activities, setActivities ] = useState(null)
-  const [ parentId, setParentId ] = useState(null)
   const [ editProjectPermission, setEditProjectPermission ] = useState("view")
   const [showModalDeleteProject, setShowModalDeleteProject] = useState(false)
   const {id} = useParams()
   const nav = useNavigate()
   const handleDeleteProject = () => {
     const isDeleted = sessionStorage.getItem("isDeleted")
-    console.log("ISDEL", isDeleted)
-    console.log(typeof(isDeleted))
     if(isDeleted==="true") return setShowModalDeleteProject(true)
-    
     deleteProject(currentProject.id).then(res => {
       console.log(res)
     }).catch(err => {
@@ -38,7 +34,6 @@ export default function Project(){
     listActivities(id).then(res => {
       console.log(res)
       setActivities(res.activities)
-      setParentId(res.parent)
       setEditProjectPermission(res.permission)
     }).catch(err => {
       console.log(err)
@@ -70,7 +65,7 @@ export default function Project(){
           <div>
             <BiArrowBack style={{scale:"1.5", cursor:"pointer"}} onClick={() =>{
               sessionStorage.removeItem("currentProject")
-              
+              sessionStorage.removeItem("isDeleted")
               nav("/workspaces")
             }}/>
             <h2>{currentProject.title}</h2>
@@ -95,7 +90,6 @@ export default function Project(){
               )
             }
             )}
-            {console.log("PARENTID", parentId)}
           {
             editProjectPermission !== "view" &&
             <EmptyActivity parent={id}/>

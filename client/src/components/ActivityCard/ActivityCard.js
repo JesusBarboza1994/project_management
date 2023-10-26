@@ -11,16 +11,15 @@ export default function ActivityCard({activity, editProjectPermission}){
   const [subActivities, setSubActivities] = useState(null)
   const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities, setCurrentProject, currentProject} = useAuth()
   const ejecutarEfectoRef = useRef(false);
-  const [inputState, setInputState] = useState("")
   const [activityData, setActivityData] = useState({
     // TODO: Eliminar todos los states (o keys dentro de state) que ya no se están usando.
-    absoluteWeight: activity.absolute_weight,
-    relativeWeight: activity.relative_weight,
-    relativeProgress: activity.relative_progress,
-    absoluteProgress: activity.absolute_progress,
-    relativeWeightPercentage: activity.relative_weight_percentage,
-    initDate: activity.init_date,
-    endDate: activity.end_date
+    // absoluteWeight: activity.absolute_weight,
+    // relativeWeight: activity.relative_weight,
+    // relativeProgress: "",
+    // absoluteProgress: activity.absolute_progress,
+    // relativeWeightPercentage: activity.relative_weight_percentage,
+    // initDate: activity.init_date,
+    // endDate: activity.end_date
   })
   const handleSubActivities = () => {
     ejecutarEfectoRef.current = true;
@@ -41,14 +40,13 @@ export default function ActivityCard({activity, editProjectPermission}){
 
   const handleUpdateActivity = (e) => {
     e.preventDefault();
-    if(!inputState) return
     updateActivity(activity._id, {
       relativeWeight: activityData.relativeWeight,
-      relativeProgress: inputState/100,
+      relativeProgress: activityData.relativeProgress/100,
       initDate: activityData.initDate,
       endDate: activityData.endDate
     }).then(res => {
-      const updatedProject = {...currentProject, total_progress: res.project.total_progress}
+      const updatedProject = {...currentProject, total_progress: res.project.total_progress, init_date: res.project.init_date, end_date: res.project.end_date}
       setCurrentProject(updatedProject)
       sessionStorage.setItem("currentProject", JSON.stringify(updatedProject))
       setUpdateListActivities(!updateListActivites)
@@ -71,11 +69,10 @@ export default function ActivityCard({activity, editProjectPermission}){
   },[updateSubActivities])
 
   useEffect(() => {
-    setInputState(activity.relativeProgress)
     setActivityData({
       absoluteWeight: activity.absolute_weight,
       relativeWeight: activity.relative_weight,
-      relativeProgress: activity.relative_progress,
+      relativeProgress: activity.relative_progress*100,
       absoluteProgress: activity.absolute_progress,
       relativeWeightPercentage: activity.relative_weight_percentage,
       initDate: activity.init_date,
@@ -121,8 +118,9 @@ export default function ActivityCard({activity, editProjectPermission}){
                 <>
                   <p>Progreso: </p>
                   <div style={{display:"flex"}}>
-                    <input type={"text"} value={inputState} onChange={(e) => {
-                      setInputState(e.target.value)}} 
+                    <input type={"text"} value={activityData.relativeProgress} onChange={(e) => {
+                      console.log(activityData.relativeProgress)
+                      setActivityData({...activityData,relativeProgress:e.target.value})}} 
                       />
                     <p>%</p>
                   </div>

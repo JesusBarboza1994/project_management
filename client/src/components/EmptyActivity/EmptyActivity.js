@@ -1,12 +1,10 @@
 import { MdAddCircleOutline } from "react-icons/md";
 import { Container, Wrapper } from "./styles";
 import { colors } from "../../styles";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { createActivity } from "../../services/activity-service";
 import { useAuth } from "../../context/auth-context";
 import Information from "../Information/Information";
-
-
 
 export default function EmptyActivity({parent}){
   const inputRef = useRef(null);
@@ -17,7 +15,6 @@ export default function EmptyActivity({parent}){
   })
   const [showInfo, setShowInfo] = useState(false)
   const submitButtonRef = useRef();
-  const showInfoRef = useRef();
   // Manejador de clic para el elemento "h1"
   const handleClickH1 = () => {
     // Simula el clic en el botón de tipo "submit"

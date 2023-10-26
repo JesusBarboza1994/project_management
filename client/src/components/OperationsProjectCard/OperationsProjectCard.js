@@ -26,7 +26,6 @@ export default function OperationsProjectCard({project, isDeleted}){
   }
   const handleRestoreProject = (e) => {
     e.stopPropagation()
-    setCurrentProject({...currentProject, id: project._id})
     restoreProject(project._id).then(res => {
       console.log(res)
       setUpdateWorkspace(!updateWorkspace)
