@@ -32,14 +32,22 @@ export function SignupPage(){
           label="Username" 
           placeholder="Username" 
           value={data.username}
-          onChange={(e) => setData({...data, username: e.target.value})}
+          onChange={(e) => {
+            setData({...data, username: e.target.value})
+            if(error) setError(null)
+            }
+          }
         />
         <Input
           type="text"
           label="Email"
           placeholder="Email"
           value={data.email}
-          onChange={(e) => setData({...data, email: e.target.value})}
+          onChange={(e) => {
+            setData({...data, email: e.target.value})
+            if(error) setError(null)
+            }
+          }
         />
         <Input
           type="password"

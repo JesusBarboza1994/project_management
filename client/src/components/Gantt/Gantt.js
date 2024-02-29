@@ -21,21 +21,21 @@ export default function Gantt({activities, parentCurrentWidth, currentPadding=0}
           const endWidth = (end_date - new Date(activity.end_date) )/totalWidth
           const colorValue =  Object.keys(colors.randomColors)[activity.index]
           return(
-            <div>
+            <div key={activity._id}>
               <Row style={{display:"flex",justifyContent:"space-between"}}>
                 <div style={{width:"20%", display:"flex", alignItems:"center"}}>
                   {activity.activities.length !==0 ? (showSubactivities[index] ? 
-                  <BiSolidDownArrow style={{cursor:"pointer"}} onClick={()=> {
+                  <BiSolidDownArrow style={{cursor:"pointer", scale:"0.7"}} onClick={()=> {
                     const newShowSubactivities = [...showSubactivities]
                     newShowSubactivities[index] = !newShowSubactivities[index]
                     setShowSubactivities(newShowSubactivities)
                   }}/> :
-                  <BiSolidRightArrow style={{cursor:"pointer"}} onClick={()=> {
+                  <BiSolidRightArrow style={{cursor:"pointer", scale:"0.7"}} onClick={()=> {
                     const newShowSubactivities = [...showSubactivities]
                     newShowSubactivities[index] = !newShowSubactivities[index]
                     setShowSubactivities(newShowSubactivities)
                   }}/>) :
-                  <BiSolidCircle/>
+                  <BiSolidCircle style={{scale:"0.7"}}/>
                   }
                   <p style={{fontSize:"12px"}}>{activity.title}</p>
                 </div>

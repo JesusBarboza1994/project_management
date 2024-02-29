@@ -6,6 +6,9 @@ export const Wrapper = styled.div`
   align-items:center;
   justify-content: center;
   padding-top: 80px;
+  p{
+    font-size: 14px;
+  }
 `
 
 export const Container = styled.form`

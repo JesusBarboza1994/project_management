@@ -19,10 +19,9 @@ export const Wrapper = styled.div`
   p{
     color: ${colors.font.title}
   }
-  .progress-weight, activity-name{
+  .progress-weight, .activity-name{
     display: flex;
     align-items:center;
-    gap:12px;
     justify-content: space-between;
   }
   >div{
@@ -76,7 +75,7 @@ export const SubContainer = styled.div`
       >div{
         width:100%;
         justify-content:flex-start;
-        gap:1.5rem;
+        gap: 12px;
       }
     }
   }
@@ -99,18 +98,22 @@ export const SubActivitiesContainer = styled.div`
 `
 export const DataContainer = styled.div`
   display:flex;
-  justify-content:center;
+  justify-content:space-between;
   align-items:center;
   flex-wrap:wrap;
+  p{
+    font-size: 12px;
+  }
   div{
     display:flex;
     align-items:center;
     justify-content: center;
   }
   input{
-    width: 50px;
+    width: 40px;
     border-radius: 5px;
     border:none;
+    font-size: 12px;
     height: 28px;
     font-size:16px;
     padding: 0 5px;
