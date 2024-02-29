@@ -10,4 +10,5 @@ router.get("/id/:id", UserAuth, controller.show_activity)
 router.delete("/:id", UserAuth, UserAuthorization.edit_permission, controller.delete_activity)
 router.patch("/:id", UserAuth, UserAuthorization.edit_permission, controller.update_activity)
 router.patch("/title/:id", UserAuth, UserAuthorization.edit_permission, controller.update_name_activity)
+router.get('/tree/:id', UserAuth, controller.list_tree_activities)
 module.exports = router

@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
-import { Container, MainContainer, TitleContainer, Wrapper } from "./styles";
+import { Container, EndDiv, InitDateP, InitDiv, MainContainer, PerpendicularLine, TitleContainer, Wrapper } from "./styles";
 import { useAuth } from "../../context/auth-context";
 import { useNavigate, useParams } from "react-router-dom";
-import { listActivities } from "../../services/activity-service";
+import { listActivities, listTreeActivities } from "../../services/activity-service";
 import EmptyActivity from "../../components/EmptyActivity/EmptyActivity";
 import ActivityCard from "../../components/ActivityCard/ActivityCard";
 import { BiArrowBack } from "react-icons/bi";
 import { StyleBiTrashAlt } from "../Workspace/styles";
 import { deleteProject, updateTitleProject } from "../../services/project-service";
 import { formatDateToString } from "../../utils";
+import { FaChartGantt } from "react-icons/fa6";
 import Modal from "../../components/Modal";
+import { colors } from "../../styles";
+import { GoProjectSymlink } from "react-icons/go";
+import Gantt from "../../components/Gantt/Gantt";
 
 export default function Project(){
   const { currentProject, updateListActivites, setCurrentProject } = useAuth()
   const [ activities, setActivities ] = useState(null)
   const [ editProjectPermission, setEditProjectPermission ] = useState("view")
   const [showModalDeleteProject, setShowModalDeleteProject] = useState(false)
+  const [showGantt, setShowGantt] = useState(false)
+  const [treeActivities, setTreeActivities] = useState(null)
   const {id} = useParams()
   const nav = useNavigate()
   const handleDeleteProject = () => {
@@ -44,10 +50,18 @@ export default function Project(){
     listActivities(id).then(res => {
       console.log(res)
       setActivities(res.activities)
+      sessionStorage.setItem("activities",JSON.stringify(res.activities))
       setEditProjectPermission(res.permission)
     }).catch(err => {
       console.log(err)
     })
+
+    const fetchData = async () => {
+      const response = await listTreeActivities();
+      console.log(response)
+      setTreeActivities(response)
+    }
+    fetchData() 
   }, [updateListActivites])
   
   return(
@@ -83,11 +97,20 @@ export default function Project(){
                 <input id="inputName" value={currentProject.title} onChange={e => setCurrentProject({...currentProject, title:e.target.value})}/>
               </form>
             </div>
+            <div style={{display:"flex", alignItems:"center", marginRight:"8px"}}>
+              {
+                showGantt ?
+                <GoProjectSymlink style={{color:colors.primary.medium, scale:"1.5", cursor:"pointer"}} onClick={() => setShowGantt(false)}/>
+                :
+                <FaChartGantt style={{color:colors.primary.medium, scale:"1.5", cursor:"pointer"}} onClick={() => setShowGantt(true)}/>
+              }
+            </div>
             <div>
               <p>{formatDateToString(currentProject.init_date)}</p>
               <p> : </p>
               <p>{formatDateToString(currentProject.end_date)}</p>
             </div>
+            
           </div>
           <div>
             <h2>{(currentProject.total_progress*100).toFixed(2)}%</h2>
@@ -97,7 +120,20 @@ export default function Project(){
             }      
           </div>
         </TitleContainer>
-        <Container>
+        { showGantt 
+        ? 
+        treeActivities && 
+        <div style={{position:"relative", paddingTop: "24px"}}>
+          <InitDiv >
+            <p>{formatDateToString(currentProject.init_date)}</p>
+          </InitDiv>
+          <Gantt activities={treeActivities}/>
+          <EndDiv>
+            <p>{formatDateToString(currentProject.end_date)}</p>
+          </EndDiv>
+        </div>
+        :
+          <Container>
           {activities && activities.map((activity) => {
             return(
               <ActivityCard key={activity.id} activity={activity} editProjectPermission={editProjectPermission}/>
@@ -108,7 +144,7 @@ export default function Project(){
             editProjectPermission !== "view" &&
             <EmptyActivity parent={id}/>
           }
-        </Container>
+        </Container>}
       </MainContainer>
     </Wrapper>
   )

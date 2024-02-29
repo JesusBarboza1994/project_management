@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { colors } from "../../styles";
+import { MdHeight } from "react-icons/md";
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -58,5 +59,40 @@ export const TitleContainer = styled.div`
       justify-content:space-between;
       width:100%;
     }
+  }
+`
+export const InitDateP = styled.p`
+  font-size: 10px;
+  text-align: center;
+`
+export const PerpendicularLine = styled.div`
+  transform: translateX(-50%);
+  width: 1px; /* Ancho de la línea */
+  height: ${props=> props.heightGanttLine}px; /* Altura de la línea */
+  background-color: #000; /* Color de la línea */
+`;
+
+export const InitDiv = styled.div`
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  position: absolute; 
+  top:0px; 
+  left:15%;
+  p{
+    font-size: 10px;
+    text-align: start;
+  }
+`
+export const EndDiv = styled.div`
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  position: absolute; 
+  top:0px; 
+  right:0px;
+  p{
+    font-size: 10px;
+    text-align: center;
   }
 `

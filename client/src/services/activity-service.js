@@ -4,6 +4,11 @@ export async function listActivities(id_parent) {
   return await apiFetch(`/activities/${id_parent}`);
 }
 
+export async function listTreeActivities(){
+  const project = JSON.parse(sessionStorage.getItem("currentProject"))
+  return await apiFetch(`/activities/tree/${project.id}`);
+}
+
 export async function createActivity(body){
   const project = JSON.parse(sessionStorage.getItem("currentProject")).id
   return await apiFetch(`/activities?project=${project}`, {

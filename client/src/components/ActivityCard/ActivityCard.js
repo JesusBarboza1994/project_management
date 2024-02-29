@@ -31,7 +31,6 @@ export default function ActivityCard({activity, editProjectPermission}){
   const handleUpdateNameActivity = (e) => {
     e.preventDefault();
     updateNameActivity(activity._id,activityData.title).then(res => {
-      
     }).catch(err => {
       console.log(err)
     })
