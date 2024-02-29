@@ -48,7 +48,6 @@ export default function Project(){
 
   useEffect(() => {
     listActivities(id).then(res => {
-      console.log(res)
       setActivities(res.activities)
       sessionStorage.setItem("activities",JSON.stringify(res.activities))
       setEditProjectPermission(res.permission)
@@ -58,7 +57,6 @@ export default function Project(){
 
     const fetchData = async () => {
       const response = await listTreeActivities();
-      console.log(response)
       setTreeActivities(response)
     }
     fetchData() 

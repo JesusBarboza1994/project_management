@@ -95,7 +95,6 @@ export default function Workspace(){
   useEffect(() => {
     listWorkspaces().then(res => {
       setWorkspaces(res.workspaces)
-      console.log("WORKSPACES", res)
       setFavoriteProjects(res.favoriteProjects)
       setSharedProjects(res.sharedProjects)
       setTrashedProjects(res.trashedProjects)
@@ -103,7 +102,7 @@ export default function Workspace(){
       console.log(err)
     })
   }, [updateWorkspace])
-  
+
   return(
     <>
       <Wrapper>

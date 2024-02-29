@@ -6,17 +6,19 @@ import { deleteActivity, listActivities, updateActivity, updateNameActivity } fr
 import { useAuth } from "../../context/auth-context";
 import EmptyActivity from "../EmptyActivity/EmptyActivity";
 import { formatDateToString } from "../../utils";
+import Loader from "../Loader/Loader";
 
 export default function ActivityCard({activity, editProjectPermission}){
-  const [subActivities, setSubActivities] = useState(null)
   const {setUpdateListActivities, updateListActivites, updateSubActivities, setUpdateSubActivities, setCurrentProject, currentProject} = useAuth()
+  const [subActivities, setSubActivities] = useState(null)
   const ejecutarEfectoRef = useRef(false);
   const [activityData, setActivityData] = useState({})
+  const [loader, setLoader] = useState(false)
+  
   const handleSubActivities = () => {
     ejecutarEfectoRef.current = true;
     setUpdateSubActivities(!updateSubActivities)
   }
-
   const handleDeleteActivity = () => {
     deleteActivity(activity._id).then(res => {
       const updatedProject = {...currentProject, total_progress: res.project.total_progress}
@@ -31,6 +33,7 @@ export default function ActivityCard({activity, editProjectPermission}){
   const handleUpdateNameActivity = (e) => {
     e.preventDefault();
     updateNameActivity(activity._id,activityData.title).then(res => {
+      setUpdateListActivities(!updateListActivites)
     }).catch(err => {
       console.log(err)
     })
@@ -38,6 +41,8 @@ export default function ActivityCard({activity, editProjectPermission}){
   }
   const handleUpdateActivity = (e) => {
     e.preventDefault();
+    setLoader(true)
+
     updateActivity(activity._id, {
       relativeWeight: activityData.relativeWeight,
       relativeProgress: activityData.relativeProgress/100,
@@ -46,6 +51,8 @@ export default function ActivityCard({activity, editProjectPermission}){
     }).then(res => {
       const updatedProject = {...currentProject, total_progress: res.project.total_progress, init_date: res.project.init_date, end_date: res.project.end_date}
       setCurrentProject(updatedProject)
+      setLoader(false)
+      
       sessionStorage.setItem("currentProject", JSON.stringify(updatedProject))
       setUpdateListActivities(!updateListActivites)
       setUpdateSubActivities(!updateSubActivities)
@@ -87,30 +94,28 @@ export default function ActivityCard({activity, editProjectPermission}){
             <div style={{display: "flex", alignItems: "center"}}>
               {subActivities 
                 ? 
-                // <TitleContainer >
                   <BiSolidDownArrow onClick={()=> setSubActivities(null)}/>
-                  // <p>{activity.description}</p>
-                // </TitleContainer>
                 : 
-                // <TitleContainer >
                   <BiSolidRightArrow onClick={handleSubActivities}/>
-                  // </TitleContainer>
-                }
+              }
               <form className="acitivity-name" onSubmit={(e)=>handleUpdateNameActivity(e)}>
                 <input id="activityname" value={activityData.title} onChange={(e) => setActivityData({...activityData, title: e.target.value})}/>
               </form>
             </div>
-            {
-              editProjectPermission !== "view" &&
-              <BiTrashAlt className="hidden-desktop" onClick={handleDeleteActivity} style={{color:colors.primary.dark, scale: "1.1"}}/>
-            }
+            <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
+              {loader && <Loader/>}
+              {
+                editProjectPermission !== "view" &&
+                <BiTrashAlt className="hidden-desktop" onClick={handleDeleteActivity} style={{color:colors.primary.dark, scale: "1.1"}}/>
+              }
+            </div>
           </div>
           <form className="progress-weight" onSubmit={(e)=>handleUpdateActivity(e)}>
-            <div  style={{display: "flex"}}>
+            <div  style={{display: "flex", gap:"12px"}}>
               <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
                 <p>Peso: </p>
                 <div>
-                  <input type={"text"} value={activityData.relativeWeight} onChange={(e) => {
+                  <input style={{width: "22px", fontSize:"12px"}} type={"text"} value={activityData.relativeWeight} onChange={(e) => {
                     setActivityData({...activityData,relativeWeight: e.target.value})
                   }}/>
                   <p>| {(activityData.relativeWeightPercentage*100).toFixed(2)}%</p>
@@ -122,7 +127,7 @@ export default function ActivityCard({activity, editProjectPermission}){
                   <>
                     <p>Progreso: </p>
                     <div>
-                      <input type={"text"} value={activityData.relativeProgress} onChange={(e) => {
+                      <input style={{width: "32px", fontSize:"12px"}} type={"text"} value={activityData.relativeProgress} onChange={(e) => {
                         setActivityData({...activityData,relativeProgress:e.target.value})}} 
                         />
                       <p>%</p>

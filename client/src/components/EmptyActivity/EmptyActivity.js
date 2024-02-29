@@ -47,14 +47,14 @@ export default function EmptyActivity({parent}){
   const handleParagraphClick = () => {
     inputRef.current.focus(); // Enfocar el input cuando se haga clic en el párrafo
   };
-  const handleMouseEnter = () => {
-    console.log(showInfo)
-    setShowInfo(true);
-  }
-  const handleMouseLeave = () => {
-    console.log(showInfo)
-    setShowInfo(false);
-  }
+  // const handleMouseEnter = () => {
+  //   console.log(showInfo)
+  //   setShowInfo(true);
+  // }
+  // const handleMouseLeave = () => {
+  //   console.log(showInfo)
+  //   setShowInfo(false);
+  // }
 
   return(
     <Wrapper onSubmit={(e)=>handleNewActivity(e)}>
@@ -65,8 +65,8 @@ export default function EmptyActivity({parent}){
         }
         <input placeholder="Actividad vacía" type="text" value={newActivity.title} onChange={(e) => setNewActivity({...newActivity,title: e.target.value})}/>
       </Container>
-      <Container style={{position: "relative"}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-        <Information showInfo={showInfo} text={"Asigna el peso respecto a la actividad padre"}/>
+      <Container style={{position: "relative"}}>
+        {/* <Information showInfo={showInfo} text={"Asigna el peso respecto a la actividad padre"}/> */}
         <p onClick={handleParagraphClick}>Peso asignado: </p>
         <input ref={inputRef} type="number" value={newActivity.relativeWeight} onChange={(e) => {
           setNewActivity({...newActivity,relativeWeight: e.target.value})}}/>
