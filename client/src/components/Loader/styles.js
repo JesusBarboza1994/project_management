@@ -16,7 +16,7 @@ export const Wrapper = styled.div`
   height: 30px;
 `
 export const Load = styled.div`
-  border: 6px solid ${colors.background.blank}; /* Gris claro */
+  border: 6px solid ${colors.background.highlight}; /* Gris claro */
   border-top: 6px solid ${colors.primary.highlight}; /* Azul */
   border-radius: 50%;
   width: 18px;

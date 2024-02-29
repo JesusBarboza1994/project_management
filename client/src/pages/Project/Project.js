@@ -8,7 +8,7 @@ import ActivityCard from "../../components/ActivityCard/ActivityCard";
 import { BiArrowBack } from "react-icons/bi";
 import { StyleBiTrashAlt } from "../Workspace/styles";
 import { deleteProject, updateTitleProject } from "../../services/project-service";
-import { formatDateToString } from "../../utils";
+import { cutString, formatDateToString } from "../../utils";
 import { FaChartGantt } from "react-icons/fa6";
 import Modal from "../../components/Modal";
 import { colors } from "../../styles";
@@ -22,6 +22,7 @@ export default function Project(){
   const [showModalDeleteProject, setShowModalDeleteProject] = useState(false)
   const [showGantt, setShowGantt] = useState(false)
   const [treeActivities, setTreeActivities] = useState(null)
+  const [showTitle, setShowTitle] = useState(true)
   const {id} = useParams()
   const nav = useNavigate()
   const handleDeleteProject = () => {
@@ -37,7 +38,9 @@ export default function Project(){
   }
   const handleUpdateNameActivity = (e) => {
     e.preventDefault()
+    console.log("entree")
     sessionStorage.setItem("currentProject", JSON.stringify(currentProject))
+    setShowTitle(true)
     document.getElementById("inputName").blur()
     updateTitleProject(currentProject.id).then(res => {
       console.log(res)
@@ -45,6 +48,21 @@ export default function Project(){
       console.log(err)
     })
   }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault(); 
+      console.dir(event.target) // Evita que se agregue una nueva línea
+      event.target.form.dispatchEvent(new Event('submit', { cancelable: false })); // Dispara el evento submit del formulario
+      sessionStorage.setItem("currentProject", JSON.stringify(currentProject))
+      setShowTitle(true)
+      updateTitleProject(currentProject.id).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  };
 
   useEffect(() => {
     listActivities(id).then(res => {
@@ -91,8 +109,11 @@ export default function Project(){
                 sessionStorage.removeItem("isDeleted")
                 nav("/workspaces")
               }}/>
-              <form id="projectName" onSubmit={(e)=>handleUpdateNameActivity(e)}>
-                <input id="inputName" value={currentProject.title} onChange={e => setCurrentProject({...currentProject, title:e.target.value})}/>
+              <form id="projectName" onSubmit={(e)=>{handleUpdateNameActivity(e)}}>
+                {showTitle ? <label htmlFor="inputName" onClick={() => setShowTitle(false)}>{cutString(currentProject.title, 20)}</label>
+                :
+                <textarea id="inputName" value={currentProject.title} onChange={e => setCurrentProject({...currentProject, title:e.target.value})} onKeyDown={handleKeyDown}/>
+                }
               </form>
             </div>
             <div style={{display:"flex", alignItems:"center", marginRight:"8px"}}>

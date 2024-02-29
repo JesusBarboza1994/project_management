@@ -16,6 +16,14 @@ export function formatDateToString(date){
     if(!date) return ""
     return date.split("T")[0]
 } 
+
+export function cutString(str, maxLength) {
+    if (str.length <= maxLength) {
+      return str; // Retorna el string sin cambios si no excede la longitud máxima
+    } else {
+      return str.substring(0, maxLength) + '...'; // Retorna el string cortado con puntos suspensivos
+    }
+}
   
 export const Icons = {
     arrowDown: <RiArrowDownSLine style={{ width: "16px", height: "21px" }} />,

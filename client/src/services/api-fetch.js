@@ -30,8 +30,12 @@ export default async function apiFetch(
   let data;
   if (!response.ok) {
     try {
+      console.log("HEY",response)
       data = await response.json();
+      return data
     } catch (error) {
+      console.log("ACA",error)
+      // return error.message
       throw new Error(response.statusText);
     }
     throw new Error(data.errors);

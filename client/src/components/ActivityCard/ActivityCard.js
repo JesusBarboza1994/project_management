@@ -1,5 +1,5 @@
 import { BiSolidDownArrow, BiSolidRightArrow, BiTrashAlt } from "react-icons/bi";
-import { DataContainer, SubActivitiesContainer, SubContainer, Wrapper } from "./styles";
+import { DataContainer, ErrorMessage, SubActivitiesContainer, SubContainer, Wrapper } from "./styles";
 import { useEffect, useRef, useState } from "react";
 import { colors } from "../../styles";
 import { deleteActivity, listActivities, updateActivity, updateNameActivity } from "../../services/activity-service";
@@ -14,6 +14,7 @@ export default function ActivityCard({activity, editProjectPermission}){
   const ejecutarEfectoRef = useRef(false);
   const [activityData, setActivityData] = useState({})
   const [loader, setLoader] = useState(false)
+  const [error, setError] = useState(null)
   
   const handleSubActivities = () => {
     ejecutarEfectoRef.current = true;
@@ -49,14 +50,15 @@ export default function ActivityCard({activity, editProjectPermission}){
       initDate: activityData.initDate,
       endDate: activityData.endDate
     }).then(res => {
+      if(res.error) setError(res.error)
       const updatedProject = {...currentProject, total_progress: res.project.total_progress, init_date: res.project.init_date, end_date: res.project.end_date}
       setCurrentProject(updatedProject)
       setLoader(false)
-      
       sessionStorage.setItem("currentProject", JSON.stringify(updatedProject))
       setUpdateListActivities(!updateListActivites)
       setUpdateSubActivities(!updateSubActivities)
     }).catch(err => {
+      setLoader(false)
       console.log(err)
     })
   }
@@ -110,13 +112,17 @@ export default function ActivityCard({activity, editProjectPermission}){
               }
             </div>
           </div>
+          {error &&<div>
+            <ErrorMessage style={{color: "red"}}>{error}</ErrorMessage>
+          </div>}
           <form className="progress-weight" onSubmit={(e)=>handleUpdateActivity(e)}>
-            <div  style={{display: "flex", gap:"12px"}}>
+            <div style={{display: "flex", gap:"12px"}}>
               <DataContainer color={Object.values(colors.randomColors)[activity.index]}>
                 <p>Peso: </p>
                 <div>
                   <input style={{width: "22px", fontSize:"12px"}} type={"text"} value={activityData.relativeWeight} onChange={(e) => {
                     setActivityData({...activityData,relativeWeight: e.target.value})
+                    if(error) setError(null)
                   }}/>
                   <p>| {(activityData.relativeWeightPercentage*100).toFixed(2)}%</p>
                 </div>
@@ -128,7 +134,9 @@ export default function ActivityCard({activity, editProjectPermission}){
                     <p>Progreso: </p>
                     <div>
                       <input style={{width: "32px", fontSize:"12px"}} type={"text"} value={activityData.relativeProgress} onChange={(e) => {
-                        setActivityData({...activityData,relativeProgress:e.target.value})}} 
+                        setActivityData({...activityData,relativeProgress:e.target.value})
+                        if(error) setError(null)
+                      }}
                         />
                       <p>%</p>
                     </div>
@@ -141,9 +149,11 @@ export default function ActivityCard({activity, editProjectPermission}){
               <div>
                 <input type={"date"} value={formatDateToString(activityData.initDate)} onChange={(e) => {
                   setActivityData({...activityData,initDate: e.target.value})
+                  if(error) setError(null)
                 }}/>
                 <input type={"date"} value={formatDateToString(activityData.endDate)} onChange={(e) => {
                   setActivityData({...activityData,endDate: e.target.value})
+                  if(error) setError(null)
                 }}/>
               </div>
             </DataContainer>

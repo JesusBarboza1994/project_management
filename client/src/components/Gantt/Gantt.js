@@ -16,9 +16,9 @@ export default function Gantt({activities, parentCurrentWidth, currentPadding=0}
     <Wrapper>
       {
         specificActivities.map((activity, index) => {
-          const initWidth = (new Date(activity.init_date) - init_date  ) / totalWidth
+          const initWidth = (parentCurrentWidth ? parentCurrentWidth/100 : 1) * (new Date(activity.init_date) - init_date  ) / totalWidth
           const currentWidth = (parentCurrentWidth ? parentCurrentWidth/100 : 1) * (new Date(activity.end_date) - new Date(activity.init_date) )/totalWidth 
-          const endWidth = (end_date - new Date(activity.end_date) )/totalWidth
+          const endWidth = (parentCurrentWidth ? parentCurrentWidth/100 : 1) * (end_date - new Date(activity.end_date) )/totalWidth
           const colorValue =  Object.keys(colors.randomColors)[activity.index]
           return(
             <div key={activity._id}>
@@ -53,11 +53,12 @@ export default function Gantt({activities, parentCurrentWidth, currentPadding=0}
                       setShowModalDate(newShowModalDate)
                     }}
                   >
-                    <div style={{width: `${activity.relative_progress*100}%`, background:"red", height:"100%", borderRadius:"8px"}}/>
+                    <div style={{width: `${activity.relative_progress*100}%`, background:colors.primary.highlight, height:"100%", borderRadius:"8px"}}/>
                     {showModalDate[index] && 
                       <ModalDate>
                         <p>Inicio: {formatDateToString(activity.init_date)}</p>
                         <p>Fin: {formatDateToString(activity.end_date)}</p>
+                        <p>{activity.relative_progress !==0 && `Progreso: ${activity.relative_progress*100}%`}</p>
                       </ModalDate>}
                   </ActivityDiv>
                   <div style={{width: `${endWidth}%` }}/>

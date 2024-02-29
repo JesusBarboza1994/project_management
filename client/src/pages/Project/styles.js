@@ -43,12 +43,20 @@ export const TitleContainer = styled.div`
     display: flex;
     gap:12px;
     align-items:center;
+    flex-wrap:wrap;
   }
-  #projectName input{
+  label{
+    color: ${colors.font.title};
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    max-width:200px;
+  }
+  #projectName textarea{
     border:none;
     color: ${colors.font.title};
     font-weight: 600;
-    max-width:120px;
+    max-width:200px;
     text-transform: uppercase;
     padding: 2px 6px;
     background:${colors.background.light};

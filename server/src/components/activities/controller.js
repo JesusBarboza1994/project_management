@@ -1,7 +1,7 @@
 const { deleteDescendantActivities } = require("../../utils.js/delete_associated");
 const Project = require("../projects/model");
 const Activity = require("./model");
-
+const { esTextoNoNumerico} = require("../../utils.js/utils")
 async function list_tree_activities(req, res){
   try {
     const id = req.params.id
@@ -14,14 +14,6 @@ async function list_tree_activities(req, res){
   }
 }
 
-async function listActivitiesRecursively(id) {
-  const activities = await Activity.find({ parent: id }).lean()
-  if(activities.length === 0) return []
-  for (const activity of activities) {
-    activity.activities = await listActivitiesRecursively(activity._id);
-  }
-  return activities
-}
 async function list_activities(req, res){
   try {
     const id_parent = req.params.id_parent
@@ -43,7 +35,6 @@ async function create_activity(req, res){
   let absolute_weight, index;
   try {
     const {title, relative_weight, parent } = req.body;
-    console.log("TITLE", title)
     const parent_activity = await Activity.findById(parent);
     const activities_same_parent = await Activity.find({ parent: parent });
     const sum_weight = activities_same_parent.reduce((acc, activity) => acc + activity.relative_weight, 0) + relative_weight;
@@ -174,10 +165,15 @@ async function update_name_activity(req, res){
 async function update_activity(req, res){
   const id = req.params.id;
   const { relative_weight, relative_progress, init_date, end_date } = req.body;
-
+  console.log("🚀 ~ update_activity ~ relative_progress:", Number(relative_progress))
+  if(esTextoNoNumerico(relative_weight)) return res.status(400).json({error: "El peso debe ser un número"})
+  if(esTextoNoNumerico(relative_progress) || Number(relative_progress) > 1 ) return res.status(400).json({error: "El progreso debe ser un número menor a 100%"})
   const current_activity = await Activity.findByIdAndUpdate(id, { relative_weight }, { new: true });
   if(!current_activity.has_subactivities) {
-    await Activity.findByIdAndUpdate(id, {init_date: formatStringToDate(init_date), end_date: formatStringToDate(end_date)}, { new: true });
+    const initDate = formatStringToDate(init_date)
+    const endDate= formatStringToDate(end_date)
+    if(initDate > endDate) return res.status(400).json({error: "La fecha de inicio no puede ser mayor a la fecha de fin"})
+    await Activity.findByIdAndUpdate(id, {init_date: initDate, end_date: endDate}, { new: true });
   }
   const parent_activity = await Activity.findById(current_activity.parent);
   const activities_same_parent = await Activity.find({ parent: current_activity.parent });
@@ -198,7 +194,6 @@ async function update_activity(req, res){
   // Actualizar actividades de la cadena superior (padre en adelante)
   const parent_result = await updateParentActivities(current_activity.parent);
   // Devolvemos la actividad actualizada
-  console.log("PARENT", parent_result)
   res.status(200).json(
     {
       message: "Update activity succesfully",
@@ -209,7 +204,14 @@ async function update_activity(req, res){
   );
 }
 
-
+async function listActivitiesRecursively(id) {
+  const activities = await Activity.find({ parent: id }).lean()
+  if(activities.length === 0) return []
+  for (const activity of activities) {
+    activity.activities = await listActivitiesRecursively(activity._id);
+  }
+  return activities
+}
 
 async function updateParentActivities(activityId) {
   const activity = await Activity.findById(activityId);
@@ -226,7 +228,9 @@ async function updateParentActivities(activityId) {
   const init_date = activities_same_parent.map(activity => activity.init_date).sort((a, b) => a - b)[0];
   const end_date = activities_same_parent.map(activity => activity.end_date).sort((a, b) => a - b)[activities_same_parent.length-1];
   const absolute_progress = activities_same_parent.reduce((acc, act) => acc + act.absolute_progress, 0);
-  await Activity.findByIdAndUpdate(activity._id, { absolute_progress, init_date, end_date });
+  const has_subactivities = activities_same_parent.length === 0 ? false : true
+  const relative_progress = absolute_progress / activity.relative_weight_percentage
+  await Activity.findByIdAndUpdate(activity._id, { absolute_progress, init_date, end_date, has_subactivities, relative_progress });
 
   // Obtener la actividad padre y llamar recursivamente
   const parentActivity = await Activity.findById(activity.parent);
