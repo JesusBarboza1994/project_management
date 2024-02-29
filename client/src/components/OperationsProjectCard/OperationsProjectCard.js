@@ -6,8 +6,10 @@ import { useAuth } from "../../context/auth-context"
 import {  restoreProject, updateColorProject, updateFavoriteProject } from "../../services/project-service"
 import {PiShareFatDuotone} from "react-icons/pi"
 import {MdOutlineRestoreFromTrash} from "react-icons/md"
+import { listUsers } from "../../services/user-service"
 export default function OperationsProjectCard({project, isDeleted}){
   const divRef = useRef(null)
+  const { setListAllUsers } = useAuth()
   const {setShowModalShared, currentProject, setCurrentProject, sharedProjects, setSharedProjects,updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
   const [showColors, setShowColors] = useState(false)
   const handleUpdateColor = (color) => {
@@ -23,6 +25,10 @@ export default function OperationsProjectCard({project, isDeleted}){
     e.stopPropagation()
     setShowModalShared(true)
     setCurrentProject({...currentProject, id: project._id})
+    listUsers({search:""}).then(res => {
+      console.log(res)
+      setListAllUsers(res)
+    })
   }
   const handleRestoreProject = (e) => {
     e.stopPropagation()

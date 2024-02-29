@@ -4,17 +4,19 @@ import Workspace from "./pages/Workspace/Workspace";
 import Project from "./pages/Project/Project";
 import Navbar from "./components/Navbar";
 import { SignupPage } from "./pages/SignupPage/SignupPage";
+import { useAuth } from "./context/auth-context";
 
 function App() {
+  const { user } = useAuth()
   return (
     <>
       <Navbar/>
       <Routes>
       <Route path="/" element={<LoginPage/>}/>
-      <Route path="/workspaces" element={<Workspace/>}/>
-      <Route path="/projects" element={<Project/>}/>
+      <Route path="/workspaces" element={user ? <Workspace/> : <LoginPage/>}/>
+      <Route path="/projects" element={user ?<Project/> : <LoginPage/>}/>
       <Route path="/signup" element={<SignupPage/>}/>
-      <Route path="/projects/:id" element={<Project/>}/>
+      <Route path="/projects/:id" element={user ?<Project/> : <LoginPage/>}/>
       </Routes>
     </>
   );

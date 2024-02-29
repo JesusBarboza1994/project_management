@@ -1,5 +1,5 @@
 import { BiSolidDownArrow, BiSolidRightArrow, BiTrashAlt } from "react-icons/bi";
-import { DataContainer, RelativeAbsoluteContainer, SubActivitiesContainer, SubContainer, TitleContainer, Wrapper } from "./styles";
+import { DataContainer, SubActivitiesContainer, SubContainer, Wrapper } from "./styles";
 import { useEffect, useRef, useState } from "react";
 import { colors } from "../../styles";
 import { deleteActivity, listActivities, updateActivity, updateNameActivity } from "../../services/activity-service";

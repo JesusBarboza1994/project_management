@@ -4,7 +4,7 @@ import { colors } from "../../styles";
 export const Wrapper = styled.form`
   display:${props=>props.showModal ? "flex": "none"};
   flex-direction:column;
-  gap: 24px;
+  gap: 16px;
   z-index:2;
   position:absolute;
   border-radius: 16px;
@@ -12,7 +12,7 @@ export const Wrapper = styled.form`
   padding:16px;
   background:${colors.background.light};
   width:500px;
-  height:250px;
+  // height:250px;
   align-items:center;
   justify-content:center;
   h2{

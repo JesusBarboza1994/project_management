@@ -5,3 +5,7 @@ export async function signUp(data){
     body: data,
   })
 }
+
+export async function listUsers({search=""}){
+  return await apiFetch(`/users?search=${search}`)
+}

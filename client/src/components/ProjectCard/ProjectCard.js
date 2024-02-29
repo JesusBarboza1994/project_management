@@ -5,7 +5,6 @@ import { colors } from "../../styles";
 
 import OperationsProjectCard from "../OperationsProjectCard/OperationsProjectCard";
 export default function ProjectCard({project, isDeleted=false}){
-  // projectTitle, backgroundColor, id, favorite
   const nav = useNavigate()
   const {setCurrentProject} = useAuth()
   

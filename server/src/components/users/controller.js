@@ -70,13 +70,22 @@ async function login(req, res) {
   }
 }
 
-async function logout(req, res){
-
+async function listUsers(req, res) {
+  try {
+    let { search } = req.query;
+    if(!search) search = '';
+    
+    const users = await User.find({ $or: [{ username: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }]}).select('email username');
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener los usuarios' });
+  }
 }
 
 module.exports = {
   create_user_admin,
+  listUsers,
   create_user,
-  login,
-  logout
+  login
 }

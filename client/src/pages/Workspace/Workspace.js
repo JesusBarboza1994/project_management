@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import { useAuth } from "../../context/auth-context";
-import { Container, ProjectContainer, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
+import { Container, List, ProjectContainer, Select, SharedUserDiv, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
 import { createWorkspace, deleteWorkspace, listWorkspaces, updateWorkspaceName } from "../../services/workspace-service";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
 import { createProject, sharedProject } from "../../services/project-service";
 import Modal from "../../components/Modal";
+import { listUsers } from "../../services/user-service";
 export default function Workspace(){
-  const { trashedProjects, setTrashedProjects, currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
+  const { trashedProjects, setTrashedProjects, listAllUsers, setListAllUsers ,currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
   const [workspaceName, setWorkspaceName] = useState("")
   const [project, setProject] = useState({
     name: "",
@@ -67,6 +68,8 @@ export default function Workspace(){
       console.log(err)
     })
   }
+
+
   const handleSharedSubmit = async (e) => {
     e.preventDefault()
     const body = {
@@ -80,6 +83,14 @@ export default function Workspace(){
       console.log(err)
     })
     setShowModalShared(false)
+  }
+  const handleListUsers = async (e) => {
+    e.preventDefault()
+    listUsers({search: e.target.value}).then(res => {
+      setListAllUsers(res)
+    }).catch(err => {
+      console.log(err)
+    })
   }
   useEffect(() => {
     listWorkspaces().then(res => {
@@ -212,18 +223,38 @@ export default function Workspace(){
           showModal={showModalShared}
           setShowModal={setShowModalShared}
           label={"Email"}
-          placeholder={"username123@mail.com"}
-          onChange={(e) => setSharedProjectUser({...sharedProjectUser, email: e.target.value})}
+          placeholder={"Buscar por correo o por usuario"}
+          onChange={(e) => handleListUsers(e)}
           onClick={()=>setShowModalShared(false)}
           onSubmit={(e)=>handleSharedSubmit(e)}
           typeButton={"solid"}
+          isListed = {true}
           text={"Share"}
           >
-            <select onChange={(e) => setSharedProjectUser({...sharedProjectUser, permission: e.target.value})}>
-              <option value="view">View</option>
-              <option value="edit">Edit</option>
-              <option value="admin">Admin</option>
-            </select>
+            <>
+              <List>
+                {
+                  listAllUsers.map(user=>{
+                    return(
+                      <li key={user._id} onClick={()=>setSharedProjectUser({...sharedProjectUser, email: user.email})}>{user.username}</li>
+                    )
+                  })
+                }
+              </List>
+              <div style={{display:"flex", width:"100%", justifyContent:"space-between", alignItems:"center"}}>
+                <Select onChange={(e) =>setSharedProjectUser({...sharedProjectUser, permission: e.target.value})}>
+                  <option value="view">View</option>
+                  <option value="edit">Edit</option>
+                  <option value="admin">Admin</option>
+                </Select>
+              </div>
+              { sharedProjectUser.email &&
+                <SharedUserDiv>
+                <p>{sharedProjectUser.email}</p>
+                <p>{sharedProjectUser.permission}</p>
+              </SharedUserDiv>}
+            </>
+
           </Modal>
           <Modal 
             showModal={showDeleteWorkspaceModal} 

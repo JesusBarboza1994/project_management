@@ -77,3 +77,45 @@ export const WorkspaceTitleContainer = styled.div`
   }
   text-transform: uppercase;
 `
+export const List = styled.ul`
+  width:100%;
+  display: flex;
+  background: ${colors.background.blank};
+  border-radius: 8px;
+  flex-direction:column;
+  justify-content: flex-start;
+  padding: 8px;
+  flex-wrap: wrap;
+  margin:0;
+  li{
+    list-style: none;
+    width: 100%;
+    border-radius: 6px;
+    padding-left: 6px;
+    font-size: 12px;
+    &:hover{
+      background: ${colors.primary.highlight};
+      color:${colors.background.blank};
+    }
+    &:focus{
+      background: ${colors.primary.light};
+    }
+  }
+`
+
+export const SharedUserDiv = styled.div`
+  display:flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 4px 16px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: 1px solid ${colors.tertiary.dark};
+`
+export const Select = styled.select`
+  width: 100px;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: 1px solid ${colors.tertiary.dark};
+`

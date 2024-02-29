@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import Button from "../Button";
 import Input from "../Input/Input";
 import { Close, MirrorScreen, Wrapper } from "./styles";
-
 export function Modal(props){
   const {title, type, label, placeholder, onChange, onClick, showModal, onSubmit,text, typeButton, setShowModal} = props
+ 
   useEffect(()=>{
     const handleEscKeyPress = (event) => {
       if (event.keyCode === 27 && showModal) {
