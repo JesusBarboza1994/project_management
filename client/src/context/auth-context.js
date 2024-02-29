@@ -16,11 +16,15 @@ function AuthProvider({ children }) {
   const [trashedProjects, setTrashedProjects] = useState([])
   const [updateListActivites, setUpdateListActivities] = useState(false)
   const [listAllUsers, setListAllUsers] = useState([])
+  const [listCollaborators, setListCollaborators] = useState([])
+  
   return (
     <AuthContext.Provider
       value={{
         user,
         workspaces,
+        listCollaborators,
+        setListCollaborators,
         trashedProjects,
         setTrashedProjects,
         showModalShared,

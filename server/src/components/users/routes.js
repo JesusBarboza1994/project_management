@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const controller = require("./controller");
+const UserAuth = require("../../middleware/authentication")
 
 /**
  * @swagger
@@ -34,7 +35,7 @@ const controller = require("./controller");
  */
 router.post("/login", controller.login)
 router.post("/signup", controller.create_user)
-router.get('/', controller.listUsers)
+router.get('/', UserAuth, controller.listUsers)
 router.post("/signup-admin", controller.create_user_admin)
-
+router.delete('/collaborators', UserAuth, controller.removeCollaborator)
 module.exports = router

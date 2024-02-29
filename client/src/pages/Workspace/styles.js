@@ -119,3 +119,17 @@ export const Select = styled.select`
   border-radius: 8px;
   border: 1px solid ${colors.tertiary.dark};
 `
+export const CollaboratorDiv = styled.div`
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  padding: 4px 16px;
+  font-size: 12px;
+  border-radius: 8px;
+  >div{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+`

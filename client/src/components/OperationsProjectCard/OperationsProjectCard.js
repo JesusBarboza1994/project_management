@@ -7,10 +7,10 @@ import {  restoreProject, updateColorProject, updateFavoriteProject } from "../.
 import {PiShareFatDuotone} from "react-icons/pi"
 import {MdOutlineRestoreFromTrash} from "react-icons/md"
 import { listUsers } from "../../services/user-service"
-export default function OperationsProjectCard({project, isDeleted}){
+export default function OperationsProjectCard({project, isDeleted, showShared}){
   const divRef = useRef(null)
   const { setListAllUsers } = useAuth()
-  const {setShowModalShared, currentProject, setCurrentProject, sharedProjects, setSharedProjects,updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
+  const {setShowModalShared, currentProject, setCurrentProject, setListCollaborators, sharedProjects, setSharedProjects,updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
   const [showColors, setShowColors] = useState(false)
   const handleUpdateColor = (color) => {
     updateColorProject({color, id: project._id}).then(res => {
@@ -25,9 +25,10 @@ export default function OperationsProjectCard({project, isDeleted}){
     e.stopPropagation()
     setShowModalShared(true)
     setCurrentProject({...currentProject, id: project._id})
-    listUsers({search:""}).then(res => {
+    listUsers({search:"", id: project._id}).then(res => {
       console.log(res)
-      setListAllUsers(res)
+      setListAllUsers(res.users)
+      setListCollaborators(res.collaborators)
     })
   }
   const handleRestoreProject = (e) => {
@@ -92,10 +93,10 @@ export default function OperationsProjectCard({project, isDeleted}){
           <IconContainer ref={divRef} onClick={(e)=>{handleRestoreProject(e)}}>
             <MdOutlineRestoreFromTrash style={{scale: "1.2"}} />
           </IconContainer>
-          :
-          <IconContainer ref={divRef} onClick={(e)=>{handleSharedProject(e)}}>
+          : (
+          showShared && <IconContainer ref={divRef} onClick={(e)=>{handleSharedProject(e)}}>
             <PiShareFatDuotone style={{scale: "0.9", fontWeight:200}} />
-          </IconContainer>
+          </IconContainer>)
         }
 
       </IconsContainer>

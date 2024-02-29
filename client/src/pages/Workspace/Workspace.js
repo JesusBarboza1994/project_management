@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import { useAuth } from "../../context/auth-context";
-import { Container, List, ProjectContainer, Select, SharedUserDiv, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
+import { CollaboratorDiv, Container, List, ProjectContainer, Select, SharedUserDiv, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
 import { createWorkspace, deleteWorkspace, listWorkspaces, updateWorkspaceName } from "../../services/workspace-service";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
 import { createProject, sharedProject } from "../../services/project-service";
 import Modal from "../../components/Modal";
-import { listUsers } from "../../services/user-service";
+import { listUsers, removeCollaborator } from "../../services/user-service";
+import { BiTrashAlt } from "react-icons/bi";
 export default function Workspace(){
-  const { trashedProjects, setTrashedProjects, listAllUsers, setListAllUsers ,currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
+  const { trashedProjects, setTrashedProjects, listCollaborators, setListCollaborators, listAllUsers, setListAllUsers ,currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
   const [workspaceName, setWorkspaceName] = useState("")
   const [project, setProject] = useState({
     name: "",
@@ -68,8 +69,6 @@ export default function Workspace(){
       console.log(err)
     })
   }
-
-
   const handleSharedSubmit = async (e) => {
     e.preventDefault()
     const body = {
@@ -86,10 +85,20 @@ export default function Workspace(){
   }
   const handleListUsers = async (e) => {
     e.preventDefault()
-    listUsers({search: e.target.value}).then(res => {
-      setListAllUsers(res)
+    listUsers({search: e.target.value, id: currentProject.id}).then(res => {
+      setListAllUsers(res.users)
     }).catch(err => {
       console.log(err)
+    })
+  }
+  const handleDeleteCollaborator = (email, username) =>{
+    removeCollaborator({id: currentProject.id, email }).then(res => {
+      const filterCollaborators = listCollaborators.filter(collaborator => {
+      const colabArray = res.collaborators.map(colab => colab.user)
+      return colabArray.includes(collaborator._id)
+      })
+      setListCollaborators(filterCollaborators)
+      setListAllUsers([...listAllUsers, {email, username}])
     })
   }
   useEffect(() => {
@@ -137,7 +146,7 @@ export default function Workspace(){
                 {
                   sharedProjects.map(project=>{
                     return(
-                      <ProjectCard key={"shared"+project._id} project={project} />
+                      <ProjectCard key={"shared"+project._id} project={project} showShared={false}/>
                     )
                   })
                 } 
@@ -232,15 +241,15 @@ export default function Workspace(){
           text={"Share"}
           >
             <>
-              <List>
-                {
+              {listAllUsers.length !== 0 && <List>
+                { 
                   listAllUsers.map(user=>{
                     return(
                       <li key={user._id} onClick={()=>setSharedProjectUser({...sharedProjectUser, email: user.email})}>{user.username}</li>
                     )
                   })
                 }
-              </List>
+              </List>}
               <div style={{display:"flex", width:"100%", justifyContent:"space-between", alignItems:"center"}}>
                 <Select onChange={(e) =>setSharedProjectUser({...sharedProjectUser, permission: e.target.value})}>
                   <option value="view">View</option>
@@ -248,6 +257,21 @@ export default function Workspace(){
                   <option value="admin">Admin</option>
                 </Select>
               </div>
+              <CollaboratorDiv>
+                {
+                   listCollaborators.map(user=>{
+                    return(
+                      <div>
+                        <p>{user.email}</p>
+                        <div style={{display:"flex", alignItems:"center", gap:"4px"}}>
+                          <p>{user.permission}</p>
+                          {user.permission !== "owner" && <BiTrashAlt style={{cursor:"pointer"}} onClick={()=>handleDeleteCollaborator(user.email, user.username)}/>}
+                        </div>
+                      </div>
+                    )
+                  })
+                }
+              </CollaboratorDiv>
               { sharedProjectUser.email &&
                 <SharedUserDiv>
                 <p>{sharedProjectUser.email}</p>
@@ -255,21 +279,21 @@ export default function Workspace(){
               </SharedUserDiv>}
             </>
 
-          </Modal>
-          <Modal 
-            showModal={showDeleteWorkspaceModal} 
-            setShowModal={setShowDeleteWorkspaceModal}
-            onSubmit={(e)=>{
-              e.preventDefault()
-              handleDeleteWorkspace(currentWorkspace)
-              setShowDeleteWorkspaceModal(false)
-              setCurrentWorkspace("")
-            }}
-            title="¿Estas seguro que deseas eliminar este espacio de trabajo?"
-            text="Eliminar"
-            typeButton="solid"
-            onClick={() => setShowDeleteWorkspaceModal(false)}
-          />
+        </Modal>
+        <Modal 
+          showModal={showDeleteWorkspaceModal} 
+          setShowModal={setShowDeleteWorkspaceModal}
+          onSubmit={(e)=>{
+            e.preventDefault()
+            handleDeleteWorkspace(currentWorkspace)
+            setShowDeleteWorkspaceModal(false)
+            setCurrentWorkspace("")
+          }}
+          title="¿Estas seguro que deseas eliminar este espacio de trabajo?"
+          text="Eliminar"
+          typeButton="solid"
+          onClick={() => setShowDeleteWorkspaceModal(false)}
+        />
       </Wrapper>
     </>
   )

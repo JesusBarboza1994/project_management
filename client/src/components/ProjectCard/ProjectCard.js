@@ -4,7 +4,7 @@ import { useAuth } from "../../context/auth-context";
 import { colors } from "../../styles";
 
 import OperationsProjectCard from "../OperationsProjectCard/OperationsProjectCard";
-export default function ProjectCard({project, isDeleted=false}){
+export default function ProjectCard({project, isDeleted=false, showShared=true}) {
   const nav = useNavigate()
   const {setCurrentProject} = useAuth()
   
@@ -29,7 +29,7 @@ export default function ProjectCard({project, isDeleted=false}){
     <Wrapper backgroundColor={colors.randomColors[project.color]} onClick={handleShowProject}>
       <p>{(project.total_progress*100).toFixed(2)}%</p>
       <p>{project.title}</p>
-      <OperationsProjectCard project={project} isDeleted={isDeleted}/>
+      <OperationsProjectCard project={project} isDeleted={isDeleted} showShared={showShared}/>
     </Wrapper>
   )
 }

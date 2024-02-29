@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const User = require("./model");
+const Project = require("../projects/model");
+const mongoose = require('mongoose');
+
 
 async function create_user_admin(req, res){
   try {
@@ -72,20 +75,90 @@ async function login(req, res) {
 
 async function listUsers(req, res) {
   try {
-    let { search } = req.query;
+    let { search, id } = req.query;
+    console.log("🚀 ~ listUsers ~ id:", id)
+    const { user } = req
     if(!search) search = '';
     
-    const users = await User.find({ $or: [{ username: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }]}).select('email username');
-    res.status(200).json(users);
+    const users = await User.find(
+      {$and: [
+        { _id: { $ne: user } }, // Excluye al usuario con el ID especificado
+        { $or: [
+            { username: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } }
+        ]}
+    ]}
+    ).select('email username');
+
+    if(id==="none"){
+      return res.status(200).json({users});
+    }
+
+    const objectId = new mongoose.Types.ObjectId(id);
+    const collaborators = await Project.aggregate([
+      { $match: { _id: objectId } },
+      {
+        $project: {
+          collaborators: 1,
+        },
+      },
+      {
+        $unwind: "$collaborators",
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "collaborators.user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $project: {
+          _id: "$user._id",
+          permission: "$collaborators.permission",
+          email: "$user.email",
+          username: "$user.username"
+        },
+      },
+      ])
+    const filter_users = users.filter(user => {
+      const emails = collaborators.map(collaborator => collaborator.email);
+      return !emails.includes(user.email);
+    })
+    return res.status(200).json({users: filter_users, collaborators});
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al obtener los usuarios' });
   }
 }
 
+async function removeCollaborator(req, res) {
+  try {
+    const { id, email } = req.query;
+    const project = await Project.findById(id);
+    const user = await User.findOne({email});
+    if (!project || !user) return res.status(404).json({ error: 'Proyecto o usuario no encontrado' });
+    
+    project.collaborators = project.collaborators.filter(collaborator => collaborator.user.toString() !== user._id.toString());
+    console.log("🚀 ~ removeCollaborator ~ project:", project)
+    await project.save();
+    
+    res.status(200).json({ collaborators: project.collaborators,message: 'Colaborador eliminado correctamente' });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al eliminar el colaborador' });
+  }
+}
+
 module.exports = {
   create_user_admin,
   listUsers,
+  removeCollaborator,
   create_user,
   login
 }
