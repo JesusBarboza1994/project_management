@@ -16,9 +16,12 @@ export default function Workspace(){
     name: "",
     id: ""
   })
+  const [mixedProjects, setMixedProjects] = useState(null)
   const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
   const [showProjectModal, setShowProjectModal] = useState(false)
   const [currentWorkspace, setCurrentWorkspace] = useState("")
+  const [allProjects, setAllProjects] = useState(null)
+  const [showMixedProjectModal, setShowMixedProjectModal] = useState(false)
   const [showDeleteWorkspaceModal, setShowDeleteWorkspaceModal] = useState(false)  
   const [sharedProjectUser, setSharedProjectUser] = useState({
     email: "",
@@ -107,6 +110,7 @@ export default function Workspace(){
       setFavoriteProjects(res.favoriteProjects)
       setSharedProjects(res.sharedProjects)
       setTrashedProjects(res.trashedProjects)
+      setAllProjects(res.projects)
     }).catch(err => {
       console.log(err)
     })
@@ -182,6 +186,24 @@ export default function Workspace(){
               </WorkspaceContainer>
             )
           })}
+          
+          <WorkspaceContainer>
+            <WorkspaceTitleContainer>
+              <h3>Mixed Projects</h3>
+            </WorkspaceTitleContainer>
+            <ProjectContainer>
+                <EmptyCard text={"P"} onClick={()=>{
+                  setShowMixedProjectModal(true)
+                  
+                }}/>
+                
+                {mixedProjects && mixedProjects.map((project)=>{
+                })}
+              </ProjectContainer>
+
+          </WorkspaceContainer>
+              
+          
           {trashedProjects.length !==0 &&
             <WorkspaceContainer>
               <WorkspaceTitleContainer>
@@ -224,6 +246,26 @@ export default function Workspace(){
           typeButton={"solid"}
           text={"Create"}
           />
+        <Modal
+          title={"Create a mixed project"}
+          showModal={showMixedProjectModal} 
+          setShowModal={setShowMixedProjectModal}
+          onClick={()=>setShowMixedProjectModal(false)}
+          onSubmit={(e)=>{}}
+          typeButton={"solid"}
+          text={"Create Mixed"}
+        >
+          <div>
+          {allProjects && allProjects.map((project)=>{
+            console.log(project)
+            return(
+              <div key={project._id} project={project}>
+                {project.title}
+              </div>
+            )
+          })}
+          </div>
+        </Modal>
 
         <Modal
           title={"Share this project"}

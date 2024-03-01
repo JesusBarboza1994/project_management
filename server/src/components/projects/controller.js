@@ -248,6 +248,7 @@ async function list_collaboration_projects(req, res){
     })
 
     res.status(200).json({
+      projects: raw_projects,
       workspaces,
       sharedProjects,
       trashedProjects,
