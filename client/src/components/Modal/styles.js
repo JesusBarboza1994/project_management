@@ -18,6 +18,9 @@ export const Wrapper = styled.form`
   h2{
     text-align:center;
   }
+  @media(max-width:550px){
+    width:300px;
+  }
 `
 export const Close = styled.div`
   position:absolute;

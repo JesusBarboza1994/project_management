@@ -31,6 +31,7 @@ export const Wrapper = styled.div`
     border:none;
     color: ${colors.font.title};
     font-weight: 500;
+    min-width: 100px;
     padding: 2px 6px;
     background:${ props => props.color };;
   }

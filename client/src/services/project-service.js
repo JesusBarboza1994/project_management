@@ -4,10 +4,10 @@ export async function listProjects(workspaceId){
   return await apiFetch(`/projects/${workspaceId}`)
 }
 export async function createProject(body){
-  const { title, workspaceId } = body
+  const { title, workspaceId, color } = body
   return await apiFetch(`/projects/${workspaceId}`, {
     method: "POST",
-    body: {title}
+    body: {title, color}
   })
 }
 export async function updateColorProject({color, id}){

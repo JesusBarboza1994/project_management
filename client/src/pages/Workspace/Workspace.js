@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import { useAuth } from "../../context/auth-context";
-import { CollaboratorDiv, Container, List, ProjectContainer, Select, SharedUserDiv, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
+import { CollaboratorDiv, Container, List, ListProjectsModal, ListSelectedProjectsModal, ProjectContainer, Select, SharedUserDiv, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
 import { createWorkspace, deleteWorkspace, listWorkspaces, updateWorkspaceName } from "../../services/workspace-service";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
@@ -9,6 +9,9 @@ import { createProject, listCollaborationProjects, sharedProject } from "../../s
 import Modal from "../../components/Modal";
 import { listUsers, removeCollaborator } from "../../services/user-service";
 import { BiTrashAlt } from "react-icons/bi";
+import { colors } from "../../styles";
+import Input from "../../components/Input/Input";
+import { createMixedProject } from "../../services/mixed-project-service";
 export default function Workspace(){
   const { trashedProjects, setTrashedProjects, listCollaborators, setListCollaborators, listAllUsers, setListAllUsers ,currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
   const [workspaceName, setWorkspaceName] = useState("")
@@ -16,11 +19,15 @@ export default function Workspace(){
     name: "",
     id: ""
   })
+  const [selectedMixedProjects, setSelectedMixedProjects] = useState({
+    title: "",
+    projects: []
+  })
   const [mixedProjects, setMixedProjects] = useState(null)
   const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
-  const [showProjectModal, setShowProjectModal] = useState(false)
   const [currentWorkspace, setCurrentWorkspace] = useState("")
   const [allProjects, setAllProjects] = useState(null)
+  const [showProjectModal, setShowProjectModal] = useState(false)
   const [showMixedProjectModal, setShowMixedProjectModal] = useState(false)
   const [showDeleteWorkspaceModal, setShowDeleteWorkspaceModal] = useState(false)  
   const [sharedProjectUser, setSharedProjectUser] = useState({
@@ -41,7 +48,8 @@ export default function Workspace(){
     if(modal=== "project"){
       const body = {
         title: project.name,
-        workspaceId: project.id
+        workspaceId: project.id,
+        color: Object.keys(colors.randomColors)[Math.floor(Math.random() * Object.keys(colors.randomColors).length)]
       }
       createProject(body).then(res => {
         setUpdateWorkspace(!updateWorkspace)
@@ -68,6 +76,16 @@ export default function Workspace(){
     deleteWorkspace(id).then(res => {
       console.log(res)
       setUpdateWorkspace(!updateWorkspace)
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  const handleMixedProject = (e) => {
+    e.preventDefault()
+    setShowMixedProjectModal(false)
+    createMixedProject({selectedMixedProjects}).then(res => {
+      console.log(res)
     }).catch(err => {
       console.log(err)
     })
@@ -111,6 +129,7 @@ export default function Workspace(){
       setSharedProjects(res.sharedProjects)
       setTrashedProjects(res.trashedProjects)
       setAllProjects(res.projects)
+      setMixedProjects(res.mixedProjects)
     }).catch(err => {
       console.log(err)
     })
@@ -194,10 +213,12 @@ export default function Workspace(){
             <ProjectContainer>
                 <EmptyCard text={"P"} onClick={()=>{
                   setShowMixedProjectModal(true)
-                  
                 }}/>
                 
                 {mixedProjects && mixedProjects.map((project)=>{
+                  return(
+                    <ProjectCard key={project.id} project={project} mixed={true}/>
+                  )
                 })}
               </ProjectContainer>
 
@@ -250,21 +271,43 @@ export default function Workspace(){
           title={"Create a mixed project"}
           showModal={showMixedProjectModal} 
           setShowModal={setShowMixedProjectModal}
-          onClick={()=>setShowMixedProjectModal(false)}
-          onSubmit={(e)=>{}}
+          onClick={(e)=>{setShowMixedProjectModal(false)}}
+          onSubmit={handleMixedProject}
           typeButton={"solid"}
           text={"Create Mixed"}
         >
-          <div>
-          {allProjects && allProjects.map((project)=>{
-            console.log(project)
-            return(
-              <div key={project._id} project={project}>
-                {project.title}
-              </div>
-            )
-          })}
-          </div>
+          <>
+            <Input label={"Name"} value={selectedMixedProjects.title} placeholder={"Mixed Project X"} onChange={(e) => setSelectedMixedProjects({...selectedMixedProjects, title: e.target.value})}/>
+            <ListProjectsModal>
+              {allProjects && allProjects.map((project)=>{
+                return(
+                  <div key={project._id} project={project}
+                    onClick={()=>{
+                      if(!selectedMixedProjects.projects.includes(project)){
+                        setSelectedMixedProjects({title:selectedMixedProjects.title, projects: [...selectedMixedProjects.projects, project]})
+                      }
+                    }}
+                  >
+                    {project.title}
+                  </div>
+                )
+              })}
+            </ListProjectsModal>
+              {
+                selectedMixedProjects.length !==0 &&
+                <ListSelectedProjectsModal>
+                  {selectedMixedProjects.projects.map((project)=>{
+                    return(
+                      <div key={`selected${project._id}`}
+                        onClick={()=>setSelectedMixedProjects({title: selectedMixedProjects.title, projects: selectedMixedProjects.projects.filter(proj=>proj._id !== project._id)})}
+                      >
+                        {project.title}
+                      </div>
+                    )
+                  })}
+                </ListSelectedProjectsModal>
+              }
+          </>
         </Modal>
 
         <Modal

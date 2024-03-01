@@ -37,16 +37,18 @@ async function create_activity(req, res){
     const {title, relative_weight, parent } = req.body;
     const parent_activity = await Activity.findById(parent);
     const activities_same_parent = await Activity.find({ parent: parent });
-    let order
-    if(activities_same_parent.length === 0){
-      order = [...parent_activity.order, 1]
-    }else{
-      activities_same_parent[length-1]
-    }
+    
     const sum_weight = activities_same_parent.reduce((acc, activity) => acc + activity.relative_weight, 0) + relative_weight;
+    let order
     let init_date
     if(!parent_activity){
       index = 1
+      const orders_same_parent = activities_same_parent.map(activity =>activity.order
+        ).reduce((acc, order) => acc.concat(order),[])
+      order = ( activities_same_parent.length === 0 ) ? 
+        [1] 
+        : 
+        [Math.max(...orders_same_parent) + 1]
       absolute_weight = relative_weight/sum_weight
       const project = await Project.findById(parent);
       if(project.init_date){
@@ -60,6 +62,16 @@ async function create_activity(req, res){
       }else{
         init_date = new Date()
       }
+
+      if(activities_same_parent.length === 0){
+        order = [...parent_activity.order, 1]
+      }else{
+        const orders_same_parent = activities_same_parent.map(activity => {
+          return activity.order.slice(parent_activity.order.length)
+        }).reduce((acc, order) => acc.concat(order),[])
+        order = [...parent_activity.order, Math.max(...orders_same_parent) + 1]
+      }
+      
       index = parent_activity.index + 1
       absolute_weight = (+relative_weight/sum_weight) * parent_activity.absolute_weight
     }
@@ -150,7 +162,7 @@ async function delete_activity(req, res){
     })
     const parent_absolute_weight = parent_activity ? parent_activity.absolute_weight : 1;
     // Llamamos a la función recursiva para actualizar las actividades descendientes
-    await updateActivityRecursively(current_activity, parent_absolute_weight);
+    await updateActivityRecursively(current_activity, parent_absolute_weight, current_activity.order);
     // Actualizar actividades de la cadena superior (padre en adelante)
     const total_progress = await updateParentActivities(current_activity.parent);
   
@@ -264,16 +276,22 @@ async function updateParentActivities(activityId) {
 }
 
 
-async function updateActivityRecursively(activity, parent_absolute_weight) {
+async function updateActivityRecursively(activity, parent_absolute_weight, order) {
   const parent_activity = await Activity.findById(activity.parent);
   const activities_same_parent = await Activity.find({ parent: activity.parent });
-  const sum_weight = activities_same_parent.reduce((acc, act) => acc + act.relative_weight, 0);
   
+   // [1 , 2]
+  // [2, 1]
   let totalAbsoluteProgress = 0;
   for (const act of activities_same_parent) {
     act.absolute_weight = act.relative_weight_percentage * (parent_activity ? parent_absolute_weight : 1);
     
+    if(order){
+      if(act.order[act.order.length -1] > order[order.length -1]) act.order[act.order.length -1] = act.order[act.order.length -1] - 1
+    }
     
+    // [2, 2, 1], [2, 2, 2]
+
     if (!act.has_subactivities) {
       act.absolute_progress = act.absolute_weight * act.relative_progress;
     } else {
@@ -281,11 +299,13 @@ async function updateActivityRecursively(activity, parent_absolute_weight) {
       let sumAbsoluteProgress = 0;
       for (const subactivity of subactivities) {
         subactivity.absolute_weight = subactivity.relative_weight_percentage * act.absolute_weight;
+        if(order) subactivity.order[order.length-1] = subactivity.order[order.length-1] - 1
+        
         if (!subactivity.has_subactivities) {
           subactivity.absolute_progress = subactivity.absolute_weight * subactivity.relative_progress;
         } else {
           const sub_subactivities = await Activity.find({ parent: subactivity._id });
-          subactivity.absolute_progress = await updateActivityRecursively(sub_subactivities[0], subactivity.absolute_weight);
+          subactivity.absolute_progress = await updateActivityRecursively(sub_subactivities[0], subactivity.absolute_weight, order);
         }
         
         sumAbsoluteProgress += subactivity.absolute_progress;

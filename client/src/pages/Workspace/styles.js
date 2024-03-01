@@ -136,3 +136,25 @@ export const CollaboratorDiv = styled.div`
     width: 100%;
   }
 `
+export const ListProjectsModal = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 4px 16px;
+  font-size: 12px;
+  border-radius: 8px;
+  background: ${colors.background.blank};
+  border: 1px solid ${colors.tertiary.dark};
+`
+
+export const ListSelectedProjectsModal = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 4px 16px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: 1px solid ${colors.tertiary.dark};
+`

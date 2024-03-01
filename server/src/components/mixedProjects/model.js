@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const mixedProjectSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  favorite: {type: Boolean, default: false},
   projects: [
     {
       project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },

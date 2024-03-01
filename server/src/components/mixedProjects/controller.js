@@ -6,7 +6,8 @@ const MixedProject = require("./model");
 
 async function create_mixed_project(req, res){
   try {
-    const {ids, title} = req.body
+    const {ids, title, color} = req.body
+    if(ids.length < 2) return res.status(400).json({ error: "Debe seleccionar al menos dos proyectos." });
     const actual_projects = await Project.find({ _id: { $in: ids } });
     if(actual_projects.length !== ids.length) return res.status(404).json({ error: "Uno o más de los proyectos no es válido." });
     
@@ -16,6 +17,7 @@ async function create_mixed_project(req, res){
       title,
       projects: projects_array,
       collaborators: [{
+        color,
         user: req.user,
         permission: 'owner'
       }],
@@ -32,10 +34,8 @@ async function create_mixed_project(req, res){
 async function show_mixed_project(req, res){
   try {
     const { id } = req.params
-    console.log("🚀 ~ show_mixed_project ~ id:", id)
     const mixed_project = await MixedProject.findById(id)
     if(!mixed_project) return res.status(404).json({ error: 'No se encontro el proyecto combinado' });
-    console.log("🚀 ~ show_mixed_project ~ mixed_project:", mixed_project)
     
     const mixed_activities = []
     for await (const project of mixed_project.projects) {
@@ -64,8 +64,39 @@ async function list_all_activities_of_project({id, title}){
   }
 
   await obtener_actividades_recursivas({parentId: id})
-  return complete_activities
+  return ordenar_objetos_por_order(complete_activities)
 }
+
+
+function ordenar_objetos_por_order(objetos) {
+  // Función de comparación personalizada para ordenar los objetos
+  function comparar_por_order(a, b) {
+      // Itera sobre la longitud máxima de los arrays "order"
+      for (let i = 0; i < Math.max(a.order.length, b.order.length); i++) {
+          // Obtiene los dígitos de cada objeto, si no existen, asume 0
+          const digitoA = a.order[i] || 0;
+          const digitoB = b.order[i] || 0;
+
+          // Compara los dígitos
+          if (digitoA !== digitoB) {
+              return digitoA - digitoB;
+          }
+      }
+
+      // Si todos los dígitos son iguales, retorna 0 (no hay cambio en el orden)
+      return 0;
+  }
+
+  // Ordena los objetos utilizando la función de comparación personalizada
+  objetos.sort(comparar_por_order);
+
+  return objetos;
+}
+
+
+
+
+
 
 module.exports = {
   create_mixed_project,

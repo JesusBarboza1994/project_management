@@ -15,6 +15,7 @@ export default function ActivityCard({activity, editProjectPermission}){
   const [activityData, setActivityData] = useState({})
   const [loader, setLoader] = useState(false)
   const [error, setError] = useState(null)
+  const [showActivityName, setShowActivityName] = useState(false)
   
   const handleSubActivities = () => {
     ejecutarEfectoRef.current = true;
@@ -33,6 +34,7 @@ export default function ActivityCard({activity, editProjectPermission}){
   }
   const handleUpdateNameActivity = (e) => {
     e.preventDefault();
+    setShowActivityName(false)
     updateNameActivity(activity._id,activityData.title).then(res => {
       setUpdateListActivities(!updateListActivites)
     }).catch(err => {
@@ -51,7 +53,6 @@ export default function ActivityCard({activity, editProjectPermission}){
       endDate: activityData.endDate
     }).then(res => {
       if(res.error) setError(res.error)
-      console.log("RES", res)
       const updatedProject = {...currentProject, total_progress: res.project.total_progress, init_date: res.project.init_date, end_date: res.project.end_date}
       setCurrentProject(updatedProject)
       setLoader(false)
@@ -102,7 +103,11 @@ export default function ActivityCard({activity, editProjectPermission}){
                   <BiSolidRightArrow onClick={handleSubActivities}/>
               }
               <form className="acitivity-name" onSubmit={(e)=>handleUpdateNameActivity(e)}>
-                <input id="activityname" value={activityData.title} onChange={(e) => setActivityData({...activityData, title: e.target.value})}/>
+                {showActivityName ?
+                  <input id="activityname" value={activityData.title} onChange={(e) => setActivityData({...activityData, title: e.target.value})}/>
+                  :
+                  <p id="activityname" onClick={() => setShowActivityName(true)}>{activity.order.join(".")}. {activity.title}</p>
+                }
               </form>
             </div>
             <div style={{display: "flex", alignItems: "center", gap: "6px"}}>

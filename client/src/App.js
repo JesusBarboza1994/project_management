@@ -5,6 +5,7 @@ import Project from "./pages/Project/Project";
 import Navbar from "./components/Navbar";
 import { SignupPage } from "./pages/SignupPage/SignupPage";
 import { useAuth } from "./context/auth-context";
+import Table from "./pages/Table/Table";
 
 function App() {
   const { user } = useAuth()
@@ -17,6 +18,7 @@ function App() {
       <Route path="/projects" element={user ?<Project/> : <LoginPage/>}/>
       <Route path="/signup" element={<SignupPage/>}/>
       <Route path="/projects/:id" element={user ?<Project/> : <LoginPage/>}/>
+      <Route path="/tables/:id" element={user ?<Table/> : <LoginPage/>}/>
       </Routes>
     </>
   );

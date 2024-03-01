@@ -40,7 +40,7 @@ async function show_project(req, res) {
 // TODO: Validar que el usuario que crea el proyecto dentro del workspace, sea dueño del workspace
 async function create_project(req, res) {
   try {
-    const { title } = req.body;
+    const { title, color } = req.body;
     const workspace_id = req.params.id_workspace;
     const workspace = await Workspace.findById(req.params.id_workspace);
     if (!workspace || !(workspace.user.toHexString() == req.user))
@@ -49,6 +49,7 @@ async function create_project(req, res) {
         .json({ error: "Este workspace no pertenece a este usuario" });
     const new_project = new Project({
       title,
+      color,
       workspace: workspace_id,
       user: req.user,
       collaborators: [
@@ -301,6 +302,29 @@ async function list_collaboration_projects(req, res) {
       },
     ]);
     const raw_workspaces = await Workspace.find({ user: req.user });
+    const mixed_projects = await MixedProject.aggregate([
+      {
+        $match: {
+            collaborators: { $elemMatch: { user: new mongoose.Types.ObjectId(req.user) } }
+        }
+      },
+      { $unwind: "$collaborators" }, // Deshace el array de colaboradores
+      {
+          $match: {
+              "collaborators.user": new mongoose.Types.ObjectId(req.user) // Filtra solo el colaborador que coincide con req.user
+          }
+      },
+      {
+          $project: {
+              _id: 1,
+              color: "$collaborators.color",
+              favorite: "$collaborators.favorite",
+              permission: "$collaborators.permission",
+              title: 1
+          }
+      }
+    ])
+  
     const favoriteProjects = raw_projects.filter(
       (project) => project.favorite && !project.is_deleted
     );
@@ -312,7 +336,7 @@ async function list_collaboration_projects(req, res) {
     );
     const workspaces = raw_workspaces.map((workspace) => {
       const projects = raw_projects.filter(
-        (project) => project.workspace.toString() === workspace._id.toString()
+        (project) => (project.workspace.toString() === workspace._id.toString() && !project.is_deleted)
       );
       return {
         id: workspace._id,
@@ -327,6 +351,7 @@ async function list_collaboration_projects(req, res) {
       sharedProjects,
       trashedProjects,
       favoriteProjects,
+      mixedProjects: mixed_projects,
     });
   } catch (error) {
     console.log("ERROR", error);
