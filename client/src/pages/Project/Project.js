@@ -13,7 +13,7 @@ import { FaChartGantt } from "react-icons/fa6";
 import Modal from "../../components/Modal";
 import { colors } from "../../styles";
 import { GoProjectSymlink } from "react-icons/go";
-import Gantt from "../../components/Gantt/Gantt";
+import Gantt, { getMinAndMaxDateInActivities } from "../../components/Gantt/Gantt";
 
 export default function Project(){
   const { currentProject, updateListActivites, setCurrentProject } = useAuth()
@@ -23,6 +23,7 @@ export default function Project(){
   const [showGantt, setShowGantt] = useState(false)
   const [treeActivities, setTreeActivities] = useState(null)
   const [showTitle, setShowTitle] = useState(true)
+  const [timeProject, setTimeProject] = useState(null)
   const {id} = useParams()
   const nav = useNavigate()
   const handleDeleteProject = () => {
@@ -76,6 +77,7 @@ export default function Project(){
     const fetchData = async () => {
       const response = await listTreeActivities();
       setTreeActivities(response)
+      setTimeProject(getMinAndMaxDateInActivities({activities: response})) 
     }
     fetchData() 
   }, [updateListActivites])
@@ -146,7 +148,7 @@ export default function Project(){
           <InitDiv >
             <p>{formatDateToString(currentProject.init_date)}</p>
           </InitDiv>
-          <Gantt activities={treeActivities}/>
+          <Gantt activities={treeActivities} timeProject={timeProject}/>
           <EndDiv>
             <p>{formatDateToString(currentProject.end_date)}</p>
           </EndDiv>

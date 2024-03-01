@@ -165,7 +165,8 @@ async function update_name_activity(req, res){
 async function update_activity(req, res){
   const id = req.params.id;
   const { relative_weight, relative_progress, init_date, end_date } = req.body;
-  console.log("🚀 ~ update_activity ~ relative_progress:", Number(relative_progress))
+  console.log("🚀 ~ update_activity ~ end_date:", end_date)
+  console.log("🚀 ~ update_activity ~ init_date:", init_date)
   if(esTextoNoNumerico(relative_weight)) return res.status(400).json({error: "El peso debe ser un número"})
   if(esTextoNoNumerico(relative_progress) || Number(relative_progress) > 1 ) return res.status(400).json({error: "El progreso debe ser un número menor a 100%"})
   const current_activity = await Activity.findByIdAndUpdate(id, { relative_weight }, { new: true });
@@ -217,6 +218,7 @@ async function updateParentActivities(activityId) {
   const activity = await Activity.findById(activityId);
   if (!activity) {
     const main_activities = await Activity.find({ parent: activityId });
+    console.log("🚀 ~ updateParentActivities ~ main_activities:", main_activities)
     const init_date = main_activities.map(activity => activity.init_date).sort((a, b) => a - b)[0];
     const end_date = main_activities.map(activity => activity.end_date).sort((a, b) => a - b)[main_activities.length-1];
     const {total_progress}=  await Project.findByIdAndUpdate(activityId, { init_date, end_date,total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
@@ -237,9 +239,11 @@ async function updateParentActivities(activityId) {
   if (parentActivity) {
     return await updateParentActivities(parentActivity._id);
   }else{
-    const main_activities = await Activity.find({ parent: activity.parent });
-    const {total_progress, init_date, end_date}=  await Project.findByIdAndUpdate(activity.parent, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
-    return {total_progress, init_date, end_date};
+    const main_activities = await Activity.find({ parent: activity.parent, index: 1 });
+    const initDate = main_activities.map(activity => activity.init_date).sort((a, b) => a - b)[0];
+    const endDate = main_activities.map(activity => activity.end_date).sort((a, b) => a - b)[main_activities.length-1];
+    const {total_progress }=  await Project.findByIdAndUpdate(activity.parent, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
+    return {total_progress, init_date: initDate, end_date: endDate};
   }
 }
 

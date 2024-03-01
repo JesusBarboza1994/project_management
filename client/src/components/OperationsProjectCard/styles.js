@@ -7,7 +7,7 @@ export const ColorsContainer=styled.div`
   display:${props=>props.showColors ? 'grid': 'none'};
   border: 1px solid ${colors.secondary.light};
   border-radius:12px;
-  z-index:2;
+  z-index:3;
   row-gap:2px;
   column-gap: 2px;
   grid-template-rows:repeat(2,1fr);

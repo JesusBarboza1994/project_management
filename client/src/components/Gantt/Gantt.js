@@ -1,24 +1,23 @@
 import { BiSolidDownArrow, BiSolidRightArrow, BiSolidCircle } from "react-icons/bi"
 import { ActivityDiv, ModalDate, Row, Wrapper } from "./styles"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { colors } from "../../styles"
 import { formatDateToString } from "../../utils"
-import { useAuth } from "../../context/auth-context"
 
-export default function Gantt({activities, parentCurrentWidth, currentPadding=0}){
+export default function Gantt({activities, currentPadding=0, timeProject}){
   const specificActivities = activities || JSON.parse(sessionStorage.getItem("activities"))
-  const { init_date, end_date } = getMinAndMaxDateInActivities({activities: specificActivities}) 
+  const {end_date :extremeEndDate, init_date: extremeInitDate } = timeProject
   const [showSubactivities, setShowSubactivities] = useState(new Array(specificActivities.length).fill(false))
-  const totalWidth = (end_date - init_date )/100
+  const totalWidth = (extremeEndDate - extremeInitDate )/100
   const [showModalDate, setShowModalDate] = useState(new Array(specificActivities.length).fill(false))
   
   return(
     <Wrapper>
       {
         specificActivities.map((activity, index) => {
-          const initWidth = (parentCurrentWidth ? parentCurrentWidth/100 : 1) * (new Date(activity.init_date) - init_date  ) / totalWidth
-          const currentWidth = (parentCurrentWidth ? parentCurrentWidth/100 : 1) * (new Date(activity.end_date) - new Date(activity.init_date) )/totalWidth 
-          const endWidth = (parentCurrentWidth ? parentCurrentWidth/100 : 1) * (end_date - new Date(activity.end_date) )/totalWidth
+          const initWidth =  (new Date(activity.init_date) - extremeInitDate  ) / totalWidth
+          const currentWidth =  (new Date(activity.end_date) - new Date(activity.init_date) )/totalWidth 
+          const endWidth =  (extremeEndDate - new Date(activity.end_date) )/totalWidth
           const colorValue =  Object.keys(colors.randomColors)[activity.index]
           return(
             <div key={activity._id}>
@@ -64,7 +63,7 @@ export default function Gantt({activities, parentCurrentWidth, currentPadding=0}
                   <div style={{width: `${endWidth}%` }}/>
                 </div>
               </Row>
-              { (showSubactivities[index] && activity.activities.length !== 0) && <Gantt activities={activity.activities} parentCurrentWidth={currentWidth} currentPadding={currentPadding+3}/>}
+              { (showSubactivities[index] && activity.activities.length !== 0) && <Gantt activities={activity.activities} timeProject={timeProject} currentPadding={currentPadding+3}/>}
             </div>
           )
         })
@@ -73,7 +72,7 @@ export default function Gantt({activities, parentCurrentWidth, currentPadding=0}
   )
 }
 
-function getMinAndMaxDateInActivities({activities}){
+export function getMinAndMaxDateInActivities({activities}){
   let init_date
   let end_date
   activities.forEach(activity => {

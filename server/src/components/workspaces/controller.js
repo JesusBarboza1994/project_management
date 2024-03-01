@@ -70,9 +70,6 @@ async function list_workspaces(req, res){
       })
       return value
     })
-    console.log("FAVORITE PROJECTS2", favorite_projects)
-
-
 
     res.status(200).json({workspaces:workspaceList, favoriteProjects:favorite_projects, sharedProjects:real_shared_projects, trashedProjects:trash_projects});
   } catch (error) {

@@ -51,6 +51,7 @@ export default function ActivityCard({activity, editProjectPermission}){
       endDate: activityData.endDate
     }).then(res => {
       if(res.error) setError(res.error)
+      console.log("RES", res)
       const updatedProject = {...currentProject, total_progress: res.project.total_progress, init_date: res.project.init_date, end_date: res.project.end_date}
       setCurrentProject(updatedProject)
       setLoader(false)

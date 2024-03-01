@@ -18,7 +18,6 @@ export const Wrapper = styled.div`
   background-color:${props => props.backgroundColor};
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  overflow: hidden; 
   p{
     color:black;
     text-align:center;

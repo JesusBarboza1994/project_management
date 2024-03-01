@@ -68,12 +68,15 @@ export const WorkspaceTitleContainer = styled.div`
   display:flex;
   padding-right: 36px;
   justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   input{
     border:none;
     color: ${colors.font.title};
     font-weight: 600;
     text-transform: uppercase;
     padding: 2px 6px;
+    width: 300px;
   }
   text-transform: uppercase;
 `

@@ -154,7 +154,7 @@ export default function Workspace(){
           }
           {workspaces && workspaces.map(workspace => {
             return (
-              <WorkspaceContainer>
+              <WorkspaceContainer key={workspace.id}>
                 <WorkspaceTitleContainer>
                   <form onSubmit={(e)=>handleUpdateWorkspace(e, workspace.name, workspace.id)}>
                     <input id="workspaceInput" value={workspace.name} onChange={(e) => setWorkspaces([...workspaces.filter(wkspace=>wkspace.id !== workspace.id),{...workspace, name: e.target.value}])}/>
