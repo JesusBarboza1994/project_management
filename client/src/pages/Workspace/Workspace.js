@@ -5,7 +5,7 @@ import { CollaboratorDiv, Container, List, ProjectContainer, Select, SharedUserD
 import { createWorkspace, deleteWorkspace, listWorkspaces, updateWorkspaceName } from "../../services/workspace-service";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
-import { createProject, sharedProject } from "../../services/project-service";
+import { createProject, listCollaborationProjects, sharedProject } from "../../services/project-service";
 import Modal from "../../components/Modal";
 import { listUsers, removeCollaborator } from "../../services/user-service";
 import { BiTrashAlt } from "react-icons/bi";
@@ -102,7 +102,7 @@ export default function Workspace(){
     })
   }
   useEffect(() => {
-    listWorkspaces().then(res => {
+    listCollaborationProjects().then(res => {
       setWorkspaces(res.workspaces)
       setFavoriteProjects(res.favoriteProjects)
       setSharedProjects(res.sharedProjects)

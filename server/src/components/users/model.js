@@ -12,6 +12,22 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user'],
     default: 'user'
   },
+  collaborations:{ 
+    type: [
+      {
+        project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
+        permission: {
+          type: String,
+          enum: ['view', 'edit', 'admin', "owner"], // Puedes agregar más roles si es necesario
+          default: 'view',
+        },
+        favorite: { type: Boolean, default: false }
+      },
+    ], 
+    default: []
+  },
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now }
 });
 
 const User = mongoose.model('User', userSchema);

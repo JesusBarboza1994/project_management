@@ -1,5 +1,6 @@
 const Activity = require("../components/activities/model");
 const Project = require("../components/projects/model");
+const User = require("../components/users/model");
 
 async function deleteDescendantActivities(parentId) {
   let descendants = null;
@@ -36,6 +37,7 @@ async function deleteProjectsAndActivities(workspaceId) {
 
     // Elimina el proyecto actual
     await Project.findByIdAndDelete(project._id);
+    await User.updateMany({}, { $pull: { collaborations: { project: project._id } } });
   }
 }
 

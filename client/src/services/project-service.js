@@ -46,3 +46,7 @@ export async function updateTitleProject(id){
     method: "PATCH",
   });
 }
+
+export async function listCollaborationProjects(){
+  return await apiFetch(`/projects/list/collaboration`)
+}
