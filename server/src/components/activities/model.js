@@ -7,6 +7,7 @@ const activitySchema = new mongoose.Schema({
   relative_weight_percentage: { type: Number, required: true },
   absolute_weight: { type: Number, required: true },
   relative_progress: { type: Number, default: 0 },
+  order: [{ type: Number, default: 1 }],
   absolute_progress: { type: Number, default: 0 },
   init_date: { type: Date, default: Date.now },
   end_date: { type: Date, default: Date.now },

@@ -6,7 +6,6 @@ const projectSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   is_deleted: { type: Boolean, default: false },
-  project_type: { type: String, enum: ['basic', 'mixed'], default: 'basic' },
   init_date: { type: Date },
   end_date: { type: Date },
   color: { type: String, default: "pink"},

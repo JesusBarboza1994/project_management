@@ -37,6 +37,12 @@ async function create_activity(req, res){
     const {title, relative_weight, parent } = req.body;
     const parent_activity = await Activity.findById(parent);
     const activities_same_parent = await Activity.find({ parent: parent });
+    let order
+    if(activities_same_parent.length === 0){
+      order = [...parent_activity.order, 1]
+    }else{
+      activities_same_parent[length-1]
+    }
     const sum_weight = activities_same_parent.reduce((acc, activity) => acc + activity.relative_weight, 0) + relative_weight;
     let init_date
     if(!parent_activity){
@@ -61,8 +67,18 @@ async function create_activity(req, res){
     const end_date = init_date
     
     // Crear la actividad
-    const new_activity = new Activity({title, relative_weight, absolute_weight, index, parent, relative_weight_percentage, init_date, end_date});
-    await new_activity.save();
+    const new_activity = await Activity.create({
+      title,
+      relative_weight,
+      absolute_weight,
+      index,
+      order,
+      parent,
+      relative_weight_percentage,
+      init_date,
+      end_date,
+    });
+    
     // // Actualizar los datos de las actividades hermanas
     // if(activities_same_parent.length !==0) await update_activities_with_same_parent(activities_same_parent, parent_activity, sum_weight)
     // Actualizar pesos relativos de las actividades hermanas
