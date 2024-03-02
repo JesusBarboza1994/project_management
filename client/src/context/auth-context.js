@@ -17,7 +17,8 @@ function AuthProvider({ children }) {
   const [updateListActivites, setUpdateListActivities] = useState(false)
   const [listAllUsers, setListAllUsers] = useState([])
   const [listCollaborators, setListCollaborators] = useState([])
-  
+  const [filters, setFilters] = useState({progress:0})
+  const [tableActivities, setTableActivities] = useState(JSON.parse(sessionStorage.getItem("mixedActivities")))
   return (
     <AuthContext.Provider
       value={{
@@ -25,8 +26,12 @@ function AuthProvider({ children }) {
         workspaces,
         listCollaborators,
         setListCollaborators,
+        tableActivities,
+        setTableActivities,
         trashedProjects,
         setTrashedProjects,
+        filters,
+        setFilters,
         showModalShared,
         sharedProjects,
         setSharedProjects,
