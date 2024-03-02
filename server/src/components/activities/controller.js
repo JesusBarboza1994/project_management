@@ -279,19 +279,11 @@ async function updateParentActivities(activityId) {
 async function updateActivityRecursively(activity, parent_absolute_weight, order) {
   const parent_activity = await Activity.findById(activity.parent);
   const activities_same_parent = await Activity.find({ parent: activity.parent });
-  
-   // [1 , 2]
-  // [2, 1]
   let totalAbsoluteProgress = 0;
   for (const act of activities_same_parent) {
     act.absolute_weight = act.relative_weight_percentage * (parent_activity ? parent_absolute_weight : 1);
-    
-    if(order){
-      if(act.order[act.order.length -1] > order[order.length -1]) act.order[act.order.length -1] = act.order[act.order.length -1] - 1
-    }
-    
-    // [2, 2, 1], [2, 2, 2]
 
+    act.order[act.order.length -1] = (order && act.order[act.order.length -1] > order[order.length -1]) && (act.order[act.order.length -1] - 1)
     if (!act.has_subactivities) {
       act.absolute_progress = act.absolute_weight * act.relative_progress;
     } else {

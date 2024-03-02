@@ -1,5 +1,6 @@
 'use strict'
 
+const { default: mongoose } = require("mongoose");
 const Activity = require("../activities/model");
 const Project = require("../projects/model");
 const MixedProject = require("./model");
@@ -31,7 +32,7 @@ async function create_mixed_project(req, res){
   }
 }
 
-async function show_mixed_project(req, res){
+async function filter_mixed_project_activities(req, res){
   try {
     const { id } = req.params
     const mixed_project = await MixedProject.findById(id)
@@ -39,24 +40,47 @@ async function show_mixed_project(req, res){
     
     const mixed_activities = []
     for await (const project of mixed_project.projects) {
-      const project_data = await Project.findById(project.project)
-      const activities = await list_all_activities_of_project({id: project.project, title: project_data.title})
+      const project_data = await Project.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(project.project)
+          }
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "collaborators.user",
+            foreignField: "_id",
+            as: "users"
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            "users.username": 1
+          }
+        }
+      ])
+      const activities = await list_all_activities_of_project({id: project.project, title: project_data[0].title, users: project_data[0].users})
       mixed_activities.push(...activities)
     }
-
-    res.status(200).json(mixed_activities);
+    return res.status(200).json(mixed_activities);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error al obtener el proyecto combinado.' });
+    return res.status(500).json({ error: 'Error al obtener el proyecto combinado.' });
   }
 }
 
-async function list_all_activities_of_project({id, title}){
+async function list_all_activities_of_project({id, title, users}){
   let complete_activities = []
 
   async function obtener_actividades_recursivas({parentId}){
-    const found_activities = await Activity.find({ parent: parentId }).lean();
-    found_activities.forEach(activity => activity.project = title)
+    const found_activities = await Activity.find({ parent: parentId }).select('title relative_progress relative_weight init_date end_date order').lean();
+    found_activities.forEach(activity => {
+      activity.project = title
+      activity.users = users 
+    })
     complete_activities = [...complete_activities, ...found_activities]
     for await (const activity of found_activities) {
       await obtener_actividades_recursivas({parentId: activity._id})
@@ -100,5 +124,5 @@ function ordenar_objetos_por_order(objetos) {
 
 module.exports = {
   create_mixed_project,
-  show_mixed_project
+  filter_mixed_project_activities
 }

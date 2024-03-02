@@ -15,6 +15,16 @@ export async function createMixedProject({selectedMixedProjects}){
   })
 }
 
-export async function showMixedProject({id}){
-  return await apiFetch(`/mixed-projects/${id}`)
+export async function showMixedProject({filters}){
+  const {id, search="", order=0, init_date="", end_date="", relative_weight, relative_progress=1} = filters
+  return await apiFetch(`/mixed-projects/${id}`,{
+    method: "POST",
+    body: {
+      search, // Busca por el nombre de la actividad.
+      order, // Busca el orden de la actividad. Si es 2, trae los de orden 1 y 2. Es lista desplegable
+      init_date,
+      end_date,
+      relative_progress, //Menor o igual. Debería ser un slicer.
+    }
+  })
 }

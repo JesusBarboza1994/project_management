@@ -5,5 +5,5 @@ const UserAuthorization = require("../../middleware/authorization");
 
 const controller = require("./controller");
 router.post('/', UserAuth ,controller.create_mixed_project)
-router.get('/:id', UserAuth, controller.show_mixed_project)
+router.post('/:id', UserAuth, controller.filter_mixed_project_activities)
 module.exports = router
