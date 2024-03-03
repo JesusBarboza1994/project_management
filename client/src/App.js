@@ -13,12 +13,23 @@ function App() {
     <>
       <Navbar/>
       <Routes>
-      <Route path="/" element={<LoginPage/>}/>
-      <Route path="/workspaces" element={user ? <Workspace/> : <LoginPage/>}/>
-      <Route path="/projects" element={user ?<Project/> : <LoginPage/>}/>
-      <Route path="/signup" element={<SignupPage/>}/>
-      <Route path="/projects/:id" element={user ?<Project/> : <LoginPage/>}/>
-      <Route path="/tables/:id" element={user ?<Table/> : <LoginPage/>}/>
+        {
+          user 
+          ?
+          <>
+            <Route path="/" element={<Workspace/>}/>
+            <Route path="/workspaces" element={<Workspace/>}/>
+            <Route path="/projects" element={<Project/>}/>
+            <Route path="/projects/:id" element={<Project/>}/>
+            <Route path="/tables/:id" element={<Table/>}/>        
+          </>
+          :
+          <>
+            <Route path="/" element={<LoginPage/>}/>
+            <Route path="/signup" element={<SignupPage/>}/>
+            <Route Component={<LoginPage/>}/>
+          </>
+        }
       </Routes>
     </>
   );

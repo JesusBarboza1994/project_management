@@ -2,9 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { Icons } from "../../utils";
 import { Wrapper } from "./styles";
 import Button from "../Button";
+import { useAuth } from "../../context/auth-context";
 
 export function Navbar(){
   const nav = useNavigate()
+  const { setUser } = useAuth()
   const url = window.location.href.split("/")
   return(
     <Wrapper>
@@ -15,6 +17,7 @@ export function Navbar(){
           sessionStorage.getItem("token") ? 
           <Button text="Logout" type="solid" Icon={Icons.logoutCircle} onClick={()=>{
             sessionStorage.removeItem("token")
+            setUser(null)
             nav("/")
           }}/>
           :
