@@ -6,22 +6,24 @@ import { Select, FilterDiv, Wrapper, FilterWrap, ExcelButton } from "./styles";
 import { useAuth } from "../../context/auth-context";
 import Button from "../../components/Button";
 import Input from "../Input/Input";
+import Loader from "../Loader/Loader"
 import { generateExcelProject } from "../../services/project-service";
 import { BiArrowBack } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 export default function Filters({ maxOrder, id, type }){
   const {filters, setFilters, setTableActivities} = useAuth()
   const [ showFilter, setShowFilter ] = useState(false)
+  const [showLoader, setShowLoader] = useState(null)
   const nav = useNavigate()
   const handleGenerateExcelProject = async() => {
-    console.log("entree", {...filters, id, type})
+    setShowLoader(true)
     await generateExcelProject({...filters, id, type})
+    setShowLoader(false)
   };
 
 
   const handleSubmitFilters = (e) => {
     e.preventDefault()
-    console.log("🚀 ~ FILTERSSSS", filters)
     let activities = JSON.parse(sessionStorage.getItem("tableActivities"))
     if(filters.search && filters.search !== "" ){
       activities = activities.filter(activity => activity.title.toLowerCase().includes(filters.search.toLowerCase().trim()))
@@ -85,6 +87,7 @@ export default function Filters({ maxOrder, id, type }){
             <FaFileExcel style={{color:"green"}}/>
             <p>Exportar</p>
           </ExcelButton>
+          {showLoader && <Loader/>}
         </div>
       </>
      }
