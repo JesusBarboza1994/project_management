@@ -146,6 +146,9 @@ export const ListProjectsModal = styled.div`
   border-radius: 8px;
   background: ${colors.background.blank};
   border: 1px solid ${colors.tertiary.dark};
+  div{
+    cursor: pointer;
+  }
 `
 
 export const ListSelectedProjectsModal = styled.div`
@@ -157,4 +160,7 @@ export const ListSelectedProjectsModal = styled.div`
   font-size: 12px;
   border-radius: 8px;
   border: 1px solid ${colors.tertiary.dark};
+  div{
+    cursor: pointer;
+  }
 `

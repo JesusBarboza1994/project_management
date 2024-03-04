@@ -1,3 +1,4 @@
+import { BASE_URI } from "../config";
 import apiFetch from "./api-fetch";
 
 export async function listProjects(workspaceId){
@@ -49,4 +50,41 @@ export async function updateTitleProject(id){
 
 export async function listCollaborationProjects(){
   return await apiFetch(`/projects/list/collaboration`)
+}
+
+export async function generateExcelProject(filters){
+  const {id, search="", order=0, init_date="", end_date="",  progress=0, type} = filters
+  const token = sessionStorage.getItem('token')
+  
+  const body = {
+    search, 
+    order,
+    init_date,
+    end_date,
+    relative_progress: progress, 
+  }
+  console.log("🚀 ~ BODYYYYYYYYY:", JSON.stringify(body))
+  try {
+    const response = await fetch(`${BASE_URI}/${type ? "projects" : "mixed-projects"}/generate-excel/${id}`,{
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body)
+    })
+    const blob = await response.blob(); // Obtener los datos del blob
+    // Crear una URL del blob para descargar el archivo
+    const url = window.URL.createObjectURL(blob);
+
+    // Crear un enlace y simular clic para descargar el archivo
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'actividades.xlsx'; // Nombre del archivo
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error al descargar el archivo', error);
+  }
 }

@@ -11,7 +11,6 @@ import { FaRegEdit } from "react-icons/fa";
 import { CgTrash } from "react-icons/cg";
 import { colors } from "./styles"
 
-
 export function formatDateToString(date){
     if(!date) return ""
     return date.split("T")[0]
@@ -23,6 +22,43 @@ export function cutString(str, maxLength) {
     } else {
       return str.substring(0, maxLength) + '...'; // Retorna el string cortado con puntos suspensivos
     }
+}
+
+export function differenceBetweenDates(date1, date2) {
+  const newDate1 = new Date(date1);  
+  const newDate2 = new Date(date2);
+  const unDia = 24 * 60 * 60 * 1000; // milisegundos en un día
+  const duration = Math.round(Math.abs((newDate2 - newDate1) / unDia));
+
+  if (duration <= 30) {
+    if (duration === 0) return "-";
+    return `${duration} ${duration === 1 ? "día" : "días"}`;
+  } else if (duration <= 365) {
+      const meses = Math.floor(duration / 30);
+      const diasRestantes = duration % 30;
+      return `${meses} ${meses ===1 ? "mes" : "meses"} y ${diasRestantes} ${diasRestantes === 1 ? "día" : "días"}`;
+  } else {
+      const años = Math.floor(duration / 365);
+      const mesesRestantes = Math.floor((duration % 365) / 30);
+      const diasRestantes = (duration % 365) % 30;
+      return `${años} ${años === 1 ? "año" : "años"}, ${mesesRestantes} ${mesesRestantes === 1 ? "mes" : "meses"} y ${diasRestantes} ${diasRestantes === 1 ? "día" : "días"}`;
+  }
+}
+
+export function parsedDuration(duration){
+  if (duration <= 30) {
+    if (duration === 0) return "-";
+    return `${duration} ${duration === 1 ? "día" : "días"}`;
+  } else if (duration <= 365) {
+      const meses = Math.floor(duration / 30);
+      const diasRestantes = duration % 30;
+      return `${meses} ${meses ===1 ? "mes" : "meses"} y ${diasRestantes} ${diasRestantes === 1 ? "día" : "días"}`;
+  } else {
+      const años = Math.floor(duration / 365);
+      const mesesRestantes = Math.floor((duration % 365) / 30);
+      const diasRestantes = (duration % 365) % 30;
+      return `${años} ${años === 1 ? "año" : "años"}, ${mesesRestantes} ${mesesRestantes === 1 ? "mes" : "meses"} y ${diasRestantes} ${diasRestantes === 1 ? "día" : "días"}`;
+  }
 }
   
 export const Icons = {

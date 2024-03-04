@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, EndDiv, InitDateP, InitDiv, MainContainer, PerpendicularLine, TitleContainer, Wrapper } from "./styles";
+import { Container, EndDiv, InitDiv, MainContainer, TitleContainer, Wrapper } from "./styles";
 import { useAuth } from "../../context/auth-context";
 import { useNavigate, useParams } from "react-router-dom";
 import { listActivities, listTreeActivities } from "../../services/activity-service";
@@ -14,6 +14,7 @@ import Modal from "../../components/Modal";
 import { colors } from "../../styles";
 import { GoProjectSymlink } from "react-icons/go";
 import Gantt, { getMinAndMaxDateInActivities } from "../../components/Gantt/Gantt";
+import { FaTable } from "react-icons/fa";
 
 export default function Project(){
   const { currentProject, updateListActivites, setCurrentProject } = useAuth()
@@ -115,10 +116,11 @@ export default function Project(){
                 {showTitle ? <label htmlFor="inputName" onClick={() => setShowTitle(false)}>{cutString(currentProject.title, 20)}</label>
                 :
                 <textarea id="inputName" value={currentProject.title} onChange={e => setCurrentProject({...currentProject, title:e.target.value})} onKeyDown={handleKeyDown}/>
-                }
+              }
               </form>
             </div>
-            <div style={{display:"flex", alignItems:"center", marginRight:"8px"}}>
+            <div style={{display:"flex", width:"60px", justifyContent: "space-between"}}>
+              <FaTable style={{color:colors.primary.medium, scale:"1.5", cursor:"pointer"}} onClick={() => nav(`/tables/${currentProject.id}?type=project`)}/>
               {
                 showGantt ?
                 <GoProjectSymlink style={{color:colors.primary.medium, scale:"1.5", cursor:"pointer"}} onClick={() => setShowGantt(false)}/>

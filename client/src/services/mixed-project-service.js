@@ -16,7 +16,7 @@ export async function createMixedProject({selectedMixedProjects}){
 }
 
 export async function showMixedProject(filters){
-  const {id, search="", order=0, init_date="", end_date="",  relative_progress=1} = filters
+  const {id, search="", order=0, init_date="", end_date="",  relative_progress=0} = filters
   return await apiFetch(`/mixed-projects/${id}`,{
     method: "POST",
     body: {

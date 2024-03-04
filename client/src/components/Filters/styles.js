@@ -52,3 +52,18 @@ export const Select = styled.select`
   
   }
 `
+
+export const ExcelButton = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  cursor:pointer;
+  p{
+    font-size:14px;
+  }
+  &:hover{
+    border: 1px solid green;
+  }
+`

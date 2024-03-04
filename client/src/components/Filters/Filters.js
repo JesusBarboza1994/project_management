@@ -1,19 +1,28 @@
-import Input from "../Input/Input";
-import { useAuth } from "../../context/auth-context";
-import { colors } from "../../styles";
-import { Select, FilterDiv, Wrapper, FilterWrap } from "./styles";
+import { FaFileExcel } from "react-icons/fa6";
 import { FaFilter } from "react-icons/fa6";
 import { useState } from "react";
+import { colors } from "../../styles";
+import { Select, FilterDiv, Wrapper, FilterWrap, ExcelButton } from "./styles";
+import { useAuth } from "../../context/auth-context";
 import Button from "../../components/Button";
-export default function Filters({ maxOrder }){
+import Input from "../Input/Input";
+import { generateExcelProject } from "../../services/project-service";
+import { BiArrowBack } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
+export default function Filters({ maxOrder, id, type }){
   const {filters, setFilters, setTableActivities} = useAuth()
   const [ showFilter, setShowFilter ] = useState(false)
+  const nav = useNavigate()
+  const handleGenerateExcelProject = async() => {
+    console.log("entree", {...filters, id, type})
+    await generateExcelProject({...filters, id, type})
+  };
+
 
   const handleSubmitFilters = (e) => {
     e.preventDefault()
-  
-    let activities = JSON.parse(sessionStorage.getItem("mixedActivities"))
-    console.log("🚀 ~ handleSubmitFilters ~ activities:", activities)
+    console.log("🚀 ~ FILTERSSSS", filters)
+    let activities = JSON.parse(sessionStorage.getItem("tableActivities"))
     if(filters.search && filters.search !== "" ){
       activities = activities.filter(activity => activity.title.toLowerCase().includes(filters.search.toLowerCase().trim()))
     }
@@ -23,17 +32,16 @@ export default function Filters({ maxOrder }){
     if(filters.order){
       activities = activities.filter(activity => activity.order.length <= filters.order)
     }
-    if(filters.end_date){
-      activities = activities.filter(activity => activity.end_date >= filters.end_date)
+    if(filters.date){
+      activities = activities.filter(activity => new Date(activity.end_date) >= new Date(filters.date) && new Date(activity.init_date) <= new Date(filters.date))
     }
-    if(filters.init_date){
-      activities = activities.filter(activity => activity.init_date <= filters.init_date)
-    }
-    console.log("🚀 ~ handleSubmitFilters ~ activities:", activities)
     setTableActivities(activities)
   }
   return(
     <Wrapper>
+      <BiArrowBack style={{scale:"1.5", cursor:"pointer"}} onClick={() =>{
+        type==="project" ? nav(`/projects/${id}`) : nav(`/workspaces`)
+      }}/>
       <div style={{display: "flex", alignItems: "center", gap: "6px", cursor: "pointer"}}
         onClick={() => setShowFilter(!showFilter)}
       >
@@ -46,7 +54,7 @@ export default function Filters({ maxOrder }){
           <div style={{width: "200px", border: `1px solid ${colors.background.highlight}`, padding: "6px", borderRadius: "8px"}}>
             <Input placeholder={"Búsqueda por título"} value={filters.search} onChange={e => setFilters({...filters, search: e.target.value})} label="Search"/>
           </div>
-          <FilterDiv style={{width: "200px", border: `1px solid ${colors.background.highlight}`, padding: "6px", borderRadius: "8px"}}>
+          <FilterDiv>
             <label htmlFor="order">Order</label>
             <Select id="order" onChange={e => setFilters({...filters, order: e.target.value})} value={filters.order} name="order">
               <option disabled selected>Selecciona</option>
@@ -60,18 +68,23 @@ export default function Filters({ maxOrder }){
               <span>{(filters.progress*100).toFixed(0)}%</span>
             </div>
           </FilterDiv>
-          <FilterDiv style={{width:"300px"}}>
+          <FilterDiv>
             <label htmlFor="date">Date</label>
             <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
-            <Input style={{marginBottom: "6px"}} type="date" name="date" value={filters.init_date} onChange={e => setFilters({...filters, init_date: e.target.value})}/>
-            <span>-</span>
-            <Input type="date" name="date" value={filters.end_date} onChange={e => setFilters({...filters, end_date: e.target.value})}/>
-
+            <Input style={{marginBottom: "6px"}} type="date" name="date" value={filters.date} onChange={e => setFilters({...filters, date: e.target.value})}/>
             </div>
           </FilterDiv>
         </FilterWrap>
-        <div style={{width:"300px"}}>
+        <div style={{width:"400px", display: "flex", justifyContent: "space-between", marginTop: "12px"}}>
           <Button type={"solid"} text={"Aplicar"} onClick={(e)=>handleSubmitFilters(e)}/>
+          <Button type={"outline"} text={"Limpiar"} onClick={() =>{
+            setFilters({search: "", progress: 0, order: 0, date: ""})
+            setTableActivities(JSON.parse(sessionStorage.getItem("tableActivities")))
+          }}/>
+          <ExcelButton onClick={handleGenerateExcelProject}>
+            <FaFileExcel style={{color:"green"}}/>
+            <p>Exportar</p>
+          </ExcelButton>
         </div>
       </>
      }

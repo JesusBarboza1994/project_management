@@ -2,12 +2,12 @@
 
 const {
   deleteDescendantActivities,
-} = require("../../utils.js/delete_associated.js");
-const Workspace = require("../workspaces/model.js");
-const Project = require("./model.js");
-const User = require("../users/model.js");
+} = require("../../../utils.js/delete_associated.js");
+const Workspace = require("../../workspaces/model.js");
+const Project = require("../model.js");
+const User = require("../../users/model.js");
 const { default: mongoose } = require("mongoose");
-const MixedProject = require("../mixedProjects/model.js");
+const MixedProject = require("../../mixedProjects/model.js");
 
 async function list_projects(req, res) {
   try {

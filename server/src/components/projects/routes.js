@@ -1,8 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const UserAuth = require("../../middleware/authentication");
-const UserAuthorization = require("../../middleware/authorization");
-const controller = require("./controller");
+const express = require("express")
+const router = express.Router()
+const UserAuth = require("../../middleware/authentication")
+const UserAuthorization = require("../../middleware/authorization")
+const controller = require("./controllers/controller")
+const generateExcelPostController = require("./controllers/generateExcelPostController")
+
 router.get("/:id_workspace", UserAuth,controller.list_projects)
 router.get("/:id", UserAuth, controller.show_project)
 router.post("/:id_workspace", UserAuth, controller.create_project)
@@ -14,4 +16,6 @@ router.patch("/color/:id", UserAuth, controller.update_color_project)
 router.patch("/shared/:id", UserAuth, UserAuthorization.admin_permission, controller.shared_project)
 router.patch("/name/:id", UserAuth, UserAuthorization.admin_permission, controller.update_title_project)
 router.patch("/trash/:id", UserAuth, UserAuthorization.admin_permission,controller.restore_from_trash_project)
+router.post('/generate-excel/:id', UserAuth, generateExcelPostController)
+
 module.exports = router

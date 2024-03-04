@@ -4,8 +4,10 @@ import { Container, Error, Wrapper } from "./styles";
 import Button from "../../components/Button";
 import { signUp } from "../../services/user-service";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/auth-context";
 
 export function SignupPage(){
+  const {user, setUser }= useAuth()
   const [data, setData] = useState({
     username: "",
     email:"",
@@ -13,15 +15,21 @@ export function SignupPage(){
   })
   const [error, setError] = useState(null)
   const nav = useNavigate()
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault()
-    signUp(data).then(res => {
-      console.log(res)
+    console.log("🚀 ~ handleSignUp ~ data:", data)
+    try {
+      const res = await signUp(data)
+      setUser({...user, username: res})
+      setError(null)
+      sessionStorage.setItem("user", JSON.stringify({username: res.username}))
       nav("/")
-    }).catch(err => {
-      console.log(err)
-      setError("Correo ya se encuentra registrado")
-    })
+    } catch (error) {
+        console.log(error)
+        setError("Correo ya se encuentra registrado")
+      
+    }
+
   }
   return(
     <Wrapper>

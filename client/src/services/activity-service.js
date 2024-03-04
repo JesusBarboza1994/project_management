@@ -39,3 +39,18 @@ export async function updateNameActivity(id, title){
     method: "PATCH",
   });
 }
+
+export async function tableActivitiesWithFilters(filters){
+  const {id, search="", order=0, init_date="", end_date="",  relative_progress=0} = filters
+  console.log("🚀 ~ tableActivitiesWithFilters ~ IDDDDDD:", id)
+  return await apiFetch(`/activities/table/${id}`,{
+    method: "POST",
+    body: {
+      search, 
+      order, // Busca el orden de la actividad. Si es 2, trae los de orden 1 y 2. Es lista desplegable
+      init_date,
+      end_date,
+      relative_progress, //Menor o igual. Debería ser un slicer.
+    }
+  })
+}

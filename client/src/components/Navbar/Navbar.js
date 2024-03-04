@@ -16,7 +16,7 @@ export function Navbar(){
         {
           sessionStorage.getItem("token") ? 
           <Button text="Logout" type="solid" Icon={Icons.logoutCircle} onClick={()=>{
-            sessionStorage.removeItem("token")
+            sessionStorage.clear()
             setUser(null)
             nav("/")
           }}/>

@@ -6,7 +6,8 @@ export const StyledButton = styled.button`
 	flex-direction:row;
 	justify-content: center;
 	align-items: center;
-	padding:8px 1.5rem;
+	font-size: 14px;
+	padding:4px 1.5rem;
 	gap: 8px;
 	color: ${colors.white};
 	border-radius: 16px;

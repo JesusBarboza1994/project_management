@@ -8,7 +8,7 @@ export function Button({text, onClick, type, Icon}){
 	let colorHover;
 	let borderHover;
 	if(type==="outline"){
-		background = colors.white;
+		background = colors.background.blank;
 		border = colors.primary.light;
 		color = colors.font.title
 		colorHover = colors.primary.light;

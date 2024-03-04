@@ -1,7 +1,7 @@
-const { deleteDescendantActivities } = require("../../utils.js/delete_associated");
-const Project = require("../projects/model");
-const Activity = require("./model");
-const { esTextoNoNumerico} = require("../../utils.js/utils")
+const { deleteDescendantActivities } = require("../../../utils.js/delete_associated");
+const Project = require("../../projects/model");
+const Activity = require("../model");
+const { esTextoNoNumerico} = require("../../../utils.js/utils")
 async function list_tree_activities(req, res){
   try {
     const id = req.params.id
@@ -193,8 +193,6 @@ async function update_name_activity(req, res){
 async function update_activity(req, res){
   const id = req.params.id;
   const { relative_weight, relative_progress, init_date, end_date } = req.body;
-  console.log("🚀 ~ update_activity ~ end_date:", end_date)
-  console.log("🚀 ~ update_activity ~ init_date:", init_date)
   if(esTextoNoNumerico(relative_weight)) return res.status(400).json({error: "El peso debe ser un número"})
   if(esTextoNoNumerico(relative_progress) || Number(relative_progress) > 1 ) return res.status(400).json({error: "El progreso debe ser un número menor a 100%"})
   const current_activity = await Activity.findByIdAndUpdate(id, { relative_weight }, { new: true });
@@ -215,7 +213,8 @@ async function update_activity(req, res){
   })
   const parent_absolute_weight = parent_activity ? parent_activity.absolute_weight : 1;
   // Llamamos a la función recursiva para actualizar las actividades descendientes
-  await updateActivityRecursively(current_activity, parent_absolute_weight);
+  const data = await updateActivityRecursively(current_activity, parent_absolute_weight);
+  console.log("🚀 ~ update_activity ~ data:", data)
   const updated_current_activity = await Activity.findById(id);
   if(+relative_progress !== updated_current_activity.relative_progress && +relative_progress !== 0 && !updated_current_activity.has_subactivities){
     await Activity.findByIdAndUpdate(id, {relative_progress, absolute_progress: relative_progress*updated_current_activity.absolute_weight}, { new: true });
@@ -282,8 +281,9 @@ async function updateActivityRecursively(activity, parent_absolute_weight, order
   let totalAbsoluteProgress = 0;
   for (const act of activities_same_parent) {
     act.absolute_weight = act.relative_weight_percentage * (parent_activity ? parent_absolute_weight : 1);
-
-    act.order[act.order.length -1] = (order && act.order[act.order.length -1] > order[order.length -1]) && (act.order[act.order.length -1] - 1)
+    if(order && act.order[act.order.length -1] > order[order.length -1]){
+      act.order[act.order.length -1] = (act.order[act.order.length -1] - 1)
+    }
     if (!act.has_subactivities) {
       act.absolute_progress = act.absolute_weight * act.relative_progress;
     } else {

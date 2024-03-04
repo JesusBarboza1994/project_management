@@ -13,7 +13,7 @@ import { colors } from "../../styles";
 import Input from "../../components/Input/Input";
 import { createMixedProject } from "../../services/mixed-project-service";
 export default function Workspace(){
-  const { trashedProjects, setTrashedProjects, listCollaborators, setListCollaborators, listAllUsers, setListAllUsers ,currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
+  const { trashedProjects, setTableActivities, setTrashedProjects, listCollaborators, setListCollaborators, listAllUsers, setListAllUsers ,currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
   const [workspaceName, setWorkspaceName] = useState("")
   const [project, setProject] = useState({
     name: "",
@@ -81,14 +81,23 @@ export default function Workspace(){
     })
   }
 
-  const handleMixedProject = (e) => {
+  const handleMixedProject = async(e) => {
     e.preventDefault()
     setShowMixedProjectModal(false)
-    createMixedProject({selectedMixedProjects}).then(res => {
-      console.log(res)
-    }).catch(err => {
-      console.log(err)
+    setSelectedMixedProjects({
+      title: "",
+      projects: []
     })
+
+    try {
+      const response = await createMixedProject({selectedMixedProjects})
+      setMixedProjects(...mixedProjects, response.projects)
+      setUpdateWorkspace(!updateWorkspace)
+    } catch (error) {
+      console.log(error)
+      
+    }
+   
   }
   const handleSharedSubmit = async (e) => {
     e.preventDefault()
@@ -130,6 +139,7 @@ export default function Workspace(){
       setTrashedProjects(res.trashedProjects)
       setAllProjects(res.projects)
       setMixedProjects(res.mixedProjects)
+      setTableActivities(null)
     }).catch(err => {
       console.log(err)
     })
@@ -294,7 +304,7 @@ export default function Workspace(){
               })}
             </ListProjectsModal>
               {
-                selectedMixedProjects.length !==0 &&
+                selectedMixedProjects.projects.length !==0 &&
                 <ListSelectedProjectsModal>
                   {selectedMixedProjects.projects.map((project)=>{
                     return(

@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const UserAuth = require("../../middleware/authentication")
-const UserAuthorization = require("../../middleware/authorization");
 
 const controller = require("./controller");
 router.post('/', UserAuth ,controller.create_mixed_project)
 router.post('/:id', UserAuth, controller.filter_mixed_project_activities)
+router.post('/generate-excel/:id', UserAuth, controller.generate_excel_mixed_project)
 module.exports = router
