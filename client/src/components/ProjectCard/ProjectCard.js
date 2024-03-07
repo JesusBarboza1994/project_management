@@ -35,7 +35,7 @@ export default function ProjectCard({project, isDeleted=false, showShared=true, 
     <Wrapper backgroundColor={colors.randomColors[project.color]} onClick={handleShowProject}>
       <div style={{ overflow: "hidden" }}>
         <p>{project.title}</p>
-        {!mixed && <p>{(project.total_progress*100).toFixed(2)}</p>}
+        {!mixed && <p>{(project.total_progress*100).toFixed(2)}%</p>}
       </div>
       <OperationsProjectCard project={project} isDeleted={isDeleted} showShared={showShared} mixed={mixed}/>
     </Wrapper>
