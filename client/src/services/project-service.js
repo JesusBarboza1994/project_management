@@ -28,11 +28,18 @@ export async function deleteProject(id){
   })
 }
 export async function sharedProject(body){
-  const { email, permission, id } = body
-  return await apiFetch(`/projects/shared/${id}`, {
-    method: "PATCH",
-    body: {email, permission}
-  })
+  const { email, permission, id, mixed } = body
+  if(mixed){
+    return await apiFetch(`/mixed-projects/shared/${id}`, {
+      method: "PATCH",
+      body: {email, permission}
+    })
+  }else{
+    return await apiFetch(`/projects/shared/${id}`, {
+      method: "PATCH",
+      body: {email, permission}
+    })
+  }
 }
 export async function restoreProject(id){
   return await apiFetch(`/projects/trash/${id}`, {

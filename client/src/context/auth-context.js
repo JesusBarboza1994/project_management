@@ -18,6 +18,7 @@ function AuthProvider({ children }) {
   const [listAllUsers, setListAllUsers] = useState([])
   const [listCollaborators, setListCollaborators] = useState([])
   const [filters, setFilters] = useState({progress:0})
+  const [isMixedSharedProject, setIsMixedSharedProject] = useState(false)
   const [tableActivities, setTableActivities] = useState(JSON.parse(sessionStorage.getItem("tableActivities")))
   return (
     <AuthContext.Provider
@@ -25,6 +26,8 @@ function AuthProvider({ children }) {
         user,
         workspaces,
         listCollaborators,
+        setIsMixedSharedProject,
+        isMixedSharedProject,
         setListCollaborators,
         tableActivities,
         setTableActivities,

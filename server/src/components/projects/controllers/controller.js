@@ -236,7 +236,6 @@ async function shared_project(req, res) {
     const id = req.params.id;
     const { email, permission } = req.body;
     const user_shared = await User.findOne({ email });
-    console.log("🚀 ~ shared_project ~ user_shared:", user_shared);
 
     // Obtén el proyecto por su ID y agrega el nuevo colaborador a collaborators
     const updated_project = await Project.findByIdAndUpdate(
@@ -252,14 +251,14 @@ async function shared_project(req, res) {
       { new: true }
     );
 
-    user_shared.collaborations.push({
-      project: update_project._id,
-      permission,
-    });
-    user_shared.save();
     if (!updated_project) {
       return res.status(404).json({ error: "Proyecto no encontrado" });
     }
+    user_shared.collaborations.push({
+      project: updated_project._id,
+      permission,
+    });
+    user_shared.save();
 
     res.send(updated_project);
   } catch (error) {
@@ -301,6 +300,7 @@ async function list_collaboration_projects(req, res) {
         },
       },
     ]);
+    console.log("🚀 ~ list_collaboration_projects ~ raw_projects:", raw_projects)
     const raw_workspaces = await Workspace.find({ user: req.user });
     const mixed_projects = await MixedProject.aggregate([
       {

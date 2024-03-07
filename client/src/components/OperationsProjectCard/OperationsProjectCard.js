@@ -7,10 +7,10 @@ import {  restoreProject, updateColorProject, updateFavoriteProject } from "../.
 import {PiShareFatDuotone} from "react-icons/pi"
 import {MdOutlineRestoreFromTrash} from "react-icons/md"
 import { listUsers } from "../../services/user-service"
-export default function OperationsProjectCard({project, isDeleted, showShared}){
+export default function OperationsProjectCard({project, isDeleted, showShared, mixed}){
   const divRef = useRef(null)
   const { setListAllUsers } = useAuth()
-  const {setShowModalShared, currentProject, setCurrentProject, setListCollaborators, sharedProjects, setSharedProjects,updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
+  const {setIsMixedSharedProject, setShowModalShared, currentProject, setCurrentProject, setListCollaborators, sharedProjects, setSharedProjects,updateWorkspace, setUpdateWorkspace, favoriteProjects, setFavoriteProjects, workspaces, setWorkspaces} = useAuth()
   const [showColors, setShowColors] = useState(false)
   const handleUpdateColor = (color) => {
     updateColorProject({color, id: project._id}).then(res => {
@@ -24,6 +24,7 @@ export default function OperationsProjectCard({project, isDeleted, showShared}){
   const handleSharedProject = (e) => {
     e.stopPropagation()
     setShowModalShared(true)
+    if(mixed) setIsMixedSharedProject(true)
     setCurrentProject({...currentProject, id: project._id})
     listUsers({search:"", id: project._id}).then(res => {
       console.log(res)
@@ -76,13 +77,13 @@ export default function OperationsProjectCard({project, isDeleted, showShared}){
     <>
     <IconsContainer>
         {
-          project.favorite ? 
+         !mixed && ( project.favorite ? 
           <IconContainer onClick={(e)=>handleFavorite(e)}>
             <BsStarFill style={{scale: "0.9", color:colors.randomColors.yellow}} />
           </IconContainer> :
           <IconContainer onClick={(e)=>handleFavorite(e)}>
             <BsStar style={{scale: "0.9"}}/>
-          </IconContainer>
+          </IconContainer>)
         }
         
         <IconContainer ref={divRef} onClick={(e) => {setShowColors(!showColors); e.stopPropagation()}}>
@@ -94,7 +95,7 @@ export default function OperationsProjectCard({project, isDeleted, showShared}){
             <MdOutlineRestoreFromTrash style={{scale: "1.2"}} />
           </IconContainer>
           : (
-          showShared && <IconContainer ref={divRef} onClick={(e)=>{handleSharedProject(e)}}>
+          (!mixed && showShared) && <IconContainer ref={divRef} onClick={(e)=>{handleSharedProject(e)}}>
             <PiShareFatDuotone style={{scale: "0.9", fontWeight:200}} />
           </IconContainer>)
         }

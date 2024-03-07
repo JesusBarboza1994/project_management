@@ -6,6 +6,43 @@ const Project = require("../projects/model");
 const MixedProject = require("./model");
 const { listAllActivitiesByProject } = require("../activities/services.js/listAllActivitiesByProject");
 const set_format_excel = require('../../utils.js/excel');
+const User = require('../users/model');
+
+async function shared_mixed_project(req, res){
+  try {
+    const id = req.params.id;
+    const { email, permission } = req.body;
+    const user_shared = await User.findOne({ email });
+
+    // Obtén el proyecto por su ID y agrega el nuevo colaborador a collaborators
+    const updated_project = await MixedProject.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          collaborators: {
+            user: user_shared,
+            permission,
+          },
+        },
+      },
+      { new: true }
+    );
+    if (!updated_project) {
+      return res.status(404).json({ error: "Proyecto combinado no encontrado" });
+    }
+
+    user_shared.collaborations.push({
+      project: updated_project._id,
+      permission,
+    });
+    user_shared.save();
+
+    res.send(updated_project);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error al compartir el proyecto" });
+  }
+}
 async function create_mixed_project(req, res){
   try {
     const {ids, title, color} = req.body
@@ -87,5 +124,6 @@ async function generate_excel_mixed_project(req, res){
 module.exports = {
   create_mixed_project,
   filter_mixed_project_activities,
-  generate_excel_mixed_project
+  generate_excel_mixed_project,
+  shared_mixed_project
 }

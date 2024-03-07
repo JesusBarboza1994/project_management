@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import { useAuth } from "../../context/auth-context";
 import { CollaboratorDiv, Container, List, ListProjectsModal, ListSelectedProjectsModal, ProjectContainer, Select, SharedUserDiv, StyleBiTrashAlt, TitleContainer, WorkspaceContainer, WorkspaceTitleContainer, Wrapper } from "./styles";
-import { createWorkspace, deleteWorkspace, listWorkspaces, updateWorkspaceName } from "../../services/workspace-service";
+import { createWorkspace, deleteWorkspace, updateWorkspaceName } from "../../services/workspace-service";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import {MdAddCircleOutline} from "react-icons/md"
 import { createProject, listCollaborationProjects, sharedProject } from "../../services/project-service";
@@ -13,7 +13,7 @@ import { colors } from "../../styles";
 import Input from "../../components/Input/Input";
 import { createMixedProject } from "../../services/mixed-project-service";
 export default function Workspace(){
-  const { trashedProjects, setTableActivities, setTrashedProjects, listCollaborators, setListCollaborators, listAllUsers, setListAllUsers ,currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
+  const { isMixedSharedProject, setIsMixedSharedProject, trashedProjects, setTableActivities, setTrashedProjects, listCollaborators, setListCollaborators, listAllUsers, setListAllUsers ,currentProject, sharedProjects, setSharedProjects, showModalShared, setShowModalShared,user, workspaces,favoriteProjects, setFavoriteProjects, setWorkspaces, updateWorkspace, setUpdateWorkspace } = useAuth()
   const [workspaceName, setWorkspaceName] = useState("")
   const [project, setProject] = useState({
     name: "",
@@ -106,6 +106,10 @@ export default function Workspace(){
       permission: sharedProjectUser.permission,
       id: currentProject.id
     }
+    if(isMixedSharedProject){
+      body.mixed = isMixedSharedProject
+      setIsMixedSharedProject(false)
+    }
     sharedProject(body).then(res => {
       console.log(res)
     }).catch(err => {
@@ -140,6 +144,7 @@ export default function Workspace(){
       setAllProjects(res.projects)
       setMixedProjects(res.mixedProjects)
       setTableActivities(null)
+      sessionStorage.removeItem("tableActivities")
     }).catch(err => {
       console.log(err)
     })
