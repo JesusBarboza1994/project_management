@@ -1,0 +1,4 @@
+[build]
+  base = "client" # Ruta de la carpeta del cliente
+  command = "CI= npm run build" # El comando que Netlify debe usar para construir el proyecto
+  publish = "build" # La carpeta donde se encuentra el proyecto construido
