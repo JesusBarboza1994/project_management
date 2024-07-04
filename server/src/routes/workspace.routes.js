@@ -1,12 +1,17 @@
-const express = require("express");
+import express from "express";
+import UserAuth from "../middleware/authentication.js"
+import createWorkspacePostController from "../controllers/workspaces/createWorkspacePost.controller.js";
+import listWorkspacesGetController from "../controllers/workspaces/listWorkspacesGet.controller.js";
+import showWorkspaceGetController from "../controllers/workspaces/showWorkspaceGet.controller.js";
+import deleteWorkspaceDeleteController from "../controllers/workspaces/deleteWorkspaceDelete.controller.js";
+import updateWorkspacePatchController from "../controllers/workspaces/updateWorkspacePatch.controller.js";
+
 const router = express.Router();
-const UserAuth = require("../../middleware/authentication")
-const controller = require("./controller");
 
-router.post("/", UserAuth, controller.create_workspace)
-router.get("/", UserAuth, controller.list_workspaces)
-router.get("/:id", UserAuth, controller.show_workspace)
-router.delete("/:id", UserAuth, controller.delete_workspace)
-router.patch("/:id", UserAuth, controller.update_workspace)
+router.post("/", UserAuth, createWorkspacePostController)
+router.get("/", UserAuth, listWorkspacesGetController)
+router.get("/:id", UserAuth, showWorkspaceGetController)
+router.delete("/:id", UserAuth, deleteWorkspaceDeleteController)
+router.patch("/:id", UserAuth, updateWorkspacePatchController)
 
-module.exports = router
+export default router

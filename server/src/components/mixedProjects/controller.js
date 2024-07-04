@@ -5,7 +5,7 @@ const Activity = require("../../models/activity.model");
 const Project = require("../../models/project.model");
 const MixedProject = require("../../models/mixedProject.model");
 const { listAllActivitiesByProject } = require("../activities/services.js/listAllActivitiesByProject");
-const set_format_excel = require('../../utils.js/excel');
+const setFormatExcel = require('../../utils/excel');
 const User = require('../../models/user.model');
 
 async function shared_mixed_project(req, res){
@@ -105,7 +105,7 @@ async function generate_excel_mixed_project(req, res){
     const { activities } = await listAllActivitiesByProject({project, order, search, date, relative_progress})
     mixed_activities.push(...activities)
   }
-  set_format_excel({workbook, activities: mixed_activities})
+  setFormatExcel({workbook, activities: mixed_activities})
   const filename = "Actividades.xlsx";
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`);

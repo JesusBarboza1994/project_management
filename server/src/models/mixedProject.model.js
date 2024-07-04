@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const mixedProjectSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -25,4 +25,4 @@ const mixedProjectSchema = new mongoose.Schema({
 
 const MixedProject = mongoose.model('MixedProject', mixedProjectSchema);
 
-module.exports = MixedProject;
+export default MixedProject

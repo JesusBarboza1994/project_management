@@ -1,7 +1,6 @@
-const Excel = require('exceljs')
-const generateExcel = require("../services/generateExcel")
-
-async function generateExcelPostController(req, res) {
+import Excel from 'exceljs'
+import { generateExcel } from '../../services/project/generateExcel.service.js'
+export default async function generateExcelPostController(req, res) {
   const { id } = req.params
   const { search="", order, date="", relative_progress=0} = req.body
   const workbook = new Excel.Workbook()
@@ -21,5 +20,3 @@ async function generateExcelPostController(req, res) {
     });
   
 }
-
-module.exports = generateExcelPostController

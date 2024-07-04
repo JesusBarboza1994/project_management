@@ -1,6 +1,6 @@
 import express from "express";
-import UserAuth from "../../middleware/authentication.js"
-import UserAuthorization from "../../middleware/authorization.js"
+import UserAuth from "../middleware/authentication.js"
+import UserAuthorization from "../middleware/authorization.js"
 import { listAllActivitiesByProject } from "../components/activities/services.js/listAllActivitiesByProject.js";
 const controller = require("./controllers/controller");
 
@@ -16,4 +16,5 @@ router.patch("/:id", UserAuth, UserAuthorization.edit_permission, controller.upd
 router.patch("/title/:id", UserAuth, UserAuthorization.edit_permission, controller.update_name_activity)
 router.get('/tree/:id', UserAuth, controller.list_tree_activities)
 router.post('/table/:id', UserAuth, listAllActivitiesByProject)
-module.exports = router
+
+export default router

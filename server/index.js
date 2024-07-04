@@ -2,7 +2,7 @@
 import config from "./src/config.js"
 import app from "./src/app.js"
 
-const port = process.env.PORT || 3000
+const port = config.PORT
 
 app.listen(port, () => { 
     console.log("Running on port", port);

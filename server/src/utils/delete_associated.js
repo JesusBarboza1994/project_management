@@ -1,8 +1,8 @@
-const Activity = require("../models/activity.model");
-const Project = require("../models/project.model");
-const User = require("../models/user.model");
+import Activity from "../models/activity.model.js";
+import Project from "../models/project.model.js";
+import User from "../models/user.model.js";
 
-async function deleteDescendantActivities(parentId) {
+export async function deleteDescendantActivities(parentId) {
   let descendants = null;
   descendants = await Activity.find({ parent: parentId });
   if (!descendants || descendants.length === 0) {
@@ -28,7 +28,7 @@ async function deleteDescendantActivities(parentId) {
   console.log("eliminado");
 }
 
-async function deleteProjectsAndActivities(workspaceId) {
+export async function deleteProjectsAndActivities(workspaceId) {
   // Busca y elimina los proyectos relacionados con el workspace
   const projects = await Project.find({ workspace: workspaceId });
   for (const project of projects) {
@@ -40,9 +40,3 @@ async function deleteProjectsAndActivities(workspaceId) {
     await User.updateMany({}, { $pull: { collaborations: { project: project._id } } });
   }
 }
-
-module.exports = {
-  deleteDescendantActivities,
-  deleteProjectsAndActivities
-}
-

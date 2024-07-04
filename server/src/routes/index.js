@@ -7,11 +7,11 @@ import mixedProjectRouter from "./mixedProject.routes.js"
 
 const router = express.Router();
 
-
+router.use("/users", userRouter);
 router.use("/projects", projectRouter);
 router.use("/workspaces", workspaceRouter);
+// TODO: Continuar el traspaso aquí
 router.use("/activities", activityRouter);
-router.use("/users", userRouter);
 router.use("/mixed-projects", mixedProjectRouter);
 
 export default router

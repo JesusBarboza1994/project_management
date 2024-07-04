@@ -1,4 +1,4 @@
-const Project = require("../models/project.model")
+import Project from "../models/project.model.js";
 
 async function edit_permission (req, res, next){
   try {
@@ -46,7 +46,4 @@ async function admin_permission (req, res, next){
   }
 }
 
-module.exports={
-  admin_permission,
-  edit_permission
-}
+export default {edit_permission, admin_permission}

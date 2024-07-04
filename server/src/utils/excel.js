@@ -1,4 +1,4 @@
-function set_format_excel({workbook, activities}){
+export function setFormatExcel({workbook, activities}){
   const sheet_name = 'Lista de actividades'
   const worksheet = workbook.addWorksheet(sheet_name)
   const columns = ["Item", "Actividad", "Proyecto","Colaboradores", "Progreso", "Inicio", "Fin", "Duración (días)"]
@@ -24,5 +24,3 @@ function set_format_excel({workbook, activities}){
     worksheet.addRow(row);
   });
 }
-
-module.exports = set_format_excel
