@@ -80,6 +80,7 @@ export default function Filters({ maxOrder, id, type }){
         <div style={{width:"400px", display: "flex", justifyContent: "space-between", marginTop: "12px"}}>
           <Button type={"solid"} text={"Aplicar"} onClick={(e)=>handleSubmitFilters(e)}/>
           <Button type={"outline"} text={"Limpiar"} onClick={() =>{
+            console.log("FILRT", filters)
             setFilters({search: "", progress: 0, order: 0, date: ""})
             setTableActivities(JSON.parse(sessionStorage.getItem("tableActivities")))
           }}/>

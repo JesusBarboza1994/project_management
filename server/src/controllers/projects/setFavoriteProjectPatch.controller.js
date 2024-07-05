@@ -5,6 +5,7 @@ export default async function setFavoriteProjectPatchController(req, res) {
     const id = req.params.id;
     const userId = req.user;
     const updateProject = await setFavoriteProject({ id, userId });
+    console.log("🚀 ~ setFavoriteProjectPatchController ~ updateProject:", updateProject)
 
     res.status(200).json({
       _id: updateProject.id,

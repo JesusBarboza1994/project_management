@@ -24,6 +24,7 @@ export default function ActivityCard({setShowModalCurrentActivityDetails, activi
   const handleDeleteActivity = () => {
     setShowModalDeleteActivity(true)
     setCurrentActivity(activity)
+    console.log("ACTIVITY", activity)
     // deleteActivity(activity._id).then(res => {
     //   const updatedProject = {...currentProject, total_progress: res.project.total_progress}
     //   setCurrentProject(updatedProject)
@@ -54,7 +55,11 @@ export default function ActivityCard({setShowModalCurrentActivityDetails, activi
       initDate: activityData.initDate,
       endDate: activityData.endDate
     }).then(res => {
-      if(res.error) setError(res.error)
+      if(res.errors){
+        setLoader(false)
+        setError(res.errors)
+        return
+      } 
       const updatedProject = {...currentProject, total_progress: res.project.total_progress, init_date: res.project.init_date, end_date: res.project.end_date}
       setCurrentProject(updatedProject)
       setLoader(false)
@@ -62,7 +67,6 @@ export default function ActivityCard({setShowModalCurrentActivityDetails, activi
       setUpdateListActivities(!updateListActivites)
       setUpdateSubActivities(!updateSubActivities)
     }).catch(err => {
-      setLoader(false)
       console.log(err)
     })
   }
@@ -80,6 +84,7 @@ export default function ActivityCard({setShowModalCurrentActivityDetails, activi
   },[updateSubActivities])
 
   useEffect(() => {
+    setError(null)
     setActivityData({
       title: activity.title,
       absoluteWeight: activity.absolute_weight,
@@ -95,8 +100,8 @@ export default function ActivityCard({setShowModalCurrentActivityDetails, activi
   const color = Object.values(colors.randomColors)[activity.index]
   return(
       <Wrapper color={color} onClick={() => {
-        setShowModalCurrentActivityDetails(true)
-        setCurrentActivity(activity)
+        // setShowModalCurrentActivityDetails(true)
+        // setCurrentActivity(activity)
       }}>
         <SubContainer>
           <div>

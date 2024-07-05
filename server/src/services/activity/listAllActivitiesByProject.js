@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
-import Project from "../../../models/project.model.js";
-import Activity from "../../../models/activity.model.js";
+import Project from "../../models/project.model.js";
+import Activity from "../../models/activity.model.js";
 
 export async function listAllActivitiesByProject({id, order, search, date, relative_progress}) {
+  console.log("ID", id)
   const project_data = await Project.aggregate([
     {
       $match: {
-        _id: new mongoose.default.Types.ObjectId(id)
+        _id: new mongoose.Types.ObjectId(id)
       }
     },
     {
@@ -25,6 +26,7 @@ export async function listAllActivitiesByProject({id, order, search, date, relat
       }
     }
   ])
+  console.log("🚀 ~ listAllActivitiesByProject ~ project_data:", project_data)
   return await list_all_activities_of_project({id, title: project_data[0].title, users: project_data[0].users, filter_order:order, search, date, relative_progress})
  
 }

@@ -88,15 +88,16 @@ export default function Project(){
   
   return(
     <Wrapper>
-      <Modal showModal={showModalCurrentActivityDetails} setShowModal={setShowModalCurrentActivityDetails}>
+      {/* <Modal showModal={showModalCurrentActivityDetails} setShowModal={setShowModalCurrentActivityDetails}>
         <ActivityInfoModal activity={currentActivity}/>
-      </Modal>
+      </Modal> */}
       <Modal
         showModal={showModalDeleteActivity}
         setShowModal={setShowModalDeleteActivity}
         onSubmit={(e) => {
           e.preventDefault()
           setShowModalDeleteActivity(false)
+          console.log("CUR", currentActivity)
           deleteActivity(currentActivity._id).then(res => {
             const updatedProject = {...currentProject, total_progress: res.project.total_progress}
             setCurrentProject(updatedProject)

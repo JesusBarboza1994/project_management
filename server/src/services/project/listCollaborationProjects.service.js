@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../../models/user.model.js";
 import Workspace from "../../models/workspace.model.js";
+import MixedProject from "../../models/mixedProject.model.js";
 
 export async function listCollaborationProjects({user}){
   const rawProjects = await User.aggregate([
@@ -36,16 +37,19 @@ export async function listCollaborationProjects({user}){
   ])
 
   const rawWorkspaces = await Workspace.find({ user });
-  const mixedProjects = await User.aggregate([
+  console.log("🚀 ~ listCollaborationProjects ~ user:", user)
+  const userId= new mongoose.Types.ObjectId(user);
+  console.log("🚀 ~ listCollaborationProjects ~ userId:", userId)
+  const mixedProjects = await MixedProject.aggregate([
     {
       $match:{
-        collaborators: {$elemMatch: {user: new mongoose.Types.ObjectId(user)}}
+        collaborators: {$elemMatch: {user: userId}}
       }
     },
     { $unwind: "$collaborators" },
     {
       $match: {
-        "collaborators.user": new mongoose.Types.ObjectId(user)
+        "collaborators.user": userId
       }
     },
     {
@@ -58,7 +62,7 @@ export async function listCollaborationProjects({user}){
       }
     }
   ])
-
+  console.log("MIX", mixedProjects)
   const favoriteProjects = rawProjects.filter((project) => project.favorite && !project.is_deleted);
   const trashedProjects = rawProjects.filter((project) => project.is_deleted);
   const sharedProjects = rawProjects.filter((project) => project.permission !== 'owner');
@@ -80,6 +84,6 @@ export async function listCollaborationProjects({user}){
     sharedProjects,
     trashedProjects,
     favoriteProjects,
-    mixedProjects: mixedProjects,
+    mixedProjects,
   }
 }

@@ -1,3 +1,5 @@
+import { listCollaborationProjects } from "../../services/project/listCollaborationProjects.service.js";
+
 export default async function listCollaborationProjectsGetController(req, res) {
   try {
     const { user } = req;

@@ -42,7 +42,7 @@ export default function OperationsProjectCard({project, isDeleted, showShared, m
   const handleFavorite = (e) => {
     e.stopPropagation()
     updateFavoriteProject(project._id).then(res => {
-      console.log(res)
+      console.log("FAV", res)
       if(res.favorite){
         setFavoriteProjects([...favoriteProjects, res])
       }else{

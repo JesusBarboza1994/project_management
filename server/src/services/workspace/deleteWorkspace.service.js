@@ -1,5 +1,5 @@
 import Workspace from "../../models/workspace.model.js";
-import { deleteProjectsAndActivities } from "../../utils/delete_associated.js";
+import { deleteProjectsAndActivities } from "../project/deleteProjectsAndActivities.service.js";
 
 export async function deleteWorkspace({id}){
   await deleteProjectsAndActivities(id)

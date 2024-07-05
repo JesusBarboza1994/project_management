@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import User from "../../models/user.model.js";
-import { CustomError } from "../../utils.js/customError.js";
+import { CustomError } from '../../utils/customError.js';
+import { generateToken } from '../../utils/generateToken.js';
 
 export async function login({ email, password }){
   const user = await User.findOne({ email });
@@ -13,6 +14,7 @@ export async function login({ email, password }){
   if (!match) throw new CustomError("Usuario o contraseña incorrectos", 400, 'INVALID_CREDENTIALS')
 
   const token = await generateToken({user})
+  console.log("TOKEN", token)
   return { token, user: {
     username: user.username,
     email: user.email

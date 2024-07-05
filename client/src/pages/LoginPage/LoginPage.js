@@ -26,9 +26,12 @@ export default function LoginPage(){
     e.preventDefault()
     login(credentials).then(res => {
       console.log(res)
-      setError(null)
-      sessionStorage.setItem("user", JSON.stringify({username: res}))
-      setUser({...user, username: res})
+      if(res.errors){
+        setError(res.errors)
+        return
+      }
+      setUser({...user, username: res.user.username})
+      sessionStorage.setItem("user", JSON.stringify({username: res.user.username}))
       nav("/workspaces")
     }).catch(err => {
       console.log(err)

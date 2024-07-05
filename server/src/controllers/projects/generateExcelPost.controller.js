@@ -1,11 +1,10 @@
-import Excel from 'exceljs'
 import { generateExcel } from '../../services/project/generateExcel.service.js'
 export default async function generateExcelPostController(req, res) {
   const { id } = req.params
   const { search="", order, date="", relative_progress=0} = req.body
-  const workbook = new Excel.Workbook()
-  await generateExcel({id, search, order, date, relative_progress, workbook})
-  const filename = "Actividades.xlsx";
+  
+  const { workbook, filename } = await generateExcel({id, search, order, date, relative_progress })
+  
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
 

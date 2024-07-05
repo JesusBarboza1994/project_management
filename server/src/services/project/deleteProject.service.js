@@ -1,7 +1,7 @@
 import MixedProject from "../../models/mixedProject.model.js";
 import Project from "../../models/project.model.js";
 import User from "../../models/user.model.js";
-import { deleteDescendantActivities } from "../../utils/delete_associated.js";
+import { deleteDescendantActivities } from "../activity/recursive/deleteDescendantActivitiesRecursively.service.js";
 
 export async function deleteProject({id, user}){
   const project = await Project.findById(id);

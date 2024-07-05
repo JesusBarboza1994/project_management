@@ -1,3 +1,5 @@
+import { sharedProject } from "../../services/project/sharedProject.service.js";
+
 export default async function sharedProjectPatchController(req, res) {
   try {
     const id = req.params.id;

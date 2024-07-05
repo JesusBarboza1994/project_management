@@ -1,4 +1,4 @@
-import { listAllActivitiesByProject } from "../../components/activities/services.js/listAllActivitiesByProject.js";
+import { listAllActivitiesByProject } from "../../services/activity/listAllActivitiesByProject.js";
 
 export default async function listAllActivitiesByProjectPostController(req, res) {
   try {

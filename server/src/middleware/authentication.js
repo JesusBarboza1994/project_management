@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import config from '../config.js';
 
 const Authentication = async (req, res, next) => {
   try {
@@ -21,9 +22,8 @@ async function validateToken(req){
     const signature = req.get('Authorization');
       if(signature){
         const tokenAccess = signature.split(' ')[1];
-        const payload = await jwt.verify(tokenAccess, process.env.SECRET_ACCESS_KEY_TOKEN);
-        // console.log("PAYLOAD", payload)
-        req.user = payload.userId;
+        const payload = await jwt.verify(tokenAccess,config.secretAccessKey);
+        req.user = payload.id;
         req.tokenAccess = tokenAccess;
         return true;
       }else{

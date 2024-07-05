@@ -3,7 +3,7 @@ import { createWorkspace } from "../../services/workspace/createWorkspace.servic
 export default async function createWorkspacePostController(req, res) {
   try {
     const {name} = req.body;
-    const newWorkspace = await createWorkspace({name, user: req.user._id})
+    const newWorkspace = await createWorkspace({name, user: req.user})
     res.status(201).json(newWorkspace)
   } catch (error) {
     console.log("ERROR",error)

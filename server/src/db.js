@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 import config from "./config.js";
 
 
-export default function connectDB() {
+export default async function connectDB() {
     try {
-      const db = mongoose.connect(config.DATABASE_URL, { });
-      console.log("Conectado a MongoDB", db.connection.host);
+      await mongoose.connect(config.DATABASE_URL, { });
+      console.log("Conectado a MongoDB");
     } catch(err) {
       console.log("ERROR",err);
     }  

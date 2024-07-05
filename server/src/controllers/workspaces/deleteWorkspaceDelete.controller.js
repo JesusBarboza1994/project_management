@@ -1,3 +1,5 @@
+import { deleteWorkspace } from "../../services/workspace/deleteWorkspace.service.js";
+
 export default async function deleteWorkspaceDeleteController(req, res){
   // TODO: Al eliminar un workspace se tienen que borrar los proyectos dentro con sus actividades
   try {

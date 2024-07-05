@@ -213,7 +213,7 @@ export default function Workspace(){
                   }}/>
                   {workspace.projects.length!==0 && workspace.projects.map((project) => {
                     return(
-                      <ProjectCard key={project.id} project={project}/>
+                      <ProjectCard key={project._id} project={project}/>
                     )
                   })}
                 </ProjectContainer>
