@@ -85,17 +85,20 @@ export default function OperationsProjectCard({project, isDeleted, showShared, m
             <BsStar style={{scale: "0.9"}}/>
           </IconContainer>)
         }
-        
-        <IconContainer ref={divRef} onClick={(e) => {setShowColors(!showColors); e.stopPropagation()}}>
-          <StyleColorPalette style={{scale: "0.9"}} />
-        </IconContainer>
+        {
+          showShared && project.permission === 'owner' && 
+          <IconContainer ref={divRef} onClick={(e) => {setShowColors(!showColors); e.stopPropagation()}}>
+            <StyleColorPalette style={{scale: "0.9"}} />
+          </IconContainer>
+        }
         {
           isDeleted ? 
           <IconContainer ref={divRef} onClick={(e)=>{handleRestoreProject(e)}}>
             <MdOutlineRestoreFromTrash style={{scale: "1.2"}} />
           </IconContainer>
           : (
-          (!mixed && showShared) && <IconContainer ref={divRef} onClick={(e)=>{handleSharedProject(e)}}>
+          (!mixed && showShared && project.permission === 'owner') && 
+          <IconContainer ref={divRef} onClick={(e)=>{handleSharedProject(e)}}>
             <PiShareFatDuotone style={{scale: "0.9", fontWeight:200}} />
           </IconContainer>)
         }

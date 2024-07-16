@@ -17,15 +17,17 @@ export default async function updateActivityPatchController(req, res){
     const {currentActivity, parentActivity, sumWeight} = await updateActivity({ id, relative_weight, relative_progress, init_date, end_date })
     await updateActivityWithSameParent({parent: currentActivity.parent, sumWeight})
     const parentAbsoluteWeight = parentActivity ? parentActivity.absolute_weight : 1;
-    
+    console.time("updateActivity")
     // Llamamos a la función recursiva para actualizar las actividades descendientes
     await updateActivityRecursively(currentActivity, parentAbsoluteWeight);
-    
-    if(+relative_progress !== currentActivity.relative_progress && +relative_progress !== 0 && !currentActivity.has_subactivities){
+    console.timeEnd("updateActivity")
+    if(+relative_progress !== currentActivity.relative_progress && !currentActivity.has_subactivities){
       await Activity.findByIdAndUpdate(id, {relative_progress, absolute_progress: relative_progress*currentActivity.absolute_weight}, { new: true });
     }
     // Actualizar actividades de la cadena superior (padre en adelante)
+    console.time("updateParentActivities")
     const parent_result = await updateParentActivitiesRecursively(currentActivity.parent);
+    console.timeEnd("updateParentActivities")
     // Devolvemos la actividad actualizada
     res.status(200).json(
       {

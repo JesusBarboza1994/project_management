@@ -1,3 +1,5 @@
+import { removeCollaborator } from "../../services/user/removeCollaborator.service.js";
+
 export default async function removeCollaboratorDeleteController(req, res) {
   try {
     const { id, email } = req.query;
