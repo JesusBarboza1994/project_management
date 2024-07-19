@@ -15,7 +15,7 @@ import { colors } from "../../styles";
 import { GoProjectSymlink } from "react-icons/go";
 import Gantt, { getMinAndMaxDateInActivities } from "../../components/Gantt/Gantt";
 import { FaTable } from "react-icons/fa";
-import { ActivityInfoModal } from "../../components/organisms/ActivityInfoModal/ActivityInfoModal";
+// import { ActivityInfoModal } from "../../components/organisms/ActivityInfoModal/ActivityInfoModal";
 
 export default function Project(){
   const { currentProject, currentActivity, setCurrentActivity, updateListActivites, updateSubActivities, setCurrentProject, setUpdateListActivities, setUpdateSubActivities } = useAuth()
@@ -53,7 +53,6 @@ export default function Project(){
       console.log(err)
     })
   }
-
   const handleKeyDown = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault(); 

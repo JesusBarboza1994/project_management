@@ -15,6 +15,7 @@ export default function ActivityCard({setShowModalCurrentActivityDetails, activi
   const [activityData, setActivityData] = useState({})
   const [loader, setLoader] = useState(false)
   const [error, setError] = useState(null)
+  const inputRef = useRef(null);
   const [showActivityName, setShowActivityName] = useState(false)
   
   const handleSubActivities = () => {
@@ -96,6 +97,28 @@ export default function ActivityCard({setShowModalCurrentActivityDetails, activi
       endDate: activity.end_date
     })
   }, [activity])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (inputRef.current && !inputRef.current.contains(event.target)) {
+        setShowActivityName(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setShowActivityName(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [inputRef]);
   
   const color = Object.values(colors.randomColors)[activity.index]
   return(
@@ -112,13 +135,20 @@ export default function ActivityCard({setShowModalCurrentActivityDetails, activi
                 : 
                   <BiSolidRightArrow onClick={handleSubActivities}/>
               }
-              <form className="acitivity-name" onSubmit={(e)=>handleUpdateNameActivity(e)}>
-                {showActivityName ?
-                  <input id="activityname" value={activityData.title} onChange={(e) => setActivityData({...activityData, title: e.target.value})}/>
-                  :
-                  <p id="activityname" onClick={() => setShowActivityName(true)}>{activity.order.join(".")}. {activity.title}</p>
-                }
-              </form>
+              <form className="activity-name" onSubmit={(e) => handleUpdateNameActivity(e)}>
+              {showActivityName ?
+                <input
+                  id="activityname"
+                  value={activityData.title}
+                  ref={inputRef}
+                  onChange={(e) => setActivityData({ ...activityData, title: e.target.value })}
+                  onBlur={() => setShowActivityName(false)} // Aquí se maneja el evento onBlur
+                  autoFocus
+                />
+                :
+                <p id="activityname" onClick={() => setShowActivityName(true)}>{activity.order.join(".")}. {activity.title}</p>
+              }
+            </form>
             </div>
             <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
               {loader && <Loader/>}
