@@ -78,24 +78,16 @@ export async function updateParentActivitiesRecursively(activityId) {
       const main_activities = await Activity.find({ parent: activity.parent, index: 1 });
       const initDate = main_activities.map(activity => activity.init_date).sort((a, b) => a - b)[0];
       const endDate = main_activities.map(activity => activity.end_date).sort((a, b) => a - b)[main_activities.length - 1];
-      const total_progress = main_activities.reduce((acc, act) => acc + act.absolute_progress, 0);
 
-      bulkOperations.push({
-        updateOne: {
-          filter: { _id: activity.parent },
-          update: { $set: { total_progress, init_date: initDate, end_date: endDate } }
-        }
-      });
-
-      return { total_progress, init_date: initDate, end_date: endDate };
+      const {total_progress }=  await Project.findByIdAndUpdate(activity.parent, { total_progress: main_activities.reduce((acc, act) => acc + act.absolute_progress, 0) }, { new: true });
+      
+      return {total_progress, init_date: initDate, end_date: endDate};
+      
     }
   }
 
   const result = await recursiveUpdate(activityId);
-
-  if (bulkOperations.length > 0) {
-    await Activity.bulkWrite(bulkOperations);
-  }
+  if (bulkOperations.length > 0) await Activity.bulkWrite(bulkOperations);
 
   return result;
 }
